@@ -1,48 +1,42 @@
-import React from 'react';
+import React from "react";
 import Header from "../components/Header";
-import Wrapper from '../components/editor/Wrapper';
+import Wrapper from "../components/editor/Wrapper";
 
-import A_VideoPlayer from '../components/editor/A_VideoPlayer';
-import B_ChatViewer from '../components/editor/B_ChatViewer';
-import C_DataChart from '../components/editor/C_DataChart';
-import D_BookMarker from '../components/editor/D_BookMarker';
-import E_CommunicationTool from '../components/editor/E_CommunicationTool';
-
-
+import VideoPlayer from "../components/editor/VideoPlayer";
+import ChatViewer from "../components/editor/ChatViewer";
+import DataChart from "../components/editor/DataChart";
+import BookMarker from "../components/editor/BookMarker";
+import CommunicationTool from "../components/editor/CommunicationTool";
 
 function Editor() {
-    return (
-        <>
-            <Header />
-            <Wrapper id = 'upper_layer'>
+  return (
+    <>
+      <Header />
+      <Wrapper id="upperlayer">
+        <Wrapper id="VideoPlayecover">
+          <VideoPlayer />
+        </Wrapper>
 
-                <Wrapper id = 'VideoPlayer_cover'>
-                    <A_VideoPlayer />
-                </Wrapper>
+        <Wrapper id="ChatViewecover">
+          <ChatViewer />
+        </Wrapper>
 
-                <Wrapper id = 'ChatViewer_cover'>
-                    <B_ChatViewer />
-                </Wrapper>
+        <Wrapper id="CommunicationToocover">
+          <CommunicationTool />
+        </Wrapper>
+      </Wrapper>
 
-                <Wrapper id = 'CommunicationTool_cover'>
-                    <E_CommunicationTool />
-                </Wrapper>
+      <Wrapper id="lowerlayer">
+        <Wrapper id="BookMarkecover">
+          <BookMarker />
+        </Wrapper>
 
-            </Wrapper>
-
-            <Wrapper id = 'lower_layer'>
-
-                <Wrapper id = 'BookMarker_cover'>
-                    <D_BookMarker />
-                </Wrapper>
-
-                <Wrapper id = 'DataChart_cover'>
-                    <C_DataChart />
-                </Wrapper>
-
-            </Wrapper>
-        </>
-    );
+        <Wrapper id="DataCharcover">
+          <DataChart />
+        </Wrapper>
+      </Wrapper>
+    </>
+  );
 }
 
 export default Editor;

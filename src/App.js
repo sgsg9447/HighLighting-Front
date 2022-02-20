@@ -3,15 +3,12 @@ import { Route, Switch } from "react-router-dom";
 
 import AppStateProvider from "./providers/AppStateProvider";
 
-
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Loading from "./pages/Loading";
 import Editor from "./pages/Editor";
 
 import "./App.css";
-
-
 
 const App = () => {
   return (
