@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 import Wrapper from "../components/editor/Wrapper";
 
 import VideoPlayer from "../components/editor/VideoPlayer";

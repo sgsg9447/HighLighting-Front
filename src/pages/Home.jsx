@@ -2,8 +2,8 @@ import React, { useRef, useCallback } from "react";
 
 import useResult from "../hooks/useResult";
 import useRoute from "../hooks/useRoute";
-
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
+import "./Home.scss";
 
 export default function Home() {
   const inputValue = document.getElementById("link");
