@@ -17,8 +17,8 @@
 
   /* 모달창 안의 섹션파트*/
   section {
-    max-width: 60%;
-
+    max-width: 90%;
+    min-width: 450px;
     margin: auto;
     border-radius: 0.3rem;
     background-color: #fff;
@@ -37,14 +37,14 @@
 
       button {
         position: absolute;
-        top: 15px;
-        right: 15px;
+        top: 5px;
+        right: 10px;
         width: 30px;
         font-size: 21px;
         font-weight: 700;
         text-align: center;
         color: #999;
-        background-color: transp arent;
+        background-color: transparent;
       }
     }
 
@@ -108,7 +108,7 @@
   display: flex;
   align-items: center;
   /* 팝업이 열릴때 스르륵 열리는 효과 */
-  animation: modal-bg-show 0.5s;
+  animation: modal-bg-show 1s;
 }
 @keyframes modal-show {
   from {
