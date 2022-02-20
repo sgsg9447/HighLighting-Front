@@ -8,7 +8,7 @@ function CommunicationTool() {
     <div>
       <h1>커뮤니케이션 툴 영역</h1>
       <h2>Time Pointer = {pointer}</h2>
-      <button onClick={changePointer}>
+      <button onClick={() => {changePointer(pointer)}}>
         얘가 바꿀일은 없음
       </button>
     </div>
