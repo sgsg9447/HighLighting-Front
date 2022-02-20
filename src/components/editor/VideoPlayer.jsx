@@ -1,7 +1,7 @@
 import React from "react";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
-import Player from "./Comps_in_VideoPlayer/Player";
+import Player from "./in_VideoPlayer/Player";
 
 function VideoPlayer() {
   const { pointer, changePointer } = React.useContext(EditorTimePointerContext);
