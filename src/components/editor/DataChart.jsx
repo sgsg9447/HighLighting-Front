@@ -304,8 +304,8 @@ const DataChart = (props) => {
 
 					const mouseLocationEngine = chart.engine.clientLocation2Engine(event.clientX, event.clientY)
 					const mouseLocationAxisX = translatePoint(mouseLocationEngine, chart.engine.scale, { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }).x
-					const xValue = Math.round(mouseLocationAxisX)
-					console.log(xValue, id, url)
+					const xValue = Math.round(mouseLocationAxisX / 1000)
+					changePointer(xValue)
 				})
 			})
 
