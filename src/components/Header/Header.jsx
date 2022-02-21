@@ -8,21 +8,20 @@ import Modal from "./Modal";
 
 export default function Header() {
   const [modalOpen, setModalOpen] = useState(false);
-
   const history = useHistory();
 
-  const handleClickOutside = ({ target }) => {
-    console.log(target.className);
-    if (modalOpen && target.className === "openModal modal")
-      setModalOpen(false);
-  };
-
   useEffect(() => {
+    const handleClickOutside = ({ target }) => {
+      console.log(target.className);
+      if (modalOpen && target.className === "openModal modal")
+        setModalOpen(false);
+    };
+
     window.addEventListener("click", handleClickOutside);
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  });
+  }, [modalOpen]);
 
   const openModal = () => {
     setModalOpen(true);
