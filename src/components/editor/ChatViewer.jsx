@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 
 import { format } from "./in_VideoPlayer/Duration";
-
+import "./ChatViewer.scss";
 function ChatViewer() {
   const { pointer } = React.useContext(EditorTimePointerContext);
 

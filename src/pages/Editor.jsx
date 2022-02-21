@@ -1,43 +1,42 @@
 import React from "react";
 import Header from "../components/Header/Header";
-import Wrapper from "../components/editor/Wrapper";
 
 import VideoPlayer from "../components/editor/VideoPlayer";
 import ChatViewer from "../components/editor/ChatViewer";
 import DataChart from "../components/editor/DataChart";
 import BookMarker from "../components/editor/BookMarker";
 import CommunicationTool from "../components/editor/CommunicationTool";
-
 import EditorTimePointerProvider from "../providers/EditorTimePointerProvider";
+import "./Editor.scss";
 
 function Editor() {
   return (
     <>
       <Header />
       <EditorTimePointerProvider>
-        <Wrapper id="upperlayer">
-          <Wrapper id="VideoPlayecover">
+        <div className="upperlayer">
+          <div className="VideoPlayerCover">
             <VideoPlayer />
-          </Wrapper>
+          </div>
 
-          <Wrapper id="ChatViewecover">
+          <div className="ChatViewerCover">
             <ChatViewer />
-          </Wrapper>
+          </div>
 
-          <Wrapper id="CommunicationToocover">
+          <div className="CommunicationToocover">
             <CommunicationTool />
-          </Wrapper>
-        </Wrapper>
+          </div>
+        </div>
 
-        <Wrapper id="lowerlayer">
-          <Wrapper id="BookMarkecover">
+        <div className="lowerlayer">
+          <div className="BookMarkecover">
             <BookMarker />
-          </Wrapper>
+          </div>
 
-          <Wrapper id="DataCharcover">
+          <div className="DataCharcover">
             <DataChart />
-          </Wrapper>
-        </Wrapper>
+          </div>
+        </div>
       </EditorTimePointerProvider>
     </>
   );

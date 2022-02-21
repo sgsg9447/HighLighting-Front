@@ -1,11 +1,11 @@
 import React from "react";
-
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
+import "./BookMarker.scss";
 
 function BookMarker() {
   const { pointer, changePointer } = React.useContext(EditorTimePointerContext);
   return (
-    <div>
+    <div className="BookMarkerContainer">
       <h1>북마커 영역</h1>
       <h2>Time Pointer = {pointer}</h2>
       <h3>유저 클릭 북마크의 start 값으로 Time Pointer 변경</h3>
