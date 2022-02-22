@@ -13,7 +13,8 @@ import useResult from "../hooks/useResult";
 import { useState, useEffect } from "react";
 
 function Editor() {
-  const { url, chat, audio, video } = useResult();
+
+  const { url, chatDistribution, audio, video } = useResult();
   const [chatData, setChatData] = useState([]);
   const [audioData, setAudioData] = useState([]);
   const [videoData, setVideoData] = useState([]);
@@ -24,25 +25,25 @@ function Editor() {
     // console.log('useEffectChat-arrived');
     console.time("mapValueToObj-Chart-Chat");
 
+
     // 로컬스토리지에서 데이터 받아올 때
-    if (!chat) {
+    if (!chatDistribution) {
       const localChat = localStorage.getItem("localChatDistribution");
       const arrayChat = JSON.parse("[" + localChat + "]");
       const objChat = arrayChat.map((value, index) => ({ x: index, y: value }));
       setChatData(objChat);
-      console.log("ChatData <- localChat");
-      // setTotalData((totalData => [...totalData, objChat]))
     }
     // POST를 통해 직접 받아올 때
     else {
-      setChatData(chat.map((value, index) => ({ x: index, y: value })));
+      setChatData(
+        chatDistribution.map((value, index) => ({ x: index, y: value }))
+      );
     }
     console.timeEnd("mapValueToObj-Chart-Chat");
   }, []);
 
   // 비디오 데이터 수신
   useEffect(() => {
-    // console.log('useEffectVideo-arrived');
     console.time("mapValueToObj-Chart-Video");
     if (!video) {
       const localVideo = localStorage.getItem("localVideo");
@@ -53,7 +54,6 @@ function Editor() {
       }));
       setVideoData(objVideo);
       console.log("videoData <- localVideo");
-      // setTotalData((totalData => [...totalData, objVideo]))
     } else {
       setVideoData(video.map((value, index) => ({ x: index, y: value })));
     }
@@ -62,7 +62,6 @@ function Editor() {
 
   // 오디오 데이터 수신
   useEffect(() => {
-    // console.log('useEffectAudio-arrived');
     console.time("mapValueToObj-Chart-Audio");
     if (!audio) {
       const localAudio = localStorage.getItem("localAudio");
@@ -73,7 +72,6 @@ function Editor() {
       }));
       setAudioData(objAudio);
       console.log("AudioData <- localAudio");
-      // setTotalData((totalData => [...totalData, objAudio]))
     } else {
       setAudioData(audio.map((value, index) => ({ x: index, y: value })));
     }
