@@ -13,7 +13,7 @@ function VideoPlayer() {
 
   return (
     <div className="VideoViewerContainer">
-      <Player playing={play} />
+      <Player />
       <h2>Time Pointer = {pointer}</h2>
       <h3>영상 isPlaying 시 Time Pointer 매 초 변경</h3>
       <button

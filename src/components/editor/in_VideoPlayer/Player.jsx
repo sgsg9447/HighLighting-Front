@@ -4,7 +4,7 @@ import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
 import useResult from "../../../hooks/useResult";
 
-function Player(props) {
+function Player() {
   const { changePointer } = React.useContext(EditorTimePointerContext);
   const { url } = useResult();
 
