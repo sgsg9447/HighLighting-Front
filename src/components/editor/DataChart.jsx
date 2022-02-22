@@ -567,7 +567,6 @@ const DataChart = (props) => {
 
   return (
     <div className="DataChartContainer">
-      <h1>데이터 차트 영역</h1>
       <div id={id} className="TrippleChart"></div>
     </div>
   );
