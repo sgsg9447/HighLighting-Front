@@ -55,51 +55,41 @@ const AppStateProvider = ({ children }) => {
       })
       .then((response) => {
         console.log("Success", response.data);
-        // const result = response.data.result;
         localStorage.setItem("prevUrl", url);
 
-        // console.time("mapValueToObj-Audio");
-        // objAudio = mapValueToObj(response.data.result.audio);
-        // console.timeEnd("mapValueToObj-Audio");
         localStorage.setItem("localAudio", response.data.result.audio);
         setAudio(response.data.result.audio);
 
-        // console.time("mapValueToObj-Chat");
-        // objChat = mapValueToObj(response.data.result.chat);
-        // console.timeEnd("mapValueToObj-Chat");
-        localStorage.setItem(
-          "localChatDistribution",
-          response.data.result.chat[0]
-        );
+        console.log(response.data.result.chat[0]);
+        console.log(response.data.result.chat[1]);
+        console.log(response.data.result.chat[2]);
+
+        localStorage.setItem("localChatDistribution", response.data.result.chat[0]);
         setChatDistribution(response.data.result.chat[0]);
-        localStorage.setItem(
-          "localChatSet",
-          JSON.stringify(response.data.result.chat[1])
-        );
+        localStorage.setItem("localChatSet", JSON.stringify(response.data.result.chat[1]));
         setChatSet(response.data.result.chat[1]);
         localStorage.setItem("localChatSuper", response.data.result.chat[2]);
         setChatSuper(response.data.result.chat[2]);
 
-        // console.time("mapValueToObj-Video");
-        // objVideo = mapValueToObj(response.data.result.video);
-        // console.timeEnd("mapValueToObj-Video");
         localStorage.setItem("localVideo", response.data.result.video);
         setVideo(response.data.result.video);
 
-        // console.log({ 'objAudio': objAudio, 'objVideo': objVideo, 'objChat': objChat });
         console.timeEnd("requestTime");
         console.log("gobefore");
 
         const title = response.data.result.title;
         setTitle(title);
-        console.log(title);
+        console.log("set Title :", title);
+
         const thumbnail = response.data.result.thumbnail;
         setThumNail(thumbnail);
-        console.log(thumbnail);
+        console.log("set thumbnail : ", thumbnail);
 
+        console.log("Go Editor");
         goEditor();
       })
       .catch((error) => {
+        console.log("에러 감지");
         console.log(error);
         goNotFound();
       });

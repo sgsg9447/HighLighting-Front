@@ -13,7 +13,8 @@ import useResult from "../hooks/useResult";
 import { useState, useEffect } from "react";
 
 function Editor() {
-  const { url, chat, audio, video } = useResult();
+
+  const { url, chatDistribution, audio, video } = useResult();
   const [chatData, setChatData] = useState([]);
   const [audioData, setAudioData] = useState([]);
   const [videoData, setVideoData] = useState([]);
@@ -23,8 +24,9 @@ function Editor() {
   useEffect(() => {
     console.time("mapValueToObj-Chart-Chat");
 
+
     // 로컬스토리지에서 데이터 받아올 때
-    if (!chat) {
+    if (!chatDistribution) {
       const localChat = localStorage.getItem("localChatDistribution");
       const arrayChat = JSON.parse("[" + localChat + "]");
       const objChat = arrayChat.map((value, index) => ({ x: index, y: value }));
@@ -33,7 +35,9 @@ function Editor() {
     }
     // POST를 통해 직접 받아올 때
     else {
-      setChatData(chat.map((value, index) => ({ x: index, y: value })));
+      setChatData(
+        chatDistribution.map((value, index) => ({ x: index, y: value }))
+      );
     }
     console.timeEnd("mapValueToObj-Chart-Chat");
   }, []);
