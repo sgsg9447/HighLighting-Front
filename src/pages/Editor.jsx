@@ -4,7 +4,7 @@ import Header from "../components/Header/Header";
 import VideoPlayer from "../components/editor/VideoPlayer";
 import ChatViewer from "../components/editor/ChatViewer";
 import DataChart from "../components/editor/DataChart";
-import BookMarker from "../components/editor/BookMarker";
+// import BookMarker from "../components/editor/BookMarker";
 import CommunicationTool from "../components/editor/CommunicationTool";
 import EditorTimePointerProvider from "../providers/EditorTimePointerProvider";
 import "./Editor.scss";
@@ -21,7 +21,6 @@ function Editor() {
 
   // 채팅 데이터 수신
   useEffect(() => {
-    // console.log('useEffectChat-arrived');
     console.time("mapValueToObj-Chart-Chat");
 
     // 로컬스토리지에서 데이터 받아올 때
@@ -30,8 +29,7 @@ function Editor() {
       const arrayChat = JSON.parse("[" + localChat + "]");
       const objChat = arrayChat.map((value, index) => ({ x: index, y: value }));
       setChatData(objChat);
-      console.log("ChatData <- localChat");
-      // setTotalData((totalData => [...totalData, objChat]))
+      console.log("ChatData <- localChatDistribution");
     }
     // POST를 통해 직접 받아올 때
     else {
@@ -42,7 +40,6 @@ function Editor() {
 
   // 비디오 데이터 수신
   useEffect(() => {
-    // console.log('useEffectVideo-arrived');
     console.time("mapValueToObj-Chart-Video");
     if (!video) {
       const localVideo = localStorage.getItem("localVideo");
@@ -53,7 +50,6 @@ function Editor() {
       }));
       setVideoData(objVideo);
       console.log("videoData <- localVideo");
-      // setTotalData((totalData => [...totalData, objVideo]))
     } else {
       setVideoData(video.map((value, index) => ({ x: index, y: value })));
     }
@@ -62,7 +58,6 @@ function Editor() {
 
   // 오디오 데이터 수신
   useEffect(() => {
-    // console.log('useEffectAudio-arrived');
     console.time("mapValueToObj-Chart-Audio");
     if (!audio) {
       const localAudio = localStorage.getItem("localAudio");
@@ -73,7 +68,6 @@ function Editor() {
       }));
       setAudioData(objAudio);
       console.log("AudioData <- localAudio");
-      // setTotalData((totalData => [...totalData, objAudio]))
     } else {
       setAudioData(audio.map((value, index) => ({ x: index, y: value })));
     }
@@ -97,7 +91,7 @@ function Editor() {
       <EditorTimePointerProvider>
         <div className="upperlayer">
           <div className="VideoPlayerCover">
-            <VideoPlayer />
+            <VideoPlayer url={propUrl} />
           </div>
 
           <div className="ChatViewerCover">
@@ -111,7 +105,7 @@ function Editor() {
 
         <div className="lowerlayer">
           <div className="BookMarkerCover">
-            <BookMarker />
+            {/* <BookMarker /> */}
           </div>
 
           <div className="DataChartCover">

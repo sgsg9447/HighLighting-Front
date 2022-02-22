@@ -3,7 +3,7 @@ import React from "react";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import Player from "./in_VideoPlayer/Player";
 import "./VideoPlayer.scss";
-function VideoPlayer() {
+function VideoPlayer({url}) {
   const { pointer, changePointer } = React.useContext(EditorTimePointerContext);
   const [play, setPlay] = React.useState(true);
 
@@ -13,7 +13,7 @@ function VideoPlayer() {
 
   return (
     <div className="VideoViewerContainer">
-      <Player />
+      <Player url={url} />
       <h2>Time Pointer = {pointer}</h2>
       <h3>영상 isPlaying 시 Time Pointer 매 초 변경</h3>
       <button

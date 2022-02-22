@@ -233,11 +233,10 @@ const DataChart = (props) => {
         }));
       })
     ).then((receivedDataSets) => {
-      // console.log(dataSets2)
       if (receivedDataSets && receivedDataSets[0]) {
         seriesList.forEach((series, i) => {
           series.add(receivedDataSets[i]);
-          console.log("receivedDataSets", receivedDataSets[i]);
+          console.log("receivedDataSet", receivedDataSets[i]);
         });
       }
 
@@ -324,6 +323,10 @@ const DataChart = (props) => {
             const xDragStart = xBandList[0].getValueStart();
             const xDragEnd = xBandList[0].getValueEnd();
 
+            // 시작과 끝 시간 초 단위 변환
+            const startTime = Math.round(xDragStart / 1000);
+            const endTime = Math.round(xDragEnd / 1000);
+
             // 마우스 드래그 시작이 끝보다 작으면 좌->우 드래그
             if (xDragStart > xDragEnd) {
               // 마우스드래그 좌우방향 무관하게 시작과 끝 값을 크기 순으로 설정
@@ -347,16 +350,24 @@ const DataChart = (props) => {
                 }
                 nChart.getDefaultAxisY().setInterval(yMin, yMax, false, true);
                 band.dispose();
+
+                console.log(
+                  "mouse drag",
+                  "startTime", startTime,
+                  "endTime", endTime,
+                  "yMax", yMax,
+                );
               });
-              console.log("mouse drag", "xStart", xStart, "xEnd", xEnd);
+              // console.log("mouse drag", "xStart", xStart, "xEnd", xEnd);
               xTicksStart.forEach((xTick) => xTick.dispose());
               xTicksEnd.forEach((xTick) => xTick.dispose());
+
+
             }
             // 위와 반대방향으로 드래그
             else {
               // xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
-              const startTime = Math.round(xDragStart / 1000);
-              const endTime = Math.round(xDragEnd / 1000);
+
               console.log(
                 "mouse drag",
                 "startTime",

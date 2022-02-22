@@ -2,13 +2,13 @@ import React, { createRef, useState } from "react";
 import ReactPlayer from "react-player";
 import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
-import useResult from "../../../hooks/useResult";
+// import useResult from "../../../hooks/useResult";
 
-function Player() {
+function Player( {url} ) {
   const { changePointer, playing, setPlaying } = React.useContext(
     EditorTimePointerContext
   );
-  const { url } = useResult();
+
   const [controls] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [played, setPlayed] = useState(0);

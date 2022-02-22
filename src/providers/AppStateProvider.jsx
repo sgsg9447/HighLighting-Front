@@ -91,11 +91,11 @@ const AppStateProvider = ({ children }) => {
         console.log("gobefore");
 
         const title = response.data.result.title;
-        console.log(title);
         setTitle(title);
+        console.log(title);
         const thumbnail = response.data.result.thumbnail;
-        console.log(thumbnail);
         setThumNail(thumbnail);
+        console.log(thumbnail);
 
         goEditor();
       })
