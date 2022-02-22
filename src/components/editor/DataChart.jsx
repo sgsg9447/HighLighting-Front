@@ -45,6 +45,7 @@ const DataChart = (props) => {
   const chartRef = useRef(undefined);
   const timeRef = useRef(undefined);
   const dragStartRef = useRef({isDrag: false, xValue: Number.MAX_SAFE_INTEGER});
+  const clickRef = useRef({isJump: false, jumpTime: undefined});
   // console.log("Charts received Data", dataSets);
   let TIMELINE = pointer;
 
@@ -402,6 +403,8 @@ const DataChart = (props) => {
             dragStartRef.current.isDrag = false 
             return;
           }
+          clickRef.current.isJump = true
+          console.log(clickRef.current)
           
           // console.log('isDrag?', dragStartRef.current)
           const mouseLocationEngine = chart.engine.clientLocation2Engine(
@@ -415,6 +418,7 @@ const DataChart = (props) => {
           ).x;
           const playTime = Math.round(mouseLocationAxisX/1000)
           const playTimeRatio = mouseLocationAxisX / 1000 / videoLen;
+          clickRef.current.jumpTime = playTime;
           console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
           // setSeeking(false);
           callSeekTo(playerRef, playTimeRatio)
@@ -522,35 +526,67 @@ const DataChart = (props) => {
       // console.log(timeRef.current)
       timeRef.current.forEach((playBar) => playBar.dispose());
     }
-
-    const axisTimeList = chartRef.current;
-    // Add a Constantline to the X Axis
-    const playBarList = axisTimeList.map((axisTime) =>
-      axisTime
-        .addConstantLine()
-        // Position the Constantline in the Axis Scale
-        .setValue(TIMELINE * 1000)
-        // The name of the Constantline will be shown in the LegendBox
-        .setName("X Axis Constantline")
-        // Style the Constantline
-        .setStrokeStyle(
-          new SolidLine({
-            thickness: 8,
-            fillStyle: new SolidFill({
-              color: ColorHEX("#ffcc00"),
-            }),
-          })
-        )
-        .setStrokeStyleHighlight(
-          new SolidLine({
-            thickness: 10,
-            fillStyle: new SolidFill({
-              color: ColorHEX("#F00"),
-            }),
-          })
-        )
-        .setHighlightOnHover(true)
-    );
+    let playBarList
+    if (clickRef.current.isJump) {
+      const axisTimeList = chartRef.current;
+      // Add a Constantline to the X Axis
+      playBarList = axisTimeList.map((axisTime) =>
+        axisTime
+          .addConstantLine()
+          // Position the Constantline in the Axis Scale
+          .setValue(clickRef.current.jumpTime * 1000)
+          // The name of the Constantline will be shown in the LegendBox
+          .setName("X Axis Constantline")
+          // Style the Constantline
+          .setStrokeStyle(
+            new SolidLine({
+              thickness: 8,
+              fillStyle: new SolidFill({
+                color: ColorHEX("#ffcc00"),
+              }),
+            })
+          )
+          .setStrokeStyleHighlight(
+            new SolidLine({
+              thickness: 10,
+              fillStyle: new SolidFill({
+                color: ColorHEX("#F00"),
+              }),
+            })
+          )
+          .setHighlightOnHover(true))
+          clickRef.current.isJump = false
+    }
+    else {
+      const axisTimeList = chartRef.current;
+      // Add a Constantline to the X Axis
+      playBarList = axisTimeList.map((axisTime) =>
+        axisTime
+          .addConstantLine()
+          // Position the Constantline in the Axis Scale
+          .setValue(TIMELINE * 1000)
+          // The name of the Constantline will be shown in the LegendBox
+          .setName("X Axis Constantline")
+          // Style the Constantline
+          .setStrokeStyle(
+            new SolidLine({
+              thickness: 8,
+              fillStyle: new SolidFill({
+                color: ColorHEX("#ffcc00"),
+              }),
+            })
+          )
+          .setStrokeStyleHighlight(
+            new SolidLine({
+              thickness: 10,
+              fillStyle: new SolidFill({
+                color: ColorHEX("#F00"),
+              }),
+            })
+          )
+          .setHighlightOnHover(true)
+      );
+    }
 
     timeRef.current = playBarList;
 
