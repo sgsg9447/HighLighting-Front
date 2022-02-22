@@ -68,12 +68,13 @@ export default function Home() {
   }
 
   return (
-    <div className="App">
+    <div>
       <Header />
       <div className="App-body">
         <h1>HIGHLIGHTING</h1>
 
         <input
+          className="InputBar"
           ref={urlInput}
           placeholder="URL을 입력해주세요"
           onChange={onChangeUrl}
