@@ -412,6 +412,7 @@ const DataChart = (props) => {
             { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
           ).x;
           const playBarTime = Math.round(mouseLocationAxisX / 1000);
+          
           changePointer(playBarTime);
         });
       });

@@ -3,7 +3,7 @@ import ReactPlayer from "react-player";
 import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
 // import useResult from "../../../hooks/useResult";
-
+import "./Player.scss";
 function Player({url}) {
   const { changePointer, isplaying, setIsplaying } = React.useContext(EditorTimePointerContext);
   
@@ -63,7 +63,6 @@ function Player({url}) {
   const handleEnded = () => {
     setIsplaying(loop);
   };
-
 
 
   return (

@@ -1,7 +1,9 @@
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 const Spinner = () => {
-  return <ScaleLoader height="160px" width="72px" color="#34426f" radius="8px" />;
+  return (
+    <ScaleLoader height="300px" width="72px" color="#FD2E2D" radius="8px" />
+  );
 };
 
 export default Spinner;
