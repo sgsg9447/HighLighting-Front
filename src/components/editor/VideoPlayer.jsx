@@ -1,20 +1,12 @@
 import React from "react";
 
-import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import Player from "./in_VideoPlayer/Player";
 import "./VideoPlayer.scss";
-function VideoPlayer() {
-  const { pointer, changePointer } = React.useContext(EditorTimePointerContext);
-  const [play, setPlay] = React.useState(true);
-
-  function handlePlayPause(isPlaying) {
-    setPlay(!isPlaying);
-  }
-
+function VideoPlayer({url}) {
   return (
     <div className="VideoViewerContainer">
       <div className="VideoPlayer">
-        <Player />
+        <Player url={url} />
       </div>
       <h2>Time Pointer = {pointer}</h2>
       <h3>영상 isPlaying 시 Time Pointer 매 초 변경</h3>
@@ -32,6 +24,7 @@ function VideoPlayer() {
       >
         재생/정지
       </button>
+
     </div>
   );
 }

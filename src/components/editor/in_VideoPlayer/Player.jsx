@@ -2,13 +2,11 @@ import React, { createRef, useState } from "react";
 import ReactPlayer from "react-player";
 import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
-import useResult from "../../../hooks/useResult";
+// import useResult from "../../../hooks/useResult";
 import "./Player.scss";
-function Player() {
-  const { changePointer, playing, setPlaying } = React.useContext(
-    EditorTimePointerContext
-  );
-  const { url } = useResult();
+function Player({url}) {
+  const { changePointer, isplaying, setIsplaying } = React.useContext(EditorTimePointerContext);
+  
   const [controls] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [played, setPlayed] = useState(0);
@@ -19,8 +17,9 @@ function Player() {
   const [loop] = useState(false);
   const ref = createRef();
 
+
   const handlePlayPause = () => {
-    setPlaying(!playing);
+    setIsplaying(!isplaying);
   };
 
   const handleVolumeChange = (e) => {
@@ -28,11 +27,11 @@ function Player() {
   };
 
   const handlePlay = () => {
-    setPlaying(true);
+    setIsplaying(true);
   };
 
   const handlePause = () => {
-    setPlaying(false);
+    setIsplaying(false);
   };
 
   const handleSeekMouseDown = (e) => {
@@ -62,8 +61,10 @@ function Player() {
   };
 
   const handleEnded = () => {
-    setPlaying(loop);
+    setIsplaying(loop);
   };
+
+
 
   return (
     <div>
@@ -72,7 +73,7 @@ function Player() {
           ref={ref}
           className="react-player"
           url={url}
-          playing={playing}
+          playing={isplaying}
           controls={controls}
           playbackRate={playbackRate}
           volume={volume}
@@ -97,7 +98,7 @@ function Player() {
               <th>Controls</th>
               <td>
                 <button onClick={handlePlayPause}>
-                  {playing ? "Pause" : "Play"}
+                  {isplaying ? "Pause" : "Play"}
                 </button>
               </td>
             </tr>
@@ -143,8 +144,8 @@ function Player() {
               </td>
             </tr>
             <tr>
-              <th>playing</th>
-              <td>{playing ? "true" : "false"}</td>
+              <th>isplaying</th>
+              <td>{isplaying ? "true" : "false"}</td>
             </tr>
             <tr>
               <th>played</th>
