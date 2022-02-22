@@ -64,7 +64,8 @@ function BookMarker() {
       <h3>유저 클릭 북마크의 start 값으로 Time Pointer 변경</h3>
 
       {/* <button onClick={() => addTag(pointer)}>북마크</button> */}
-      <button onClick={(pointer)}>북마크</button>
+      {/* 콘솔에러나서 주석처리해둡니다 - 지훈 */}
+      {/* <button onClick={(pointer)}>북마크</button> */}
       {/* <Tags /> */}
     </div>
   );
