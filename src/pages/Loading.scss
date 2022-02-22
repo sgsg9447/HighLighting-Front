@@ -1,0 +1,19 @@
+.Loading {
+  background-color: #272c34;
+  width: 100%;
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+
+  .LoadingContainer {
+    background-color: #272c34;
+  }
+
+  .title {
+    font-size: 86px;
+    font-weight: bold;
+    margin: 8px;
+    margin-bottom: 96px;
+    text-align: center;
+  }
+}
