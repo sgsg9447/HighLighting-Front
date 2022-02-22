@@ -3,7 +3,7 @@ import ReactPlayer from "react-player";
 import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
 import useResult from "../../../hooks/useResult";
-
+import "./Player.scss";
 function Player() {
   const { changePointer, playing, setPlaying } = React.useContext(
     EditorTimePointerContext
