@@ -1,0 +1,10 @@
+.FlexBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .ContainerWrapper {
+    width: 400px;
+    margin-top: 72px;
+  }
+}

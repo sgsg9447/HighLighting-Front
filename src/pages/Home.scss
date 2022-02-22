@@ -1,3 +1,35 @@
+.InputBar {
+  flex-shrink: 1;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  height: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  line-height: 2;
+  border-width: 1px;
+  border-color: red;
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: #272c34;
+  border-radius: 0.5rem;
+
+  &:focus {
+    outline: 3px solid red;
+    background-color: #272c34;
+    color: white;
+  }
+
+  &:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #272c34 inset;
+    -webkit-text-fill-color: #fff !important;
+  }
+}
+
 h1 {
   background: linear-gradient(to right, rgb(247, 195, 195), #f00);
   -webkit-background-clip: text;
