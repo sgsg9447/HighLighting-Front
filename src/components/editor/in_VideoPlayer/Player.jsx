@@ -5,10 +5,10 @@ import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext
 import useResult from "../../../hooks/useResult";
 
 function Player() {
-  const { changePointer } = React.useContext(EditorTimePointerContext);
+  const { changePointer, playing, setPlaying } = React.useContext(
+    EditorTimePointerContext
+  );
   const { url } = useResult();
-
-  const [playing, setPlaying] = useState(true);
   const [controls] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [played, setPlayed] = useState(0);
