@@ -1,8 +1,5 @@
 import React from "react";
 
-const EditorTimePointerContext = React.createContext({
-  pointer: 0,
-  changePointer: () => {},
-});
+const EditorTimePointerContext = React.createContext();
 
 export default EditorTimePointerContext;
