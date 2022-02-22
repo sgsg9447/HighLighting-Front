@@ -16,7 +16,7 @@ const AppStateProvider = ({ children }) => {
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
 
-  console.log("in provider", audio, video, chat);
+  // console.log("in provider", audio, video, chat);
 
   const history = useHistory();
   const goEditor = () => {
@@ -50,7 +50,7 @@ const AppStateProvider = ({ children }) => {
     console.time("requestTime");
 
     axios
-      .post("http://143.248.193.110:5000/flask/hello", {
+      .post("http://localhost:5000/flask/hello", {
         url: url,
       })
       .then((response) => {

@@ -43,6 +43,7 @@ const DataChart = (props) => {
 	const { dataSets, id, url } = props;
 	const chartRef = useRef(undefined)
 	const timeRef = useRef(undefined)
+	const dragStartRef = useRef(Number.MAX_SAFE_INTEGER)
 	console.log('TrippleChart', dataSets)
   let TIMELINE = pointer
   
@@ -52,7 +53,15 @@ const DataChart = (props) => {
 		console.log('main', timeRef.current)
 		// if (timeRef.current === false) return
 
-		const dashboard = lightningChart().Dashboard({
+    const lcjs = lightningChart({
+      overrideInteractionMouseButtons: {
+          chartXYPanMouseButton: 0, // LMB
+          chartXYRectangleZoomFitMouseButton: 2, // RMB
+          axisXYZoomMouseButton: 2, //줌 드래그: RMB
+      }
+    })
+
+		const dashboard = lcjs.Dashboard({
 			container: id,
 			numberOfColumns: 1,
 			numberOfRows: CHANNELS,
@@ -208,7 +217,7 @@ const DataChart = (props) => {
 				const xTicksEnd = chartList.map((chart) => chart.getDefaultAxisX().addCustomTick().dispose())
 
 
-				chart.setMouseInteractionRectangleFit(false).setMouseInteractionRectangleZoom(false)
+				// chart.setMouseInteractionRectangleFit(false).setMouseInteractionRectangleZoom(false)
 				chart.onSeriesBackgroundMouseDrag((_, event, button, startLocation, delta) => {
 					// event: 이벤트, button: 입력됨 0, startLocation: 시작좌표, delta: 드래그변화량 
 					// console.log('onSeriesBackgroundMouseDrag', event, 'button', button, 'startLocation', startLocation, 'delta', delta)
@@ -233,7 +242,8 @@ const DataChart = (props) => {
 							// console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
 							xTicksStart.forEach((xTick) => xTick.restore().setValue(xAxisLocationStart))
 							xTicksEnd.forEach((xTick) => xTick.restore().setValue(xAxisLocationNow))
-							
+              dragStartRef.current = Math.round(Math.min(xAxisLocationStart, xAxisLocationNow) / 1000)
+
 						} else {
 							band.dispose()
 						}
@@ -242,24 +252,23 @@ const DataChart = (props) => {
 				chart.onSeriesBackgroundMouseDragStop((_, event, button, startLocation) => {
 					if (button !== 0 || xBandList[0].isDisposed()) return
 					
-					// 마우스드래그 좌우방향 무관하게 시작과 끝 값을 크기 순으로 설정
-					// const xStart = Math.min(xBandList[0].getValueStart(), xBandList[0].getValueEnd())
-					// const xEnd = Math.max(xBandList[0].getValueStart(), xBandList[0].getValueEnd())
-
 					// 마우스 드래그 시작과 끝 시간 값
 					const xDragStart = xBandList[0].getValueStart()
 					const xDragEnd = xBandList[0].getValueEnd()
-
 					
-					// 마우스 드래그 우측에서 좌측으로 할 때 
+					// 마우스 드래그 시작이 끝보다 작으면 좌->우 드래그 
 					if (xDragStart > xDragEnd) {
-						chartList[0].getDefaultAxisX().setInterval(xDragEnd, xDragStart, false, true)
+            // 마우스드래그 좌우방향 무관하게 시작과 끝 값을 크기 순으로 설정
+            const xStart = Math.min(xDragStart, xDragEnd)
+            const xEnd = Math.max(xDragStart, xDragEnd)
+            
+						chartList[0].getDefaultAxisX().setInterval(xStart, xEnd, false, true)
 						xBandList.forEach((band, i) => {
 							const nChart = chartList[i]
 							const STEP_X = whichStepX(i)
 							let yMin = 999999
 							let yMax = -999999
-							for (let x = xDragEnd; x < xDragStart; x += STEP_X) {
+							for (let x = xStart; x < xEnd; x += STEP_X) {
 								const dp = receivedDataSets[i][Math.round(x / STEP_X)]
 								if (dp !== undefined) {
 									yMin = Math.min(yMin, dp.y)
@@ -269,14 +278,16 @@ const DataChart = (props) => {
 							nChart.getDefaultAxisY().setInterval(yMin, yMax, false, true)
 							band.dispose()
 						})
-						console.log('mouse drag','xStart', xDragStart, 'xEnd', xDragEnd)
+						console.log('mouse drag','xStart', xStart, 'xEnd', xEnd)
 						xTicksStart.forEach((xTick) => xTick.dispose())
 						xTicksEnd.forEach((xTick) => xTick.dispose())
 					}
-					// 마우스 드래그 좌측에서 우측으로 할 때
+					// 위와 반대방향으로 드래그
 					else {
 						// xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
-						console.log('mouse drag','xStart', xDragStart, 'xEnd', xDragEnd)
+            // const startTime = Math.round(xDragStart / 1000)
+            // const endTime = Math.round(xDragEnd / 1000)
+						console.log('mouse drag','startTime', startTime, 'endTime', endTime)
 						resultTable.dispose()
 						xTicksStart.forEach((xTick) => xTick.dispose())
 						xTicksEnd.forEach((xTick) => xTick.dispose())
@@ -304,8 +315,12 @@ const DataChart = (props) => {
 
 					const mouseLocationEngine = chart.engine.clientLocation2Engine(event.clientX, event.clientY)
 					const mouseLocationAxisX = translatePoint(mouseLocationEngine, chart.engine.scale, { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }).x
-					const xValue = Math.round(mouseLocationAxisX / 1000)
-					changePointer(xValue)
+					const playBarTime = Math.round(mouseLocationAxisX / 1000)
+
+          if (dragStartRef) {
+            changePointer(Math.min(playBarTime, dragStartRef.current));
+            dragStartRef.current = Number.MAX_SAFE_INTEGER
+          }
 				})
 			})
 
@@ -441,9 +456,9 @@ const DataChart = (props) => {
 		// 	.setName('X Axis Band')
 
 		// 지울 때 보여주기
-		return (
+		return () => {
 			timeRef.current.forEach((playBar) => playBar.restore())
-		)
+    }
 	}, [id, url, TIMELINE])
 
 	useEffect(() => {
