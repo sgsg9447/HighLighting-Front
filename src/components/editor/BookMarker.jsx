@@ -3,7 +3,7 @@ import * as Y from "yjs";
 import create from "zustand";
 import yjs from "zustand-middleware-yjs";
 import { WebrtcProvider } from "y-webrtc";
-
+import "./BookMarker.scss";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 
 const ydoc = new Y.Doc();
@@ -60,7 +60,7 @@ function BookMarker() {
   // const temp = [];
 
   return (
-    <div>
+    <div className="BookMarkerContainer">
       <h1>북마커 영역</h1>
       <h2>Time Pointer = {pointer}</h2>
       <h3>유저 클릭 북마크의 start 값으로 Time Pointer 변경</h3>
