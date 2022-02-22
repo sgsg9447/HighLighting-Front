@@ -44,7 +44,7 @@ const DataChart = (props) => {
   const { dataSets, id, url } = props;
   const chartRef = useRef(undefined);
   const timeRef = useRef(undefined);
-  const dragStartRef = useRef(Number.MAX_SAFE_INTEGER);
+  const dragStartRef = useRef({isDrag: false, xValue: Number.MAX_SAFE_INTEGER});
   console.log("Charts received Data", dataSets);
   let TIMELINE = pointer;
 
@@ -70,7 +70,8 @@ const DataChart = (props) => {
         disableAnimations: true,
         theme: Themes.darkMagenta,
       })
-      .setHeight(500, 500);
+      // 차트 높이 (최소, 최대)
+      .setHeight(500, 1000);
 
     // 플레이 바가 지나갈 시간축 담을 리스트 생성
     const timeList = new Array(CHANNELS);
@@ -82,7 +83,8 @@ const DataChart = (props) => {
           columnIndex: 0,
           rowIndex: i,
         })
-        .setPadding({ right: 80 });
+        // 차트 오른쪽 패딩
+        .setPadding({ right: 20 });
 
       // 각 차트 상단 타이틀 비우기
       chart.setTitleFillStyle(emptyFill);
@@ -257,7 +259,7 @@ const DataChart = (props) => {
         const axisX = chart.getDefaultAxisX();
         const axisY = chart.getDefaultAxisY();
 
-        // 해당 축에 x위치 표시해주는 틱 생성
+        // 해당 축에 x위치 표시해주는 틱 생성하고 감추기
         const xTicksStart = chartList.map((chart) =>
           chart.getDefaultAxisX().addCustomTick().dispose()
         );
@@ -304,13 +306,14 @@ const DataChart = (props) => {
                 xTicksEnd.forEach((xTick) =>
                   xTick.restore().setValue(xAxisLocationNow)
                 );
-                dragStartRef.current = Math.round(
+                dragStartRef.current.xValue = Math.round(
                   Math.min(xAxisLocationStart, xAxisLocationNow) / 1000
                 );
               } else {
                 band.dispose();
               }
             });
+            dragStartRef.current.isDrag = true
           }
         );
         chart.onSeriesBackgroundMouseDragStop(
@@ -384,10 +387,15 @@ const DataChart = (props) => {
 
         // 차트 x값 인식 onSeriesBackgroundMouseClick: 클릭
         // chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
-        chart.onSeriesBackgroundMouseDoubleClick((_, event, button) => {
-          console.log("Click", _);
-          // if (button !== 0) return
+        chart.onSeriesBackgroundMouseClick((_, event, button) => {
           event.preventDefault();
+          console.log('isDrag?', dragStartRef.current)
+
+          // 마우스 드래그할 때는 작동되지 않도록 lock-unlock
+          if (dragStartRef.current.isDrag) {
+            dragStartRef.current.isDrag = false
+            return;
+          }
 
           const mouseLocationEngine = chart.engine.clientLocation2Engine(
             event.clientX,
@@ -400,12 +408,6 @@ const DataChart = (props) => {
           ).x;
           const playBarTime = Math.round(mouseLocationAxisX / 1000);
           changePointer(playBarTime);
-
-          // oneclick play 경우, 드래그 시작 위치와 구분해주기 위한 조건
-          // if (dragStartRef) {
-          //   changePointer(Math.min(playBarTime, dragStartRef.current));
-          //   dragStartRef.current = Number.MAX_SAFE_INTEGER
-          // }
         });
       });
 
