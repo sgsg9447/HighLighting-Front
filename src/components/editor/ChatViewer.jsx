@@ -43,19 +43,9 @@ function ChatViewer() {
   }, [pointer]);
 
   return (
-    <div className="App">
+    <div className="ChatViewerContainer">
       <div>
-        <div
-          style={{
-            width: 400,
-            height: 600,
-            overflow: "scroll",
-            display: "inline-block",
-            wordBreak: "break-all",
-            textAlign: "left",
-          }}
-          id="scroll"
-        >
+        <div className="ChatViewer" id="scroll">
           {flow.map((value, index) =>
             value ? (
               <div key={index}>
