@@ -4,7 +4,7 @@ import Header from "../components/Header/Header";
 import VideoPlayer from "../components/editor/VideoPlayer";
 import ChatViewer from "../components/editor/ChatViewer";
 import DataChart from "../components/editor/DataChart";
-import BookMarker from "../components/editor/BookMarker";
+// import BookMarker from "../components/editor/BookMarker";
 import CommunicationTool from "../components/editor/CommunicationTool";
 import EditorTimePointerProvider from "../providers/EditorTimePointerProvider";
 import "./Editor.scss";
@@ -22,7 +22,6 @@ function Editor() {
 
   // 채팅 데이터 수신
   useEffect(() => {
-    // console.log('useEffectChat-arrived');
     console.time("mapValueToObj-Chart-Chat");
 
 
@@ -32,6 +31,7 @@ function Editor() {
       const arrayChat = JSON.parse("[" + localChat + "]");
       const objChat = arrayChat.map((value, index) => ({ x: index, y: value }));
       setChatData(objChat);
+      console.log("ChatData <- localChatDistribution");
     }
     // POST를 통해 직접 받아올 때
     else {
@@ -95,7 +95,7 @@ function Editor() {
       <EditorTimePointerProvider>
         <div className="upperlayer">
           <div className="VideoPlayerCover">
-            <VideoPlayer />
+            <VideoPlayer url={propUrl} />
           </div>
 
           <div className="ChatViewerCover">
@@ -109,7 +109,7 @@ function Editor() {
 
         <div className="lowerlayer">
           <div className="BookMarkerCover">
-            <BookMarker />
+            {/* <BookMarker /> */}
           </div>
 
           <div className="DataChartCover">
