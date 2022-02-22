@@ -26,7 +26,7 @@ function Editor() {
 
     // 로컬스토리지에서 데이터 받아올 때
     if (!chat) {
-      const localChat = localStorage.getItem("localChat");
+      const localChat = localStorage.getItem("localChatDistribution");
       const arrayChat = JSON.parse("[" + localChat + "]");
       const objChat = arrayChat.map((value, index) => ({ x: index, y: value }));
       setChatData(objChat);
