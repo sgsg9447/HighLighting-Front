@@ -1,14 +1,13 @@
 import React from "react";
-import Header from "../components/Header";
-import Wrapper from "../components/editor/Wrapper";
+import Header from "../components/Header/Header";
 
 import VideoPlayer from "../components/editor/VideoPlayer";
 import ChatViewer from "../components/editor/ChatViewer";
 import DataChart from "../components/editor/DataChart";
 import BookMarker from "../components/editor/BookMarker";
 import CommunicationTool from "../components/editor/CommunicationTool";
-
 import EditorTimePointerProvider from "../providers/EditorTimePointerProvider";
+import "./Editor.scss";
 
 import useResult from '../hooks/useResult';
 import { useState, useEffect } from 'react';
@@ -22,7 +21,7 @@ function Editor() {
 
   // 채팅 데이터 수신
   useEffect(() => {
-    console.log('useEffectChat-arrived');
+    // console.log('useEffectChat-arrived');
     console.time("mapValueToObj-Chart-Chat");
 
     // 로컬스토리지에서 데이터 받아올 때
@@ -43,7 +42,7 @@ function Editor() {
   
   // 비디오 데이터 수신
   useEffect(() => {
-    console.log('useEffectVideo-arrived');
+    // console.log('useEffectVideo-arrived');
     console.time("mapValueToObj-Chart-Video");
     if (!video) {
       const localVideo = localStorage.getItem("localVideo")
@@ -61,7 +60,7 @@ function Editor() {
 
   // 오디오 데이터 수신
   useEffect(() => {
-    console.log('useEffectAudio-arrived');
+    // console.log('useEffectAudio-arrived');
     console.time("mapValueToObj-Chart-Audio");
     if (!audio) {
       const localAudio = localStorage.getItem("localAudio")
@@ -95,29 +94,29 @@ function Editor() {
     <>
       <Header />
       <EditorTimePointerProvider>
-        <Wrapper id="upperPlayer">
-          <Wrapper id="VideoPlayerCover">
+        <div className="upperlayer">
+          <div className="VideoPlayerCover">
             <VideoPlayer />
-          </Wrapper>
+          </div>
 
-          <Wrapper id="ChatViewerCover">
+          <div className="ChatViewerCover">
             <ChatViewer />
-          </Wrapper>
+          </div>
 
-          <Wrapper id="CommunicationToolCover">
+          <div className="CommunicationToolCover">
             <CommunicationTool />
-          </Wrapper>
-        </Wrapper>
+          </div>
+        </div>
 
-        <Wrapper id="lowerPlayer">
-          <Wrapper id="BookMarkerCover">
+        <div className="lowerlayer">
+          <div className="BookMarkerCover">
             <BookMarker />
-          </Wrapper>
+          </div>
 
-          <Wrapper id="DataChartCover">
-            <DataChart id='DataChart' dataSets={[chatData, videoData, audioData]} url={propUrl} />
-          </Wrapper>
-        </Wrapper>
+          <div className="DataChartCover">
+            <DataChart id='DataChart' title='TrippleChartPlayer' dataSets={[chatData, videoData, audioData]} url={propUrl} />
+          </div>
+        </div>
       </EditorTimePointerProvider>
     </>
   );

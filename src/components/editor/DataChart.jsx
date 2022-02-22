@@ -1,5 +1,6 @@
 import React from "react";
 
+
 import {
 	AxisTickStrategies,
 	emptyFill,
@@ -18,6 +19,7 @@ import {
 } from '@arction/lcjs'
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
+import "./DataChart.scss";
 import { useEffect, useRef } from 'react'
 
 const CHANNELS = 3
@@ -44,7 +46,7 @@ const DataChart = (props) => {
 	const chartRef = useRef(undefined)
 	const timeRef = useRef(undefined)
 	const dragStartRef = useRef(Number.MAX_SAFE_INTEGER)
-	console.log('TrippleChart', dataSets)
+	console.log('Charts received Data', dataSets)
   let TIMELINE = pointer
   
 	// 메인 차트 그리기
@@ -72,6 +74,7 @@ const DataChart = (props) => {
 		// 플레이 바가 지나갈 시간축 담을 리스트 생성 
 		const timeList = new Array(CHANNELS)
 
+    // 메인 차트 리스트 생성
 		const chartList = new Array(CHANNELS).fill(0).map((_, i) => {
 			const chart = dashboard
 				.createChartXY({
@@ -205,17 +208,19 @@ const DataChart = (props) => {
 			chartList.forEach((chart) => {
 				chart.setMouseInteractions(false)
 				chart.getDefaultAxisX().setMouseInteractions(AXIS_X_WHEEL_ZOOM)
+				chart.setMouseInteractionRectangleFit(false).setMouseInteractionRectangleZoom(false)
 			})
 
 			// Create custom chart interaction for mouse dragging inside chart area.
 			const xBandList = chartList.map((chart) => chart.getDefaultAxisX().addBand().dispose())
 			chartList.forEach((chart) => {
+        // 각 차트에 축 생성
 				const axisX = chart.getDefaultAxisX()
 				const axisY = chart.getDefaultAxisY()
 
+        // 해당 축에 x위치 표시해주는 틱 생성
 				const xTicksStart = chartList.map((chart) => chart.getDefaultAxisX().addCustomTick().dispose())
 				const xTicksEnd = chartList.map((chart) => chart.getDefaultAxisX().addCustomTick().dispose())
-
 
 				// chart.setMouseInteractionRectangleFit(false).setMouseInteractionRectangleZoom(false)
 				chart.onSeriesBackgroundMouseDrag((_, event, button, startLocation, delta) => {
@@ -285,8 +290,8 @@ const DataChart = (props) => {
 					// 위와 반대방향으로 드래그
 					else {
 						// xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
-            // const startTime = Math.round(xDragStart / 1000)
-            // const endTime = Math.round(xDragEnd / 1000)
+            const startTime = Math.round(xDragStart / 1000)
+            const endTime = Math.round(xDragEnd / 1000)
 						console.log('mouse drag','startTime', startTime, 'endTime', endTime)
 						resultTable.dispose()
 						xTicksStart.forEach((xTick) => xTick.dispose())
@@ -310,17 +315,21 @@ const DataChart = (props) => {
 
 				// 차트 x값 인식 onSeriesBackgroundMouseClick: 클릭
 				// chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
-				chart.onSeriesBackgroundMouseDoubleClick((_, event) => {
+				chart.onSeriesBackgroundMouseDoubleClick((_, event, button) => {
+          console.log('Click', _)
+          // if (button !== 0) return
 					event.preventDefault()
 
 					const mouseLocationEngine = chart.engine.clientLocation2Engine(event.clientX, event.clientY)
 					const mouseLocationAxisX = translatePoint(mouseLocationEngine, chart.engine.scale, { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }).x
 					const playBarTime = Math.round(mouseLocationAxisX / 1000)
+          changePointer(playBarTime);
 
-          if (dragStartRef) {
-            changePointer(Math.min(playBarTime, dragStartRef.current));
-            dragStartRef.current = Number.MAX_SAFE_INTEGER
-          }
+          // oneclick play 경우, 드래그 시작 위치와 구분해주기 위한 조건
+          // if (dragStartRef) {
+          //   changePointer(Math.min(playBarTime, dragStartRef.current));
+          //   dragStartRef.current = Number.MAX_SAFE_INTEGER
+          // }
 				})
 			})
 
@@ -475,12 +484,16 @@ const DataChart = (props) => {
 
 
   return (
-    <div>
+    <div className="DataChartContainer">
       <h1>데이터 차트 영역</h1>
       <div id={id} className="TrippleChart"></div>
       <h2>Time Pointer = {pointer}</h2>
       <h3>유저 클릭 위치에 해당하는 값으로 Time Pointer 변경</h3>
-      <button onClick={() => {changePointer(pointer + 1)}}>
+      <button
+        onClick={() => {
+          changePointer(pointer + 1);
+        }}
+      >
         GET
       </button>
     </div>

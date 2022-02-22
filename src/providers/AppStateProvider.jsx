@@ -8,15 +8,15 @@ const AppStateProvider = ({ children }) => {
   const [result, setResult] = useState();
   const [audio, setAudio] = useState();
   const [video, setVideo] = useState();
-  const [chat, setChat] = useState();
+  const [chatDistribution, setChatDistribution] = useState();
+  const [chatSet, setChatSet] = useState();
+  const [chatSuper, setChatSuper] = useState();
   const [objAudio, setObjAudio] = useState();
   const [objChat, setObjChat] = useState();
   const [objVideo, setObjVideo] = useState();
   const [objChart, setObjChart] = useState();
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
-
-  // console.log("in provider", audio, video, chat);
 
   const history = useHistory();
   const goEditor = () => {
@@ -34,7 +34,7 @@ const AppStateProvider = ({ children }) => {
   function getMethod(e) {
     console.log("call getMethod()");
     axios
-      .get("http://143.248.193.110:5000/flask/hello")
+      .get("http://localhost:5000/flask/hello")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -67,8 +67,18 @@ const AppStateProvider = ({ children }) => {
         // console.time("mapValueToObj-Chat");
         // objChat = mapValueToObj(response.data.result.chat);
         // console.timeEnd("mapValueToObj-Chat");
-        localStorage.setItem("localChat", response.data.result.chat);
-        setChat(response.data.result.chat);
+        localStorage.setItem(
+          "localChatDistribution",
+          response.data.result.chat[0]
+        );
+        setChatDistribution(response.data.result.chat[0]);
+        localStorage.setItem(
+          "localChatSet",
+          JSON.stringify(response.data.result.chat[1])
+        );
+        setChatSet(response.data.result.chat[1]);
+        localStorage.setItem("localChatSuper", response.data.result.chat[2]);
+        setChatSuper(response.data.result.chat[2]);
 
         // console.time("mapValueToObj-Video");
         // objVideo = mapValueToObj(response.data.result.video);
@@ -107,7 +117,9 @@ const AppStateProvider = ({ children }) => {
         result,
         audio,
         video,
-        chat,
+        chatDistribution,
+        chatSet,
+        chatSuper,
         objAudio,
         objChat,
         objVideo,
@@ -120,7 +132,9 @@ const AppStateProvider = ({ children }) => {
         setResult,
         setAudio,
         setVideo,
-        setChat,
+        setChatDistribution,
+        setChatSet,
+        setChatSuper,
         setObjAudio,
         setObjChat,
         setObjVideo,
