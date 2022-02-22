@@ -1,35 +1,72 @@
 import React from "react";
+import * as Y from "yjs";
+import create from "zustand";
+import yjs from "zustand-middleware-yjs";
+import { WebrtcProvider } from "y-webrtc";
+
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
-import "./BookMarker.scss";
+
+const ydoc = new Y.Doc();
+
+new WebrtcProvider("your-room-name", ydoc);
+
+// Create the Zustand store.
+create(yjs(ydoc, "shared", (set) => ({})));
+
+const useTagsStore = create(
+  yjs(ydoc, "tags", (set) => ({
+    tags: [""],
+    addTag: (tag) =>
+      set((state) => ({
+        // tags: [...state.tags, tag],
+        tags: [...state.tags, tag],
+      })),
+    removeTag: (index) =>
+      set((state) => ({
+        tags: state.tags.filter((t, _i) => index !== _i),
+      })),
+  }))
+);
+
+const Tags = () => {
+  const { tags } = useTagsStore();
+
+  return (
+    <>
+      {tags.map((tag, index) => (
+        <Tag tag={tag} index={index} key={tag + index} />
+      ))}
+    </>
+  );
+};
+
+const Tag = ({ tag, index }) => {
+  const { removeTag } = useTagsStore();
+  if (tag === 0) {
+  }
+  return (
+    <div>
+      {tag}
+      <button onClick={() => removeTag(index)}>Remove</button>
+    </div>
+  );
+};
+
+// useTagsStoreFunction =
 
 function BookMarker() {
-  const { pointer, changePointer } = React.useContext(EditorTimePointerContext);
+  const { pointer } = React.useContext(EditorTimePointerContext);
+  const { addTag } = useTagsStore();
+  // const temp = [];
+
   return (
-    <div className="BookMarkerContainer">
+    <div>
       <h1>북마커 영역</h1>
       <h2>Time Pointer = {pointer}</h2>
       <h3>유저 클릭 북마크의 start 값으로 Time Pointer 변경</h3>
-      <button
-        onClick={() => {
-          changePointer(60);
-        }}
-      >
-        00:01:00 ~ 00:02:00
-      </button>
-      <button
-        onClick={() => {
-          changePointer(600);
-        }}
-      >
-        00:10:00 ~ 00:11:00
-      </button>
-      <button
-        onClick={() => {
-          changePointer(3600);
-        }}
-      >
-        01:00:00 ~ 01:01:00
-      </button>
+
+      <button onClick={() => addTag(pointer)}>북마크</button>
+      <Tags />
     </div>
   );
 }
