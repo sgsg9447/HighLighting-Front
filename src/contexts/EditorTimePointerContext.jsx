@@ -5,6 +5,13 @@ const EditorTimePointerContext = React.createContext({
   changePointer: () => {},
   isplaying: false,
   setIsplaying: () => {},
+  seeking: false,
+  setSeeking: () => {},
+  played: 0,
+  setPlayed: () => {},
+  callSeekTo: () => {},
+  playerRef: undefined,
+  setPlayerRef: () => {},
 });
 
 export default EditorTimePointerContext;
