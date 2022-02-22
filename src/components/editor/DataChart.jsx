@@ -44,14 +44,14 @@ const DataChart = (props) => {
   const { dataSets, id, url } = props;
   const chartRef = useRef(undefined);
   const timeRef = useRef(undefined);
-  const dragStartRef = useRef({isDrag: false, xValue: Number.MAX_SAFE_INTEGER});
-  console.log("Charts received Data", dataSets);
+  const dragStartRef = useRef(Number.MAX_SAFE_INTEGER);
+  // console.log("Charts received Data", dataSets);
   let TIMELINE = pointer;
 
   // 메인 차트 그리기
   useEffect(() => {
     // if (!dataSets) return
-    console.log("main", timeRef.current);
+    // console.log("main", timeRef.current);
     // if (timeRef.current === false) return
 
     const lcjs = lightningChart({
@@ -70,8 +70,7 @@ const DataChart = (props) => {
         disableAnimations: true,
         theme: Themes.darkMagenta,
       })
-      // 차트 높이 (최소, 최대)
-      .setHeight(500, 1000);
+      .setHeight(500, 500);
 
     // 플레이 바가 지나갈 시간축 담을 리스트 생성
     const timeList = new Array(CHANNELS);
@@ -83,8 +82,7 @@ const DataChart = (props) => {
           columnIndex: 0,
           rowIndex: i,
         })
-        // 차트 오른쪽 패딩
-        .setPadding({ right: 20 });
+        .setPadding({ right: 80 });
 
       // 각 차트 상단 타이틀 비우기
       chart.setTitleFillStyle(emptyFill);
@@ -166,7 +164,7 @@ const DataChart = (props) => {
           name = TITLE3;
           return name;
         default:
-          console.log("here is chart name");
+          // console.log("here is chart name");
       }
     }
 
@@ -203,14 +201,14 @@ const DataChart = (props) => {
           step = STEP_X_AUDIO;
           return step;
         default:
-          console.log("here is no chart step x");
+          // console.log("here is no chart step x");
       }
     }
 
-    console.log("beforePromise", dataSets);
+    // console.log("beforePromise", dataSets);
     Promise.all(
       dataSets.map((data, i) => {
-        // console.log('inPromise', data)
+        // // console.log('inPromise', data)
         const STEP_X = whichStepX(i);
         // Map generated XY trace data set into a more realistic trading data set.
         const baseLine = 10 + Math.random() * 2000;
@@ -233,10 +231,11 @@ const DataChart = (props) => {
         }));
       })
     ).then((receivedDataSets) => {
+      // // console.log(dataSets2)
       if (receivedDataSets && receivedDataSets[0]) {
         seriesList.forEach((series, i) => {
           series.add(receivedDataSets[i]);
-          console.log("receivedDataSet", receivedDataSets[i]);
+          // console.log("receivedDataSets", receivedDataSets[i]);
         });
       }
 
@@ -258,7 +257,7 @@ const DataChart = (props) => {
         const axisX = chart.getDefaultAxisX();
         const axisY = chart.getDefaultAxisY();
 
-        // 해당 축에 x위치 표시해주는 틱 생성하고 감추기
+        // 해당 축에 x위치 표시해주는 틱 생성
         const xTicksStart = chartList.map((chart) =>
           chart.getDefaultAxisX().addCustomTick().dispose()
         );
@@ -270,7 +269,7 @@ const DataChart = (props) => {
         chart.onSeriesBackgroundMouseDrag(
           (_, event, button, startLocation, delta) => {
             // event: 이벤트, button: 입력됨 0, startLocation: 시작좌표, delta: 드래그변화량
-            // console.log('onSeriesBackgroundMouseDrag', event, 'button', button, 'startLocation', startLocation, 'delta', delta)
+            // // console.log('onSeriesBackgroundMouseDrag', event, 'button', button, 'startLocation', startLocation, 'delta', delta)
             if (button !== 0) return;
 
             xBandList.forEach((band, i) => {
@@ -298,21 +297,20 @@ const DataChart = (props) => {
                   .setValueStart(xAxisLocationStart)
                   .setValueEnd(xAxisLocationNow);
                 // 드래그로 확대되어 바뀐 클릭 시작 시간 값과 클릭 끝 값 3차트에서 확인
-                // console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
+                // // console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
                 xTicksStart.forEach((xTick) =>
                   xTick.restore().setValue(xAxisLocationStart)
                 );
                 xTicksEnd.forEach((xTick) =>
                   xTick.restore().setValue(xAxisLocationNow)
                 );
-                dragStartRef.current.xValue = Math.round(
+                dragStartRef.current = Math.round(
                   Math.min(xAxisLocationStart, xAxisLocationNow) / 1000
                 );
               } else {
                 band.dispose();
               }
             });
-            dragStartRef.current.isDrag = true
           }
         );
         chart.onSeriesBackgroundMouseDragStop(
@@ -322,10 +320,6 @@ const DataChart = (props) => {
             // 마우스 드래그 시작과 끝 시간 값
             const xDragStart = xBandList[0].getValueStart();
             const xDragEnd = xBandList[0].getValueEnd();
-
-            // 시작과 끝 시간 초 단위 변환
-            const startTime = Math.round(xDragStart / 1000);
-            const endTime = Math.round(xDragEnd / 1000);
 
             // 마우스 드래그 시작이 끝보다 작으면 좌->우 드래그
             if (xDragStart > xDragEnd) {
@@ -350,31 +344,23 @@ const DataChart = (props) => {
                 }
                 nChart.getDefaultAxisY().setInterval(yMin, yMax, false, true);
                 band.dispose();
-
-                console.log(
-                  "mouse drag",
-                  "startTime", startTime,
-                  "endTime", endTime,
-                  "yMax", yMax,
-                );
               });
               // console.log("mouse drag", "xStart", xStart, "xEnd", xEnd);
               xTicksStart.forEach((xTick) => xTick.dispose());
               xTicksEnd.forEach((xTick) => xTick.dispose());
-
-
             }
             // 위와 반대방향으로 드래그
             else {
               // xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
-
-              console.log(
-                "mouse drag",
-                "startTime",
-                startTime,
-                "endTime",
-                endTime
-              );
+              // const startTime = Math.round(xDragStart / 1000);
+              // const endTime = Math.round(xDragEnd / 1000);
+              // console.log(
+              //   "mouse drag",
+              //   "startTime",
+              //   startTime,
+              //   "endTime",
+              //   endTime
+              // );
               resultTable.dispose();
               xTicksStart.forEach((xTick) => xTick.dispose());
               xTicksEnd.forEach((xTick) => xTick.dispose());
@@ -398,15 +384,10 @@ const DataChart = (props) => {
 
         // 차트 x값 인식 onSeriesBackgroundMouseClick: 클릭
         // chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
-        chart.onSeriesBackgroundMouseClick((_, event, button) => {
+        chart.onSeriesBackgroundMouseDoubleClick((_, event, button) => {
+          // console.log("Click", _);
+          // if (button !== 0) return
           event.preventDefault();
-          console.log('isDrag?', dragStartRef.current)
-
-          // 마우스 드래그할 때는 작동되지 않도록 lock-unlock
-          if (dragStartRef.current.isDrag) {
-            dragStartRef.current.isDrag = false
-            return;
-          }
 
           const mouseLocationEngine = chart.engine.clientLocation2Engine(
             event.clientX,
@@ -419,6 +400,12 @@ const DataChart = (props) => {
           ).x;
           const playBarTime = Math.round(mouseLocationAxisX / 1000);
           changePointer(playBarTime);
+
+          // oneclick play 경우, 드래그 시작 위치와 구분해주기 위한 조건
+          // if (dragStartRef) {
+          //   changePointer(Math.min(playBarTime, dragStartRef.current));
+          //   dragStartRef.current = Number.MAX_SAFE_INTEGER
+          // }
         });
       });
 
@@ -497,11 +484,11 @@ const DataChart = (props) => {
 
     return () => {
       // Destroy chart.
-      console.log("before destroy chart", chartList);
+      // console.log("before destroy chart", chartList);
       chartList.forEach((chart) => chart.dispose());
       resultTable.dispose();
       dashboard.dispose();
-      console.log("after destroy chart", chartList);
+      // console.log("after destroy chart", chartList);
       chartRef.current = undefined;
       // timeRef.current = false
     };
@@ -511,13 +498,13 @@ const DataChart = (props) => {
 
   // 차트 플레이 바 나타내기 시도
   useEffect(() => {
-    console.log("playerbar_useEffect");
+    // console.log("playerbar_useEffect");
     if (!chartRef.current) return;
-    console.log("chartRef", chartRef.current);
+    // console.log("chartRef", chartRef.current);
 
     // ref 담긴 이전 막대 지우기
     if (timeRef.current) {
-      // console.log(timeRef.current)
+      // // console.log(timeRef.current)
       timeRef.current.forEach((playBar) => playBar.dispose());
     }
 
@@ -575,7 +562,7 @@ const DataChart = (props) => {
 
     // Set chart data.
     seriesList.forEach((series, i) => series.clear().add(dataSets[i]));
-    console.log("set chart dataSets", seriesList);
+    // console.log("set chart dataSets", seriesList);
   }, [dataSets, chartRef, timeRef]);
 
   return (
