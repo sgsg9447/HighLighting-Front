@@ -34,7 +34,7 @@ const AppStateProvider = ({ children }) => {
   function getMethod(e) {
     console.log("call getMethod()");
     axios
-      .get("http://localhost:5000/flask/hello")
+      .get("http://143.248.193.110:5000/flask/hello")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -50,7 +50,7 @@ const AppStateProvider = ({ children }) => {
     console.time("requestTime");
 
     axios
-      .post("http://localhost:5000/flask/hello", {
+      .post("http://143.248.193.110:5000/flask/hello", {
         url: url,
       })
       .then((response) => {
