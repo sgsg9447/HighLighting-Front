@@ -65,7 +65,6 @@ function Player({url}) {
   };
 
 
-
   return (
     <div>
       <div className="player-wrapper">

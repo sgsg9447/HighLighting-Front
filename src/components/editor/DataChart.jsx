@@ -399,6 +399,7 @@ const DataChart = (props) => {
             { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
           ).x;
           const playBarTime = Math.round(mouseLocationAxisX / 1000);
+          
           changePointer(playBarTime);
 
           // oneclick play 경우, 드래그 시작 위치와 구분해주기 위한 조건

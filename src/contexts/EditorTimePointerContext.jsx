@@ -4,7 +4,7 @@ const EditorTimePointerContext = React.createContext({
   pointer: 0,
   changePointer: () => {},
   isplaying: false,
-  setIsplaying: () => {}
+  setIsplaying: () => {},
 });
 
 export default EditorTimePointerContext;
