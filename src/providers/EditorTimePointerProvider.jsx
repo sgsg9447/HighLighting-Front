@@ -8,9 +8,17 @@ function EditorTimePointerProvider({ children }) {
   const changePointer = (newtime) => {
     setPointer(() => newtime);
   };
+  const [seeking, setSeeking] = useState(false);
+  const [played, setPlayed] = useState(0);
+  const [playerRef, setPlayerRef] = useState(undefined);
+
+  function callSeekTo(func, value) {
+    func.seekTo(parseFloat(value));
+  }
+
   return (
     <EditorTimePointerContext.Provider
-      value={{ pointer, changePointer, isplaying, setIsplaying }}
+      value={{ pointer, changePointer, isplaying, setIsplaying, seeking, setSeeking, played, setPlayed, callSeekTo, playerRef, setPlayerRef }}
     >
       {children}
     </EditorTimePointerContext.Provider>

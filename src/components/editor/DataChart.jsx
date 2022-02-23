@@ -39,14 +39,17 @@ const TITLE3 = "audio power";
 const AXIS_X_WHEEL_ZOOM = true;
 
 const DataChart = (props) => {
-  const { pointer, changePointer } = React.useContext(EditorTimePointerContext);
+  const { pointer, callSeekTo, playerRef, setPlayed, setSeeking, changePointer } = React.useContext(EditorTimePointerContext);
 
   const { dataSets, id, url } = props;
   const chartRef = useRef(undefined);
   const timeRef = useRef(undefined);
   const dragStartRef = useRef({isDrag: false, xValue: Number.MAX_SAFE_INTEGER});
+  const clickRef = useRef({isJump: false, jumpTime: undefined});
   // console.log("Charts received Data", dataSets);
   let TIMELINE = pointer;
+
+  const videoLen = dataSets[1].length
 
   // 메인 차트 그리기
   useEffect(() => {
@@ -394,14 +397,19 @@ const DataChart = (props) => {
         // chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
         chart.onSeriesBackgroundMouseClick((_, event, button) => {
           event.preventDefault();
-          console.log('isDrag?', dragStartRef.current)
-
+          
           // 마우스 드래그할 때는 작동되지 않도록 lock-unlock
-          if (dragStartRef.current.isDrag) {
-            dragStartRef.current.isDrag = false
+          if(dragStartRef.current.isDrag) {
+            dragStartRef.current.isDrag = false 
             return;
           }
 
+          // 클릭 점핑, seeking 준비: clickRef 또는 pointer 둘 다 설정해서 먼저 변하는 값 빠르게 갱신
+          setSeeking(true);
+          clickRef.current.isJump = true
+          // console.log(clickRef.current)
+          // console.log('isDrag?', dragStartRef.current)
+          
           const mouseLocationEngine = chart.engine.clientLocation2Engine(
             event.clientX,
             event.clientY
@@ -411,9 +419,15 @@ const DataChart = (props) => {
             chart.engine.scale,
             { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
           ).x;
-          const playBarTime = Math.round(mouseLocationAxisX / 1000);
-          
-          changePointer(playBarTime);
+
+          const playTime = Math.round(mouseLocationAxisX/1000)
+          const playTimeRatio = mouseLocationAxisX / 1000 / videoLen;
+          clickRef.current.jumpTime = playTime;
+          // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
+          callSeekTo(playerRef, playTimeRatio)
+          setPlayed(parseFloat(playTimeRatio));
+          changePointer(playTime);
+          setSeeking(false)
         });
       });
 
@@ -478,7 +492,7 @@ const DataChart = (props) => {
         // 	resultTableRows[1 + i].setText(series.getName() + ': ' + (nearestDataPoint ? chart.getDefaultAxisY().formatValue(nearestDataPoint.location.y) + ' €?' : ''))
         // }
         resultTable.restore().setPosition(mouseLocationEngine);
-        xTicks.forEach((xTick) => xTick.restore().setValue(mouseLocationAxisX));
+        xTicks.forEach((xTick) => xTick.restore().setValue(mouseLocationAxisX));    
       });
       chart.onSeriesBackgroundMouseDragStart((_, event) => {
         resultTable.dispose();
@@ -504,25 +518,14 @@ const DataChart = (props) => {
   // 렌더링 후 변화 안 줄만한 값은 url
   // url는 로컬에서 오는 듯??
 
-  // 차트 플레이 바 나타내기 시도
-  useEffect(() => {
-    // console.log("playerbar_useEffect");
-    if (!chartRef.current) return;
-    // console.log("chartRef", chartRef.current);
-
-    // ref 담긴 이전 막대 지우기
-    if (timeRef.current) {
-      // console.log(timeRef.current)
-      timeRef.current.forEach((playBar) => playBar.dispose());
-    }
-
+  function makePlayBarList(time) {
     const axisTimeList = chartRef.current;
     // Add a Constantline to the X Axis
-    const playBarList = axisTimeList.map((axisTime, index) =>
+    const playBarList = axisTimeList.map((axisTime) =>
       axisTime
         .addConstantLine()
         // Position the Constantline in the Axis Scale
-        .setValue(TIMELINE * 1000)
+        .setValue(time)
         // The name of the Constantline will be shown in the LegendBox
         .setName("X Axis Constantline")
         // Style the Constantline
@@ -542,8 +545,30 @@ const DataChart = (props) => {
             }),
           })
         )
-        .setHighlightOnHover(true)
-    );
+        .setHighlightOnHover(true))
+
+    clickRef.current.isJump = false
+    return playBarList
+  }
+
+  // 차트 플레이 바 나타내기
+  useEffect(() => {
+    // console.log("playerbar_useEffect");
+    if (!chartRef.current) return;
+    // console.log("chartRef", chartRef.current);
+
+    // ref 담긴 이전 막대 지우기
+    if (timeRef.current) {
+      // console.log(timeRef.current)
+      timeRef.current.forEach((playBar) => playBar.dispose());
+    }
+    let playBarList
+    if (clickRef.current.isJump) {
+      playBarList = makePlayBarList(clickRef.current.jumpTime * 1000)
+    }
+    else {
+      playBarList = makePlayBarList(TIMELINE * 1000)
+    }
 
     timeRef.current = playBarList;
 
@@ -562,16 +587,16 @@ const DataChart = (props) => {
     };
   }, [id, url, TIMELINE]);
 
-  useEffect(() => {
-    const components = chartRef.current;
-    if (!components) return;
-    const { seriesList } = components;
-    if (!seriesList) return;
+  // useEffect(() => {
+  //   const components = chartRef.current;
+  //   if (!components) return;
+  //   const { seriesList } = components;
+  //   if (!seriesList) return;
 
-    // Set chart data.
-    seriesList.forEach((series, i) => series.clear().add(dataSets[i]));
-    // console.log("set chart dataSets", seriesList);
-  }, [dataSets, chartRef, timeRef]);
+  //   // Set chart data.
+  //   seriesList.forEach((series, i) => series.clear().add(dataSets[i]));
+  //   // console.log("set chart dataSets", seriesList);
+  // }, [dataSets, chartRef, timeRef]);
 
   return (
     <div className="DataChartContainer">

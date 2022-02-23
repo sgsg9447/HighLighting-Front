@@ -1,22 +1,24 @@
-import React, { createRef, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
-// import useResult from "../../../hooks/useResult";
 import "./Player.scss";
 function Player({url}) {
-  const { changePointer, isplaying, setIsplaying } = React.useContext(EditorTimePointerContext);
+  const { changePointer, isplaying, setIsplaying, seeking, setSeeking, played, setPlayed, setPlayerRef } = React.useContext(EditorTimePointerContext);
   
   const [controls] = useState(false);
   const [volume, setVolume] = useState(0.8);
-  const [played, setPlayed] = useState(0);
+  // const [played, setPlayed] = useState(0);
   const [loaded, setLoaded] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playbackRate] = useState(1.0);
-  const [seeking, setSeeking] = useState(false);
+  // const [seeking, setSeeking] = useState(false);
   const [loop] = useState(false);
   const ref = createRef();
 
+  useEffect(() => {
+    setPlayerRef(ref.current);
+  }, []);
 
   const handlePlayPause = () => {
     setIsplaying(!isplaying);
@@ -52,7 +54,7 @@ function Player({url}) {
       // console.log(state)
       setPlayed(state.played);
       setLoaded(state.loaded);
-      changePointer(parseInt(duration * played));
+      changePointer(Math.round(duration * played));
     }
   };
 
