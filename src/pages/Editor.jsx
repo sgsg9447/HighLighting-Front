@@ -4,7 +4,7 @@ import Header from "../components/Header/Header";
 import VideoPlayer from "../components/editor/VideoPlayer";
 import ChatViewer from "../components/editor/ChatViewer";
 import DataChart from "../components/editor/DataChart";
-// import BookMarker from "../components/editor/BookMarker";
+import BookMarker from "../components/editor/BookMarker";
 import CommunicationTool from "../components/editor/CommunicationTool";
 import EditorTimePointerProvider from "../providers/EditorTimePointerProvider";
 import "./Editor.scss";
@@ -14,32 +14,53 @@ import { useState, useEffect } from "react";
 
 function Editor() {
 
-  const { url, chatDistribution, audio, video } = useResult();
-  const [chatData, setChatData] = useState([]);
+  const { url, chatDistribution, chatSuper, audio, video } = useResult();
+  const [chatDistributionData, setChatDistributionData] = useState([]);
+  const [chatSuperData, setChatSuperData] = useState([]);
   const [audioData, setAudioData] = useState([]);
   const [videoData, setVideoData] = useState([]);
   const [propUrl, setPropUrl] = useState();
 
-  // 채팅 데이터 수신
+  // 채팅 데이터 수신1
   useEffect(() => {
-    console.time("mapValueToObj-Chart-Chat");
-
-
-    // 로컬스토리지에서 데이터 받아올 때
+    console.time("mapValueToObj-ChatDistribution");
+    // 로컬스토리지에서 채팅 분포 데이터 받아올 때
     if (!chatDistribution) {
-      const localChat = localStorage.getItem("localChatDistribution");
-      const arrayChat = JSON.parse("[" + localChat + "]");
-      const objChat = arrayChat.map((value, index) => ({ x: index, y: value }));
-      setChatData(objChat);
-      console.log("ChatData <- localChatDistribution");
+      // 분포도
+      const localChatDistribution = localStorage.getItem("localChatDistribution");
+      const arrayChatDistribution = JSON.parse("[" + localChatDistribution + "]");
+      const objlocalChatDistribution = arrayChatDistribution.map((value, index) => ({ x: index, y: value }));    
+      setChatDistributionData(objlocalChatDistribution);
+      console.log("chatDistributionData <- localChatDistribution");
     }
     // POST를 통해 직접 받아올 때
     else {
-      setChatData(
-        chatDistribution.map((value, index) => ({ x: index, y: value }))
+      setChatDistributionData(
+        chatDistribution.map((value, index) => ({ x: index, y: value })),
       );
     }
-    console.timeEnd("mapValueToObj-Chart-Chat");
+    console.timeEnd("mapValueToObj-ChatDistribution");
+  }, []);
+
+  // 채팅 데이터 수신2
+  useEffect(() => {
+    console.time("mapValueToObj-ChatSet");
+    // 로컬스토리지에서 슈퍼챗 데이터 받아올 때
+    if (!chatSuper) {
+      // 슈퍼챗
+      const localChatSuper = localStorage.getItem("localChatSuper");
+      const arrayChatSuper = JSON.parse("[" + localChatSuper + "]");
+      const objlocalChatSuper = arrayChatSuper.map((value, index) => ({ x: index, y: value}));
+      setChatSuperData(objlocalChatSuper);
+      console.log("chatSuperData <- localChatSuper");
+    }
+    // POST를 통해 직접 받아올 때
+    else {
+      setChatSuperData(
+        chatSuper.map((value, index) => ({ x: index, y: value }))
+      );
+    }
+    console.timeEnd("mapValueToObj-ChatSet");
   }, []);
 
   // 비디오 데이터 수신
@@ -53,7 +74,7 @@ function Editor() {
         y: value,
       }));
       setVideoData(objVideo);
-      console.log("videoData <- localVideo");
+      console.log("VideoData <- localVideo");
     } else {
       setVideoData(video.map((value, index) => ({ x: index, y: value })));
     }
@@ -109,14 +130,14 @@ function Editor() {
 
         <div className="lowerlayer">
           <div className="BookMarkerCover">
-            {/* <BookMarker /> */}
+            <BookMarker />
           </div>
 
           <div className="DataChartCover">
             <DataChart
               id="DataChart"
               title="TrippleChartPlayer"
-              dataSets={[chatData, videoData, audioData]}
+              dataList={[chatDistributionData, videoData, audioData, chatSuperData]}
               url={propUrl}
             />
           </div>
@@ -126,4 +147,4 @@ function Editor() {
   );
 }
 
-export default Editor;
+export default React.memo(Editor);

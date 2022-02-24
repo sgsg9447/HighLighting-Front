@@ -20,20 +20,23 @@ import {
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import "./DataChart.scss";
 import { useEffect, useRef } from "react";
+import useResult from "../../hooks/useResult";
 
 const CHANNELS = 3;
 // const DATA_PER_CHANNEL = 5 * 1000 * 1000
 
 // 각 차트별로 x개수와 간격이 다르지만, 같은 시간을 가리키도록 하자.
 // STEP_X: X좌표 간격(1밀리초)
-const STEP_X_CHAT = 1000;
+const STEP_X_CHAT_DISTRIBUTION = 1000;
+const STEP_X_CHAT_SUPER = 1000;
 const STEP_X_VIDEO = 1000;
 const STEP_X_AUDIO = 500;
 
-// 차트 제목 1,2,3
-const TITLE1 = "chat flow";
-const TITLE2 = "video frame";
-const TITLE3 = "audio power";
+// 차트 제목 0,1,2,3
+const TITLE0 = "Chat Flow";
+const TITLE1 = "Video Frame";
+const TITLE2 = "Audio Power";
+const TITLE3 = "SuperChat"
 
 // x축 확대축소 사용여부(boolean)
 const AXIS_X_WHEEL_ZOOM = true;
@@ -52,19 +55,24 @@ const jumpBarColor = { basic: YELLOW, hover: BLUE }
 // 데이터 차트
 const DataChart = (props) => {
   const { pointer, callSeekTo, playerRef, setPlayed, setSeeking, changePointer } = React.useContext(EditorTimePointerContext);
+  const { isChatSuperOn } = useResult();
 
-  const { dataSets, id, url } = props;
-  const chartRef = useRef(undefined);
-  const timeRef = useRef(undefined);
+  const { dataList, id, url } = props;
+  const axisTimeListRef = useRef(undefined);
+  const playBarListRef = useRef(undefined);
+  const chartListRef = useRef(undefined);
+  const seriesListRef = useRef(undefined);
+  const receivedDataSetListRef = useRef(undefined);
   const dragStartRef = useRef({ isDrag: false, xValue: Number.MAX_SAFE_INTEGER });
   const clickRef = useRef({ isJump: false, jumpTime: undefined });
-  // console.log("Charts received Data", dataSets);
+
+  // console.log("Charts received Data", dataList);    // <- 데이터 차트가 두 번씩 그려진다 왜...?
 
   // 현재 재생 시간
   let TIMELINE = pointer;
 
   // 영상 전체 길이를 비디오에서 얻기
-  const videoLen = dataSets[1].length
+  const videoLen = dataList[1].length
 
   // 메인 차트 그리기
   useEffect(() => {
@@ -91,7 +99,7 @@ const DataChart = (props) => {
       .setHeight(500, 1000);
 
     // 플레이 바가 지나갈 시간축 담을 리스트 생성
-    const timeList = new Array(CHANNELS);
+    const axisTimeList = new Array(CHANNELS);
 
     // 메인 차트 리스트 생성
     const chartList = new Array(CHANNELS).fill(0).map((_, i) => {
@@ -124,7 +132,7 @@ const DataChart = (props) => {
         .setTickStrategy(AxisTickStrategies.Time);
 
       // 시간축 리스트에 생성된 시간축 담기
-      timeList[i] = axisTime;
+      axisTimeList[i] = axisTime;
 
       const uiLayout = chart
         .addUIElement(UILayoutBuilders.Column, {
@@ -158,8 +166,8 @@ const DataChart = (props) => {
       return chart;
     });
 
-    // ref 안에 플레이 막대 리스트 담기
-    chartRef.current = timeList;
+    // axisTimeRef = 플레이 바가 담긴 리스트
+    axisTimeListRef.current = axisTimeList;
 
     // charlist의 index를 통해 차트 이름을 구분하자.
     function whichChart(index) {
@@ -168,12 +176,15 @@ const DataChart = (props) => {
       let name;
       switch (index) {
         case 0:
-          name = TITLE1;
+          name = TITLE0;
           return name;
         case 1:
-          name = TITLE2;
+          name = TITLE1;
           return name;
         case 2:
+          name = TITLE2;
+          return name;
+        case 3:
           name = TITLE3;
           return name;
         default:
@@ -190,7 +201,7 @@ const DataChart = (props) => {
           },
           automaticColorIndex: i * GRAPH_COLOR_NUMBER,
         })
-        // .setName('< Stock name >')
+        // 차트 y축 타이틀
         .setName(`${name}`)
         .setCursorInterpolationEnabled(false);
       return series;
@@ -205,7 +216,7 @@ const DataChart = (props) => {
       let step;
       switch (index) {
         case 0:
-          step = STEP_X_CHAT;
+          step = STEP_X_CHAT_DISTRIBUTION;
           return step;
         case 1:
           step = STEP_X_VIDEO;
@@ -213,18 +224,24 @@ const DataChart = (props) => {
         case 2:
           step = STEP_X_AUDIO;
           return step;
+        case 3:
+          step = STEP_X_CHAT_SUPER;
+          return step;
         default:
           console.log("here is no chart step x");
       }
     }
 
+    // seriesListRef = series가 담긴 리스트
+    seriesListRef.current = seriesList;
+
     Promise.all(
-      dataSets.map((data, i) => {
+      dataList.map((data, i) => {
         const STEP_X = whichStepX(i);
         // Map generated XY trace data set into a more realistic trading data set.
-        const baseLine = 1;
+        const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그린다.
         // const baseLine = 10 + Math.random() * 2000;
-        const variationAmplitude = baseLine * 0.05;
+        const variationAmplitude = baseLine;
         const yMin = data.reduce(
           (min, cur) => Math.min(min, cur.y),
           Number.MAX_SAFE_INTEGER
@@ -242,11 +259,12 @@ const DataChart = (props) => {
             ((xy.y - yTraceBaseline) / yIntervalHalf) * variationAmplitude,
         }));
       })
-    ).then((receivedDataSets) => {
-      if (receivedDataSets && receivedDataSets[0]) {
+    ).then((receivedDataSetList) => {
+      if (receivedDataSetList && receivedDataSetList[0]) {
         seriesList.forEach((series, i) => {
-          series.add(receivedDataSets[i]);
+          series.add(receivedDataSetList[i]);
         });
+        receivedDataSetListRef.current = receivedDataSetList;
       }
 
       // Customize chart interactions. x축 마우스인터렉션 휠 설정 여부
@@ -350,7 +368,7 @@ const DataChart = (props) => {
                 let yMin = 999999;
                 let yMax = -999999;
                 for (let x = xStart; x < xEnd; x += STEP_X) {
-                  const dp = receivedDataSets[i][Math.round(x / STEP_X)];
+                  const dp = receivedDataSetList[i][Math.round(x / STEP_X)];
                   if (dp !== undefined) {
                     yMin = Math.min(yMin, dp.y);
                     yMax = Math.max(yMax, dp.y);
@@ -453,7 +471,7 @@ const DataChart = (props) => {
           let yMax = -999999;
           // let x = xStart < 0 ? 0 : xStart
           for (let x = xStart; x < xEnd; x += STEP_X) {
-            const dp = receivedDataSets[i][Math.round(x / STEP_X)];
+            const dp = receivedDataSetList[i][Math.round(x / STEP_X)];
             if (dp !== undefined) {
               yMin = Math.min(yMin, dp.y);
               yMax = Math.max(yMax, dp.y);
@@ -519,22 +537,65 @@ const DataChart = (props) => {
       });
     });
 
+    chartListRef.current = chartList;
+
     return () => {
       // Destroy chart.
-      // console.log("before destroy chart", chartList);
+      seriesList.forEach((series) => series.dispose());
       chartList.forEach((chart) => chart.dispose());
       resultTable.dispose();
       dashboard.dispose();
-      // console.log("after destroy chart", chartList);
-      chartRef.current = undefined;
+      axisTimeListRef.current = undefined;
       // timeRef.current = false
     };
   }, [url]);
   // 렌더링 후 변화 안 줄만한 값은 url
   // url는 로컬에서 오는 듯??
 
+
+  // 슈퍼챗 차트로 전환하고 되돌리기
+  useEffect(() => {
+    if (isChatSuperOn === -1) return;
+    if (!receivedDataSetListRef.current) return;
+
+    if (isChatSuperOn) {
+      const seriesList = seriesListRef.current;
+      seriesList[0].dispose();
+      const receivedDataSetList = receivedDataSetListRef.current;
+      const chartList = chartListRef.current
+      seriesList[0] = chartList[0]
+      .addLineSeries({
+        dataPattern: {
+          pattern: "ProgressiveX",
+        },
+        automaticColorIndex: 3 * GRAPH_COLOR_NUMBER,
+      })
+      .setName('Super Chat')
+      .setCursorInterpolationEnabled(false)
+      .add(receivedDataSetList[3]);
+    }
+    else {
+      const seriesList = seriesListRef.current;
+      seriesList[0].dispose();
+      const receivedDataSetList = receivedDataSetListRef.current;
+      const chartList = chartListRef.current
+      seriesList[0] = chartList[0]
+      .addLineSeries({
+        dataPattern: {
+          pattern: "ProgressiveX",
+        },
+        automaticColorIndex: 0 * GRAPH_COLOR_NUMBER,
+      })
+      .setName('Chat Flow Flow')
+      .setCursorInterpolationEnabled(false)
+      .add(receivedDataSetList[0]);
+    }
+
+  }, [url, isChatSuperOn]);
+
+  // 다음 시간을 표현할 플레이바 만들기(시간, 컬러)
   function makePlayBarList(time, barColor) {
-    const axisTimeList = chartRef.current;
+    const axisTimeList = axisTimeListRef.current;
     // Add a Constantline to the X Axis
     const playBarList = axisTimeList.map((axisTime) =>
       axisTime
@@ -542,7 +603,7 @@ const DataChart = (props) => {
         // Position the Constantline in the Axis Scale
         .setValue(time)
         // The name of the Constantline will be shown in the LegendBox
-        .setName("X Axis Constantline")
+        .setName("playBar")
         // Style the Constantline
         .setStrokeStyle(
           new SolidLine({
@@ -569,12 +630,12 @@ const DataChart = (props) => {
   // 차트 플레이 바 나타내기
   useEffect(() => {
     // chartRef 값이 없으면 리턴
-    if (!chartRef.current) return;
+    if (!axisTimeListRef.current) return;
 
     // timeRef 담긴 이전 막대리스트 지우기
-    if (timeRef.current) {
+    if (playBarListRef.current) {
       // console.log(timeRef.current)
-      timeRef.current.forEach((playBar) => playBar.dispose());
+      playBarListRef.current.forEach((playBar) => playBar.dispose());
     }
     let playBarList
     if (clickRef.current.isJump) {
@@ -585,7 +646,7 @@ const DataChart = (props) => {
     }
 
     // timeRef에 새로운 막대리스트 넣기
-    timeRef.current = playBarList;
+    playBarListRef.current = playBarList;
 
     // // Add a Band to the X Axis
     // const xAxisBand = axisX.addBand()
@@ -598,9 +659,24 @@ const DataChart = (props) => {
 
     // 지울 때 보여주기
     return () => {
-      timeRef.current.forEach((playBar) => playBar.restore());
+      playBarListRef.current.forEach((playBar) => playBar.restore());
     };
   }, [id, url, TIMELINE]);
+
+  // // window click event 확인해보기
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     console.log('localName', e.target.localName, 'className', e.target.className);
+  //     if (e.target.localName === "canvas")
+  //       console.log('canvast by click')
+  //   };
+
+  //   window.addEventListener("click", handleClickOutside);
+  //   return () => {
+  //     window.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, []);
+
 
   // useEffect(() => {
   //   const components = chartRef.current;
@@ -618,4 +694,4 @@ const DataChart = (props) => {
   );
 };
 
-export default DataChart;
+export default React.memo(DataChart);
