@@ -38,17 +38,32 @@ const TITLE3 = "audio power";
 // x축 확대축소 사용여부(boolean)
 const AXIS_X_WHEEL_ZOOM = true;
 
+// 차트 그래프 컬러 임의 조합 NUMBER
+const GRAPH_COLOR_NUMBER = 999
+
+// 차트 플레이 바의 컬러 조합
+const YELLOW = "#ffcc00"
+const RED = "#F00"
+const BLUE = "0075ff"
+const playBarColor = { basic: YELLOW, hover: RED }
+const jumpBarColor = { basic: YELLOW, hover: BLUE }
+
+
+// 데이터 차트
 const DataChart = (props) => {
   const { pointer, callSeekTo, playerRef, setPlayed, setSeeking, changePointer } = React.useContext(EditorTimePointerContext);
 
   const { dataSets, id, url } = props;
   const chartRef = useRef(undefined);
   const timeRef = useRef(undefined);
-  const dragStartRef = useRef({isDrag: false, xValue: Number.MAX_SAFE_INTEGER});
-  const clickRef = useRef({isJump: false, jumpTime: undefined});
+  const dragStartRef = useRef({ isDrag: false, xValue: Number.MAX_SAFE_INTEGER });
+  const clickRef = useRef({ isJump: false, jumpTime: undefined });
   // console.log("Charts received Data", dataSets);
+
+  // 현재 재생 시간
   let TIMELINE = pointer;
 
+  // 영상 전체 길이를 비디오에서 얻기
   const videoLen = dataSets[1].length
 
   // 메인 차트 그리기
@@ -139,11 +154,6 @@ const DataChart = (props) => {
             y: end,
           })
         );
-      uiLayout
-        .addElement(UIElementBuilders.TextBox)
-        // which name ?
-        .setText("< small name >")
-        .setTextFont((font) => font.setSize(0));
 
       return chart;
     });
@@ -167,7 +177,7 @@ const DataChart = (props) => {
           name = TITLE3;
           return name;
         default:
-          // console.log("here is chart name");
+        // console.log("here is chart name");
       }
     }
 
@@ -178,7 +188,7 @@ const DataChart = (props) => {
           dataPattern: {
             pattern: "ProgressiveX",
           },
-          automaticColorIndex: i * 2,
+          automaticColorIndex: i * GRAPH_COLOR_NUMBER,
         })
         // .setName('< Stock name >')
         .setName(`${name}`)
@@ -212,8 +222,9 @@ const DataChart = (props) => {
       dataSets.map((data, i) => {
         const STEP_X = whichStepX(i);
         // Map generated XY trace data set into a more realistic trading data set.
-        const baseLine = 10 + Math.random() * 2000;
-        const variationAmplitude = baseLine * 0.03;
+        const baseLine = 1;
+        // const baseLine = 10 + Math.random() * 2000;
+        const variationAmplitude = baseLine * 0.05;
         const yMin = data.reduce(
           (min, cur) => Math.min(min, cur.y),
           Number.MAX_SAFE_INTEGER
@@ -397,10 +408,10 @@ const DataChart = (props) => {
         // chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
         chart.onSeriesBackgroundMouseClick((_, event, button) => {
           event.preventDefault();
-          
+
           // 마우스 드래그할 때는 작동되지 않도록 lock-unlock
-          if(dragStartRef.current.isDrag) {
-            dragStartRef.current.isDrag = false 
+          if (dragStartRef.current.isDrag) {
+            dragStartRef.current.isDrag = false
             return;
           }
 
@@ -409,7 +420,7 @@ const DataChart = (props) => {
           clickRef.current.isJump = true
           // console.log(clickRef.current)
           // console.log('isDrag?', dragStartRef.current)
-          
+
           const mouseLocationEngine = chart.engine.clientLocation2Engine(
             event.clientX,
             event.clientY
@@ -420,7 +431,7 @@ const DataChart = (props) => {
             { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
           ).x;
 
-          const playTime = Math.round(mouseLocationAxisX/1000)
+          const playTime = Math.round(mouseLocationAxisX / 1000)
           const playTimeRatio = mouseLocationAxisX / 1000 / videoLen;
           clickRef.current.jumpTime = playTime;
           // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
@@ -461,10 +472,10 @@ const DataChart = (props) => {
       .setMouseInteractions(false)
       .setOrigin(UIOrigins.LeftBottom)
       .setMargin(5);
-    // const resultTableRows = new Array(1 + CHANNELS).fill(0).map(_ => resultTable.addElement(UIElementBuilders.TextBox))
-    const resultTableRows = new Array(1)
+    // const resultTableRows = new Array(1 + CHANNELS).fill(0).map(_ => resultTable.addElement(UIElementBuilders.ButtonBox))
+    const resultTableRows = new Array(1 + CHANNELS)
       .fill(0)
-      .map((_) => resultTable.addElement(UIElementBuilders.TextBox));
+      .map((_) => resultTable.addElement(UIElementBuilders.ButtonBox));
     resultTable.dispose();
     const xTicks = chartList.map((chart) =>
       chart.getDefaultAxisX().addCustomTick().dispose()
@@ -486,13 +497,17 @@ const DataChart = (props) => {
           chart.getDefaultAxisX().formatValue(mouseLocationAxisX)
         );
         // for (let i = 0; i < CHANNELS; i += 1) {
-        // 	const series = seriesList[i]
-        // 	const nearestDataPoint = series.solveNearestFromScreen(mouseLocationEngine)
-        // 	// 마우스 커서창에 뜨는 레전드 박스 텍스트 값
-        // 	resultTableRows[1 + i].setText(series.getName() + ': ' + (nearestDataPoint ? chart.getDefaultAxisY().formatValue(nearestDataPoint.location.y) + ' €?' : ''))
+        //   const series = seriesList[i]
+        //   const nearestDataPoint = series.solveNearestFromScreen(mouseLocationEngine)
+        //   // 마우스 커서창에 뜨는 레전드 박스 텍스트 값
+        //   resultTableRows[1 + i].setText(series.getName() + ': ' + (nearestDataPoint ? chart.getDefaultAxisY().formatValue(nearestDataPoint.location.y) + ' €?' : ''))
         // }
+        for (let i = 0; i < CHANNELS; i += 1) {
+          // 마우스 커서창에 뜨는 레전드 박스 텍스트 값
+          resultTableRows[1 + i].setText(i === 0? '클릭: 재생이동' : (i === 1 ? 'L->R드래그: 구간선택' : (i === 2 ? 'R->L드래그: 구간확대' : '시간축 클릭: 초기화')))
+        }
         resultTable.restore().setPosition(mouseLocationEngine);
-        xTicks.forEach((xTick) => xTick.restore().setValue(mouseLocationAxisX));    
+        xTicks.forEach((xTick) => xTick.restore().setValue(mouseLocationAxisX));
       });
       chart.onSeriesBackgroundMouseDragStart((_, event) => {
         resultTable.dispose();
@@ -518,7 +533,7 @@ const DataChart = (props) => {
   // 렌더링 후 변화 안 줄만한 값은 url
   // url는 로컬에서 오는 듯??
 
-  function makePlayBarList(time) {
+  function makePlayBarList(time, barColor) {
     const axisTimeList = chartRef.current;
     // Add a Constantline to the X Axis
     const playBarList = axisTimeList.map((axisTime) =>
@@ -533,7 +548,7 @@ const DataChart = (props) => {
           new SolidLine({
             thickness: 8,
             fillStyle: new SolidFill({
-              color: ColorHEX("#ffcc00"),
+              color: ColorHEX(barColor.basic),
             }),
           })
         )
@@ -541,7 +556,7 @@ const DataChart = (props) => {
           new SolidLine({
             thickness: 10,
             fillStyle: new SolidFill({
-              color: ColorHEX("#F00"),
+              color: ColorHEX(barColor.hover),
             }),
           })
         )
@@ -553,23 +568,23 @@ const DataChart = (props) => {
 
   // 차트 플레이 바 나타내기
   useEffect(() => {
-    // console.log("playerbar_useEffect");
+    // chartRef 값이 없으면 리턴
     if (!chartRef.current) return;
-    // console.log("chartRef", chartRef.current);
 
-    // ref 담긴 이전 막대 지우기
+    // timeRef 담긴 이전 막대리스트 지우기
     if (timeRef.current) {
       // console.log(timeRef.current)
       timeRef.current.forEach((playBar) => playBar.dispose());
     }
     let playBarList
     if (clickRef.current.isJump) {
-      playBarList = makePlayBarList(clickRef.current.jumpTime * 1000)
+      playBarList = makePlayBarList(clickRef.current.jumpTime * 1000, jumpBarColor)
     }
     else {
-      playBarList = makePlayBarList(TIMELINE * 1000)
+      playBarList = makePlayBarList(TIMELINE * 1000, playBarColor)
     }
 
+    // timeRef에 새로운 막대리스트 넣기
     timeRef.current = playBarList;
 
     // // Add a Band to the X Axis
@@ -599,9 +614,7 @@ const DataChart = (props) => {
   // }, [dataSets, chartRef, timeRef]);
 
   return (
-    <div className="DataChartContainer">
       <div id={id} className="TrippleChart"></div>
-    </div>
   );
 };
 
