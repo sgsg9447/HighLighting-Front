@@ -36,7 +36,7 @@ const STEP_X_AUDIO = 500;
 const TITLE0 = "Chat Flow";
 const TITLE1 = "Video Frame";
 const TITLE2 = "Audio Power";
-const TITLE3 = "SuperChat"
+const TITLE3 = "Super Chat"
 
 // x축 확대축소 사용여부(boolean)
 const AXIS_X_WHEEL_ZOOM = true;
@@ -58,13 +58,15 @@ const DataChart = (props) => {
   const { isChatSuperOn } = useResult();
 
   const { dataList, id, url } = props;
-  const axisTimeListRef = useRef(undefined);
+  const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
   const playBarListRef = useRef(undefined);
   const chartListRef = useRef(undefined);
   const seriesListRef = useRef(undefined);
   const receivedDataSetListRef = useRef(undefined);
   const dragStartRef = useRef({ isDrag: false, xValue: Number.MAX_SAFE_INTEGER });
   const clickRef = useRef({ isJump: false, jumpTime: undefined });
+  const makeChartRef = useRef(undefined);
+  const whichChartRef = useRef(undefined);
 
   // console.log("Charts received Data", dataList);    // <- 데이터 차트가 두 번씩 그려진다 왜...?
 
@@ -98,40 +100,43 @@ const DataChart = (props) => {
       })
       .setHeight(500, 1000);
 
+    // 기본 축 x, y 리스트
+    const axisXList = new Array(CHANNELS);
+    const axisYList = new Array(CHANNELS);
     // 플레이 바가 지나갈 시간축 담을 리스트 생성
     const axisTimeList = new Array(CHANNELS);
 
-    // 메인 차트 리스트 생성
-    const chartList = new Array(CHANNELS).fill(0).map((_, i) => {
+    // 차트 만드는 함수
+    function makeChart(i, title = undefined, padding = 20, xThickness = 30, yThickness = 80, ) {
+      let name = title;
       const chart = dashboard
         .createChartXY({
           columnIndex: 0,
           rowIndex: i,
         })
-        .setPadding({ right: 20 });
+        .setPadding({ right: padding });
 
       // 각 차트 상단 타이틀 비우기
       chart.setTitleFillStyle(emptyFill);
 
-      // 첫번째 차트에만 대표 타이틀 넣기
-      // if (i > 0) {
-      // 	chart.setTitleFillStyle(emptyFill)
-      // } else {
-      // 	chart.setTitle(`3 stock price trends with 1 microsecond data resolution (total ${DATA_PER_CHANNEL * CHANNELS} values)`)
-      // }
+      // 인덱스 따른 차트 이름 설정
+      if (!title) {
+        name = whichChart(i);
+      }
 
-      let name = whichChart(i);
-      chart
+      const axisX = chart
         .getDefaultAxisX()
-        .setThickness({ min: 30 })
+        .setThickness({ min: xThickness })
         .setTickStrategy(AxisTickStrategies.Time);
-      chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: 50 });
+      const axisY = chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: yThickness });
       const axisTime = chart
         .getDefaultAxisX()
-        .setThickness({ min: 30 })
+        .setThickness({ min: xThickness })
         .setTickStrategy(AxisTickStrategies.Time);
 
-      // 시간축 리스트에 생성된 시간축 담기
+      // 차트마다 축리스트에 생성된 축 담기
+      axisXList[i] = axisX;
+      axisYList[i] = axisY;
       axisTimeList[i] = axisTime;
 
       const uiLayout = chart
@@ -164,10 +169,17 @@ const DataChart = (props) => {
         );
 
       return chart;
-    });
+    }
+
+    makeChartRef.current = makeChart
+
+    // 메인 차트 리스트 생성
+    const chartList = new Array(CHANNELS).fill(0).map((_, i) => makeChart(i));
 
     // axisTimeRef = 플레이 바가 담긴 리스트
-    axisTimeListRef.current = axisTimeList;
+    axisListRef.current.x = axisXList;
+    axisListRef.current.y = axisYList;
+    axisListRef.current.time = axisTimeList;
 
     // charlist의 index를 통해 차트 이름을 구분하자.
     function whichChart(index) {
@@ -191,6 +203,7 @@ const DataChart = (props) => {
         // console.log("here is chart name");
       }
     }
+    whichChartRef.current = whichChart;
 
     const seriesList = chartList.map((chart, i) => {
       const name = whichChart(i);
@@ -541,61 +554,67 @@ const DataChart = (props) => {
 
     return () => {
       // Destroy chart.
-      seriesList.forEach((series) => series.dispose());
-      chartList.forEach((chart) => chart.dispose());
+      seriesList.forEach((series) => {
+        series.dispose();
+        series = undefined;
+      });
+      chartList.forEach((chart) => {
+        chart.dispose();
+        chart = undefined;
+      });
       resultTable.dispose();
       dashboard.dispose();
-      axisTimeListRef.current = undefined;
-      // timeRef.current = false
+      chartListRef.current = undefined
+      seriesListRef.current = undefined
+      receivedDataSetListRef.current = undefined
     };
   }, [url]);
   // 렌더링 후 변화 안 줄만한 값은 url
   // url는 로컬에서 오는 듯??
 
 
-  // 슈퍼챗 차트로 전환하고 되돌리기
+  // 슈퍼챗 on/off 1번 차트 변환 
   useEffect(() => {
     if (isChatSuperOn === -1) return;
     if (!receivedDataSetListRef.current) return;
 
-    if (isChatSuperOn) {
+    function changeChatChart(toIndex) {
       const seriesList = seriesListRef.current;
       seriesList[0].dispose();
+      seriesList[0] = undefined;
       const receivedDataSetList = receivedDataSetListRef.current;
-      const chartList = chartListRef.current
-      seriesList[0] = chartList[0]
+      const chart = chartListRef.current[0]
+      // chartList[0].dispose();
+      // let axisY = axisListRef.current.y;
+      // axisY.dispose();
+      const name = whichChartRef.current(toIndex)
+      chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: 80 });
+
+      seriesList[0] = chart
       .addLineSeries({
         dataPattern: {
           pattern: "ProgressiveX",
         },
-        automaticColorIndex: 3 * GRAPH_COLOR_NUMBER,
+        automaticColorIndex: toIndex * GRAPH_COLOR_NUMBER,
       })
       .setName('Super Chat')
       .setCursorInterpolationEnabled(false)
-      .add(receivedDataSetList[3]);
-    }
-    else {
-      const seriesList = seriesListRef.current;
-      seriesList[0].dispose();
-      const receivedDataSetList = receivedDataSetListRef.current;
-      const chartList = chartListRef.current
-      seriesList[0] = chartList[0]
-      .addLineSeries({
-        dataPattern: {
-          pattern: "ProgressiveX",
-        },
-        automaticColorIndex: 0 * GRAPH_COLOR_NUMBER,
-      })
-      .setName('Chat Flow Flow')
-      .setCursorInterpolationEnabled(false)
-      .add(receivedDataSetList[0]);
+      .clear().add(receivedDataSetList[toIndex]);
     }
 
-  }, [url, isChatSuperOn]);
+    if (isChatSuperOn) {
+      changeChatChart(3)
+    }
+    else {
+      changeChatChart(0)
+    }
+  }, [isChatSuperOn]);
+
 
   // 다음 시간을 표현할 플레이바 만들기(시간, 컬러)
   function makePlayBarList(time, barColor) {
-    const axisTimeList = axisTimeListRef.current;
+    const axisTimeList = axisListRef.current.time;
+    // console.log('axisTimeListRef', axisTimeListRef.current)
     // Add a Constantline to the X Axis
     const playBarList = axisTimeList.map((axisTime) =>
       axisTime
@@ -630,13 +649,8 @@ const DataChart = (props) => {
   // 차트 플레이 바 나타내기
   useEffect(() => {
     // chartRef 값이 없으면 리턴
-    if (!axisTimeListRef.current) return;
+    if (!axisListRef.current.time) return;
 
-    // timeRef 담긴 이전 막대리스트 지우기
-    if (playBarListRef.current) {
-      // console.log(timeRef.current)
-      playBarListRef.current.forEach((playBar) => playBar.dispose());
-    }
     let playBarList
     if (clickRef.current.isJump) {
       playBarList = makePlayBarList(clickRef.current.jumpTime * 1000, jumpBarColor)
@@ -647,6 +661,7 @@ const DataChart = (props) => {
 
     // timeRef에 새로운 막대리스트 넣기
     playBarListRef.current = playBarList;
+    playBarListRef.current.forEach((playBar) => playBar.restore());
 
     // // Add a Band to the X Axis
     // const xAxisBand = axisX.addBand()
@@ -657,9 +672,10 @@ const DataChart = (props) => {
     // 	// Set the name of the Band
     // 	.setName('X Axis Band')
 
-    // 지울 때 보여주기
+    // 지우기
     return () => {
-      playBarListRef.current.forEach((playBar) => playBar.restore());
+      playBarListRef.current.forEach((playBar) => playBar.dispose());
+      playBarListRef.current.forEach((playBar) => (playBar = undefined));
     };
   }, [id, url, TIMELINE]);
 
@@ -676,18 +692,6 @@ const DataChart = (props) => {
   //     window.removeEventListener("click", handleClickOutside);
   //   };
   // }, []);
-
-
-  // useEffect(() => {
-  //   const components = chartRef.current;
-  //   if (!components) return;
-  //   const { seriesList } = components;
-  //   if (!seriesList) return;
-
-  //   // Set chart data.
-  //   seriesList.forEach((series, i) => series.clear().add(dataSets[i]));
-  //   // console.log("set chart dataSets", seriesList);
-  // }, [dataSets, chartRef, timeRef]);
 
   return (
       <div id={id} className="TrippleChart"></div>
