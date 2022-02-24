@@ -8,8 +8,6 @@ export default function useRoute() {
     goLoading,
     goNotFound,
     requestResult,
-    objChart,
-    setObjChart,
   } = useContext(AppStateContext);
 
   return {
@@ -18,7 +16,5 @@ export default function useRoute() {
     goLoading,
     goNotFound,
     requestResult,
-    objChart,
-    setObjChart,
   };
 }
