@@ -12,6 +12,9 @@ export default function Header() {
 
   useEffect(() => {
     const handleClickOutside = ({ target }) => {
+      if (target.className !== "openModal modal") {
+        return window.removeEventListener("click", handleClickOutside);
+      }
       console.log(target.className);
       if (modalOpen && target.className === "openModal modal")
         setModalOpen(false);
