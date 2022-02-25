@@ -5,18 +5,15 @@ import axios from "axios";
 
 const AppStateProvider = ({ children }) => {
   const [url, setUrl] = useState();
-  const [result, setResult] = useState();
   const [audio, setAudio] = useState();
   const [video, setVideo] = useState();
   const [chatDistribution, setChatDistribution] = useState();
   const [chatSet, setChatSet] = useState();
   const [chatSuper, setChatSuper] = useState();
-  const [objAudio, setObjAudio] = useState();
-  const [objChat, setObjChat] = useState();
-  const [objVideo, setObjVideo] = useState();
-  const [objChart, setObjChart] = useState();
+  const [isChatSuperOn, setIsChatSuperOn] = useState(-1);
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
+
 
   const history = useHistory();
   const goEditor = () => {
@@ -34,7 +31,7 @@ const AppStateProvider = ({ children }) => {
   function getMethod(e) {
     console.log("call getMethod()");
     axios
-      .get("http://143.248.193.110:5000/flask/hello")
+      .get("http://192.168.172.101:5000/flask/hello")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -50,7 +47,8 @@ const AppStateProvider = ({ children }) => {
     console.time("requestTime");
 
     axios
-      .post("http://143.248.193.110:5000/flask/hello", {
+      // .post("http://143.248.193.110:5000/flask/hello", {
+      .post("http://localhost:5000/flask/hello", {
         url: url,
       })
       .then((response) => {
@@ -104,40 +102,32 @@ const AppStateProvider = ({ children }) => {
     <AppStateContext.Provider
       value={{
         url,
-        result,
         audio,
         video,
         chatDistribution,
         chatSet,
         chatSuper,
-        objAudio,
-        objChat,
-        objVideo,
         title,
         thumbnail,
         setTitle,
         setThumNail,
 
         setUrl,
-        setResult,
         setAudio,
         setVideo,
         setChatDistribution,
         setChatSet,
         setChatSuper,
-        setObjAudio,
-        setObjChat,
-        setObjVideo,
         mapValueToObj,
+
+        isChatSuperOn,
+        setIsChatSuperOn,
 
         requestResult,
         getMethod,
         goEditor,
         goLoading,
         goNotFound,
-
-        objChart,
-        setObjChart,
       }}
     >
       {children}
