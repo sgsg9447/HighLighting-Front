@@ -101,13 +101,11 @@ const DataChart = (props) => {
       .setHeight(500, 1000);
 
     // 기본 축 x, y 리스트
-    const axisXList = new Array(CHANNELS);
     const axisYList = new Array(CHANNELS);
-    // 플레이 바가 지나갈 시간축 담을 리스트 생성
-    const axisTimeList = new Array(CHANNELS);
+    const axixXList = new Array(CHANNELS);
 
     // 차트 만드는 함수
-    function makeChart(i, title = undefined, padding = 20, xThickness = 30, yThickness = 80, ) {
+    function makeChart(i, title = undefined, padding = 30, xThickness = 30, yThickness = 80) {
       let name = title;
       const chart = dashboard
         .createChartXY({
@@ -129,15 +127,10 @@ const DataChart = (props) => {
         .setThickness({ min: xThickness })
         .setTickStrategy(AxisTickStrategies.Time);
       const axisY = chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: yThickness });
-      const axisTime = chart
-        .getDefaultAxisX()
-        .setThickness({ min: xThickness })
-        .setTickStrategy(AxisTickStrategies.Time);
 
       // 차트마다 축리스트에 생성된 축 담기
-      axisXList[i] = axisX;
+      axixXList[i] = axisX;
       axisYList[i] = axisY;
-      axisTimeList[i] = axisTime;
 
       const uiLayout = chart
         .addUIElement(UILayoutBuilders.Column, {
@@ -177,9 +170,8 @@ const DataChart = (props) => {
     const chartList = new Array(CHANNELS).fill(0).map((_, i) => makeChart(i));
 
     // axisTimeRef = 플레이 바가 담긴 리스트
-    axisListRef.current.x = axisXList;
+    axisListRef.current.x = axixXList;
     axisListRef.current.y = axisYList;
-    axisListRef.current.time = axisTimeList;
 
     // charlist의 index를 통해 차트 이름을 구분하자.
     function whichChart(index) {
@@ -252,7 +244,7 @@ const DataChart = (props) => {
       dataList.map((data, i) => {
         const STEP_X = whichStepX(i);
         // Map generated XY trace data set into a more realistic trading data set.
-        const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그린다.
+        const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그리도록 설정함.
         // const baseLine = 10 + Math.random() * 2000;
         const variationAmplitude = baseLine;
         const yMin = data.reduce(
@@ -311,9 +303,11 @@ const DataChart = (props) => {
           (_, event, button, startLocation, delta) => {
             // event: 이벤트, button: 입력됨 0, startLocation: 시작좌표, delta: 드래그변화량
             if (button !== 0) return;
+            // console.log('event', event, 'startLocation', startLocation, 'delta', delta);
 
             xBandList.forEach((band, i) => {
               const bandChart = chartList[i];
+              
               const xAxisLocationStart = translatePoint(
                 bandChart.engine.clientLocation2Engine(
                   startLocation.x,
@@ -335,7 +329,8 @@ const DataChart = (props) => {
                 band
                   .restore()
                   .setValueStart(xAxisLocationStart)
-                  .setValueEnd(xAxisLocationNow);
+                  .setValueEnd(xAxisLocationNow)
+                  // .onValueChange(()=>console.log('band is changing'));
                 // 드래그로 확대되어 바뀐 클릭 시작 시간 값과 클릭 끝 값 3차트에서 확인
                 // console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
                 xTicksStart.forEach((xTick) =>
@@ -613,7 +608,7 @@ const DataChart = (props) => {
 
   // 다음 시간을 표현할 플레이바 만들기(시간, 컬러)
   function makePlayBarList(time, barColor) {
-    const axisTimeList = axisListRef.current.time;
+    const axisTimeList = axisListRef.current.x;
     // console.log('axisTimeListRef', axisTimeListRef.current)
     // Add a Constantline to the X Axis
     const playBarList = axisTimeList.map((axisTime) =>
@@ -648,8 +643,8 @@ const DataChart = (props) => {
 
   // 차트 플레이 바 나타내기
   useEffect(() => {
-    // chartRef 값이 없으면 리턴
-    if (!axisListRef.current.time) return;
+    // axisListRef 값이 없으면 리턴
+    if (!axisListRef.current.x) return;
 
     let playBarList
     if (clickRef.current.isJump) {
