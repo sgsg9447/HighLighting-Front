@@ -5,8 +5,8 @@
   .ChatViewer {
     color: white;
     width: 100%;
-    max-height: 48vh;
-    overflow: scroll;
+    max-height: 37vh;
+    overflow-y: hidden;
     display: inline-block;
     word-break: break-all;
     text-align: left;
