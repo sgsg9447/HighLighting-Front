@@ -12,6 +12,9 @@ const EditorTimePointerContext = React.createContext({
   callSeekTo: () => {},
   playerRef: undefined,
   setPlayerRef: () => {},
+  replayRef: undefined,
+  setReplayRef: () => {},
+  callReplay: () => {},
 });
 
 export default EditorTimePointerContext;

@@ -54,8 +54,8 @@ const jumpBarColor = { basic: YELLOW, hover: BLUE }
 
 // 데이터 차트
 const DataChart = (props) => {
-  const { pointer, callSeekTo, playerRef, setPlayed, setSeeking, changePointer } = React.useContext(EditorTimePointerContext);
-  const { isChatSuperOn } = useResult();
+  const { pointer, callSeekTo, setPlayed, setSeeking, changePointer } = React.useContext(EditorTimePointerContext);
+  const { isChatSuper } = useResult();
 
   const { dataList, id, url } = props;
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
@@ -64,7 +64,11 @@ const DataChart = (props) => {
   const seriesListRef = useRef(undefined);
   const receivedDataSetListRef = useRef(undefined);
   const dragStartRef = useRef({ isDrag: false, xValue: Number.MAX_SAFE_INTEGER });
-  const clickRef = useRef({ isJump: false, jumpTime: undefined });
+  const clickToJumpRef = useRef({ isJump: false, jumpTime: undefined });
+  const replayRef = useRef({ isReplay: false, startTime: undefined, endTime: undefined, duration: undefined, replay: replayBand });
+  const onChangeBarRef = useRef(false);
+  const dragBandList = useRef(undefined);
+  // const onChangeBandRef = useRef(false);
   const makeChartRef = useRef(undefined);
   const whichChartRef = useRef(undefined);
 
@@ -75,6 +79,11 @@ const DataChart = (props) => {
 
   // 영상 전체 길이를 비디오에서 얻기
   const videoLen = dataList[1].length
+
+  // replay 전역으로 보내기
+  useEffect(() => {
+
+  }, [])
 
   // 메인 차트 그리기
   useEffect(() => {
@@ -330,7 +339,7 @@ const DataChart = (props) => {
                   .restore()
                   .setValueStart(xAxisLocationStart)
                   .setValueEnd(xAxisLocationNow)
-                  // .onValueChange(()=>console.log('band is changing'));
+                  // .onValueChange((band, start, end)=>console.log('band is changing', band, start, end));
                 // 드래그로 확대되어 바뀐 클릭 시작 시간 값과 클릭 끝 값 3차트에서 확인
                 // console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
                 xTicksStart.forEach((xTick) =>
@@ -346,7 +355,8 @@ const DataChart = (props) => {
                 band.dispose();
               }
             });
-            dragStartRef.current.isDrag = true
+            dragBandList.current = xBandList;
+            dragStartRef.current.isDrag = true;
           }
         );
         chart.onSeriesBackgroundMouseDragStop(
@@ -401,7 +411,7 @@ const DataChart = (props) => {
             // 위와 반대방향으로 드래그
             else {
               // xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
-
+              
               console.log(
                 "L->R mouse drag",
                 "startTime",
@@ -409,6 +419,18 @@ const DataChart = (props) => {
                 "endTime",
                 endTime
               );
+              
+              setSeeking(true);
+              const startTimeRatio = startTime / videoLen;
+              replayRef.current.isReplay = true;
+              replayRef.current.startTime = startTime;
+              replayRef.current.endTime = endTime;
+              // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
+              callSeekTo(startTimeRatio)
+              setPlayed(parseFloat(startTimeRatio));
+              changePointer(startTime);
+              setSeeking(false)
+
               resultTable.dispose();
               xTicksStart.forEach((xTick) => xTick.dispose());
               xTicksEnd.forEach((xTick) => xTick.dispose());
@@ -417,7 +439,7 @@ const DataChart = (props) => {
         );
 
         // 차트 전체 보기 전환, x축 클릭
-        chart.getDefaultAxisX().onAxisInteractionAreaMouseClick((_, event) => {
+        chart.getDefaultAxisX().onAxisInteractionAreaMouseDoubleClick((_, event) => {
           if (event.button !== 0) return;
 
           fitActive = true;
@@ -443,7 +465,7 @@ const DataChart = (props) => {
 
           // 클릭 점핑, seeking 준비: clickRef 또는 pointer 둘 다 설정해서 먼저 변하는 값 빠르게 갱신
           setSeeking(true);
-          clickRef.current.isJump = true
+          clickToJumpRef.current.isJump = true
           // console.log(clickRef.current)
           // console.log('isDrag?', dragStartRef.current)
 
@@ -459,9 +481,9 @@ const DataChart = (props) => {
 
           const playTime = Math.round(mouseLocationAxisX / 1000)
           const playTimeRatio = mouseLocationAxisX / 1000 / videoLen;
-          clickRef.current.jumpTime = playTime;
+          clickToJumpRef.current.jumpTime = playTime;
           // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
-          callSeekTo(playerRef, playTimeRatio)
+          callSeekTo(playTimeRatio)
           setPlayed(parseFloat(playTimeRatio));
           changePointer(playTime);
           setSeeking(false)
@@ -568,24 +590,47 @@ const DataChart = (props) => {
   // url는 로컬에서 오는 듯??
 
 
-  // 슈퍼챗 on/off 1번 차트 변환 
+  // 구간 반복 재생 함수(pointer, 시작 시간, 종료 시간)
+  function replayBand(pointer, startTime, endTime) {
+    if (pointer === endTime + 1) {
+      const playTime = startTime
+      const playTimeRatio = playTime / videoLen
+      setSeeking(true)
+      callSeekTo(playTimeRatio)
+      setPlayed(parseFloat(playTimeRatio));
+      changePointer(playTime);
+      setSeeking(false)
+    }
+  }
+  
+  // 구간 반복 기능: isReplay true이면 L->R 드래그 되었거나, 북마크를 선택해서 재생했다는 뜻
   useEffect(() => {
-    if (isChatSuperOn === -1) return;
+    if (!replayRef.current.isReplay) return;
+    
+    console.log('replay', replayRef.current.isReplay, replayRef.current.startTime, replayRef.current.endTime)
+    replayBand(pointer, replayRef.current.startTime, replayRef.current.endTime)
+  }, [pointer])
+
+
+  // 차트 데이터 전환하는 렌더링
+  useEffect(() => {
+    if (isChatSuper === -1) return;
     if (!receivedDataSetListRef.current) return;
 
-    function changeChatChart(toIndex) {
+    // 차트 전환하는 함수(몇 번 차트(charNum)를 몇 번 데이터 인덱스(toIndex)로 교체하겠다.)
+    function changeChartData(chartNum, toIndex) {
       const seriesList = seriesListRef.current;
-      seriesList[0].dispose();
-      seriesList[0] = undefined;
+      seriesList[chartNum].dispose();
+      seriesList[chartNum] = undefined;
       const receivedDataSetList = receivedDataSetListRef.current;
-      const chart = chartListRef.current[0]
-      // chartList[0].dispose();
+      const chart = chartListRef.current[chartNum]
+      // chartList[atChart].dispose();
       // let axisY = axisListRef.current.y;
       // axisY.dispose();
       const name = whichChartRef.current(toIndex)
       chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: 80 });
 
-      seriesList[0] = chart
+      seriesList[chartNum] = chart
       .addLineSeries({
         dataPattern: {
           pattern: "ProgressiveX",
@@ -597,13 +642,14 @@ const DataChart = (props) => {
       .clear().add(receivedDataSetList[toIndex]);
     }
 
-    if (isChatSuperOn) {
-      changeChatChart(3)
+    // SuperChat 데이터는 데이터리스트 인덱스 3
+    if (isChatSuper) {
+      changeChartData(0, 3)
     }
     else {
-      changeChatChart(0)
+      changeChartData(0, 0)
     }
-  }, [isChatSuperOn]);
+  }, [isChatSuper]);
 
 
   // 다음 시간을 표현할 플레이바 만들기(시간, 컬러)
@@ -637,7 +683,7 @@ const DataChart = (props) => {
         )
         .setHighlightOnHover(true))
 
-    clickRef.current.isJump = false
+    clickToJumpRef.current.isJump = false
     return playBarList
   }
 
@@ -647,17 +693,28 @@ const DataChart = (props) => {
     if (!axisListRef.current.x) return;
 
     let playBarList
-    if (clickRef.current.isJump) {
-      playBarList = makePlayBarList(clickRef.current.jumpTime * 1000, jumpBarColor)
-    }
-    else {
-      playBarList = makePlayBarList(TIMELINE * 1000, playBarColor)
+    if (!onChangeBarRef.current) {
+      if (clickToJumpRef.current.isJump) {
+        playBarList = makePlayBarList(clickToJumpRef.current.jumpTime * 1000, jumpBarColor)
+      }
+      else {
+        playBarList = makePlayBarList(TIMELINE * 1000, playBarColor)
+      }
     }
 
     // timeRef에 새로운 막대리스트 넣기
     playBarListRef.current = playBarList;
     playBarListRef.current.forEach((playBar) => playBar.restore());
+    // playBarListRef.current.forEach((playBar) => playBar.restore().onValueChange((handlePlayBarChange)));
 
+    // 플레이바 조정 핸들러 (시도 중)
+    // function handlePlayBarChange(playBar, end) {
+    //   onChangeBarRef.current = true;
+    //   makeChartRef.current(end, jumpBarColor);
+    //   // playBar.setValue(end)
+    //   console.log('handlePlayBar', playBar, end);
+    //   onChangeBarRef.current = false;
+    // }
     // // Add a Band to the X Axis
     // const xAxisBand = axisX.addBand()
     // // Set the start and end values of the Band.
@@ -666,6 +723,13 @@ const DataChart = (props) => {
     // 	.setValueEnd(100)
     // 	// Set the name of the Band
     // 	.setName('X Axis Band')
+
+    // useEffect(() => {
+    //   const playBarList = playBarListRef.current;
+      
+    // }, [])
+
+
 
     // 지우기
     return () => {
