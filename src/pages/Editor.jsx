@@ -4,7 +4,7 @@ import Header from "../components/Header/Header";
 import VideoPlayer from "../components/editor/VideoPlayer";
 import ChatViewer from "../components/editor/ChatViewer";
 import DataChart from "../components/editor/DataChart";
-import BookMarker from "../components/editor/BookMarker";
+import DataChartController from "../components/editor/DataChartController";
 import CommunicationTool from "../components/editor/CommunicationTool";
 import EditorTimePointerProvider from "../providers/EditorTimePointerProvider";
 import "./Editor.scss";
@@ -20,6 +20,8 @@ function Editor() {
   const [audioData, setAudioData] = useState([]);
   const [videoData, setVideoData] = useState([]);
   const [propUrl, setPropUrl] = useState();
+  const [duration, setDuration] = useState();
+
 
   // 채팅 데이터 수신1
   useEffect(() => {
@@ -74,9 +76,12 @@ function Editor() {
         y: value,
       }));
       setVideoData(objVideo);
+      setDuration(arrayVideo.length)
       console.log("VideoData <- localVideo");
     } else {
-      setVideoData(video.map((value, index) => ({ x: index, y: value })));
+      const objVideo = video.map((value, index) => ({ x: index, y: value })); 
+      setVideoData(objVideo);
+      setDuration(objVideo.length);
     }
     console.timeEnd("mapValueToObj-Chart-Video");
   }, []);
@@ -124,13 +129,13 @@ function Editor() {
           </div>
 
           <div className="CommunicationToolCover">
-            <CommunicationTool />
+            <CommunicationTool duration={duration} />
           </div>
         </div>
 
         <div className="lowerlayer">
-          <div className="BookMarkerCover">
-            <BookMarker />
+          <div className="DataChartControllerCover">
+            <DataChartController />
           </div>
 
           <div className="DataChartCover">
@@ -139,6 +144,7 @@ function Editor() {
               title="TrippleChartPlayer"
               dataList={[chatDistributionData, videoData, audioData, chatSuperData]}
               url={propUrl}
+              duration={duration}
             />
           </div>
         </div>

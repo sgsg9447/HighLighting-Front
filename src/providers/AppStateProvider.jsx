@@ -7,10 +7,12 @@ const AppStateProvider = ({ children }) => {
   const [url, setUrl] = useState();
   const [audio, setAudio] = useState();
   const [video, setVideo] = useState();
+  // const [duration, setDuration] = useState();
   const [chatDistribution, setChatDistribution] = useState();
   const [chatSet, setChatSet] = useState();
   const [chatSuper, setChatSuper] = useState();
-  const [isChatSuperOn, setIsChatSuperOn] = useState(-1);
+  const [isChatSuper, setIsChatSuper] = useState(-1);
+  const [isChatSearch, setIsChatSearch] = useState(-1);
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
 
@@ -54,6 +56,9 @@ const AppStateProvider = ({ children }) => {
       .then((response) => {
         console.log("Success", response.data);
         localStorage.setItem("prevUrl", url);
+
+        // localStorage.setItem("localDuration", response.data.result.duration);
+        // setDuration(response.data.result.duration);
 
         localStorage.setItem("localAudio", response.data.result.audio);
         setAudio(response.data.result.audio);
@@ -120,8 +125,11 @@ const AppStateProvider = ({ children }) => {
         setChatSuper,
         mapValueToObj,
 
-        isChatSuperOn,
-        setIsChatSuperOn,
+        isChatSuper,
+        setIsChatSuper,
+
+        isChatSearch,
+        setIsChatSearch,
 
         requestResult,
         getMethod,
