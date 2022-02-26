@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
+import { format } from "./in_VideoPlayer/Duration";
 
 function CommunicationTool() {
   const { pointer } = React.useContext(EditorTimePointerContext);
@@ -105,7 +106,7 @@ function CommunicationTool() {
           />
 
           <button onClick={playVideo}>
-            {marker.startPointer}~{marker.endPointer}
+            {format(marker.startPointer)}~{format(marker.endPointer)}
           </button>
 
           <button onClick={() => deleteMarker(marker.id)}>Delete</button>
