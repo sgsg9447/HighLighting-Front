@@ -21,7 +21,7 @@ function CommunicationTool({ duration }) {
   const [memoState, setMemoState] = useState(false);
   const [isStart, setIsStart] = useState(false);
 
-  // localstorage
+  // localstorage;
   useEffect(() => {
     const temp = localStorage.getItem("markers");
     const loadedMarkers = JSON.parse(temp);
@@ -40,10 +40,14 @@ function CommunicationTool({ duration }) {
     e.preventDefault(); //새로고침 되지않게 막음!
     console.log(`isStart`, isStart);
     if (isStart) {
-      const endPointerValue = markers[markers.length - 1];
-      endPointerValue["endPointer"] = pointer;
-      setIsStart(false);
-      console.log(`markers`, markers);
+      if (markers.length === 0) {
+        setIsStart(false);
+      } else {
+        const endPointerValue = markers[markers.length - 1];
+        endPointerValue["endPointer"] = pointer;
+        setIsStart(false);
+        console.log(`markers`, markers);
+      }
     } else {
       const newMarker = {
         id: new Date().getTime(),
@@ -54,10 +58,10 @@ function CommunicationTool({ duration }) {
       };
       setIsStart(true);
       setMarkers([...markers].concat(newMarker));
-      setMemoState(true);
+      setMemoState(true); //아직안함!!!!!! 안하는게맞지않나,,,?
     }
 
-    setMarker("");
+    setMarker(""); //얜왜하지?
   }
 
   function deleteMarker(id) {
