@@ -14,7 +14,6 @@ const AppStateProvider = ({ children }) => {
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
 
-
   const history = useHistory();
   const goEditor = () => {
     history.push("/editor");
@@ -31,7 +30,7 @@ const AppStateProvider = ({ children }) => {
   function getMethod(e) {
     console.log("call getMethod()");
     axios
-      .get("http://192.168.172.101:5000/flask/hello")
+      .get("http://143.248.193.140:5000/flask/hello")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -47,8 +46,8 @@ const AppStateProvider = ({ children }) => {
     console.time("requestTime");
 
     axios
-      // .post("http://143.248.193.110:5000/flask/hello", {
-      .post("http://localhost:5000/flask/hello", {
+      .post("http://143.248.193.140:5000/flask/hello", {
+        // .post("http://localhost:5000/flask/hello", {
         url: url,
       })
       .then((response) => {
@@ -62,9 +61,15 @@ const AppStateProvider = ({ children }) => {
         console.log(response.data.result.chat[1]);
         console.log(response.data.result.chat[2]);
 
-        localStorage.setItem("localChatDistribution", response.data.result.chat[0]);
+        localStorage.setItem(
+          "localChatDistribution",
+          response.data.result.chat[0]
+        );
         setChatDistribution(response.data.result.chat[0]);
-        localStorage.setItem("localChatSet", JSON.stringify(response.data.result.chat[1]));
+        localStorage.setItem(
+          "localChatSet",
+          JSON.stringify(response.data.result.chat[1])
+        );
         setChatSet(response.data.result.chat[1]);
         localStorage.setItem("localChatSuper", response.data.result.chat[2]);
         setChatSuper(response.data.result.chat[2]);
