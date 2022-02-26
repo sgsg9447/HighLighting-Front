@@ -13,13 +13,14 @@ import useResult from "../hooks/useResult";
 import { useState, useEffect } from "react";
 
 function Editor() {
-
-  const { url, chatDistribution, chatSuper, audio, video } = useResult();
+  const { url, duration, chatDistribution, chatSuper, audio, video } =
+    useResult();
   const [chatDistributionData, setChatDistributionData] = useState([]);
   const [chatSuperData, setChatSuperData] = useState([]);
   const [audioData, setAudioData] = useState([]);
   const [videoData, setVideoData] = useState([]);
   const [propUrl, setPropUrl] = useState();
+  const [propDuration, setPropDuration] = useState();
 
   // 채팅 데이터 수신1
   useEffect(() => {
@@ -27,16 +28,22 @@ function Editor() {
     // 로컬스토리지에서 채팅 분포 데이터 받아올 때
     if (!chatDistribution) {
       // 분포도
-      const localChatDistribution = localStorage.getItem("localChatDistribution");
-      const arrayChatDistribution = JSON.parse("[" + localChatDistribution + "]");
-      const objlocalChatDistribution = arrayChatDistribution.map((value, index) => ({ x: index, y: value }));    
+      const localChatDistribution = localStorage.getItem(
+        "localChatDistribution"
+      );
+      const arrayChatDistribution = JSON.parse(
+        "[" + localChatDistribution + "]"
+      );
+      const objlocalChatDistribution = arrayChatDistribution.map(
+        (value, index) => ({ x: index, y: value })
+      );
       setChatDistributionData(objlocalChatDistribution);
       console.log("chatDistributionData <- localChatDistribution");
     }
     // POST를 통해 직접 받아올 때
     else {
       setChatDistributionData(
-        chatDistribution.map((value, index) => ({ x: index, y: value })),
+        chatDistribution.map((value, index) => ({ x: index, y: value }))
       );
     }
     console.timeEnd("mapValueToObj-ChatDistribution");
@@ -50,7 +57,10 @@ function Editor() {
       // 슈퍼챗
       const localChatSuper = localStorage.getItem("localChatSuper");
       const arrayChatSuper = JSON.parse("[" + localChatSuper + "]");
-      const objlocalChatSuper = arrayChatSuper.map((value, index) => ({ x: index, y: value}));
+      const objlocalChatSuper = arrayChatSuper.map((value, index) => ({
+        x: index,
+        y: value,
+      }));
       setChatSuperData(objlocalChatSuper);
       console.log("chatSuperData <- localChatSuper");
     }
@@ -110,6 +120,16 @@ function Editor() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!duration) {
+      const tmpLocalDuration = localStorage.getItem("localDuration");
+      setPropDuration(tmpLocalDuration);
+      console.log("duration <- localDuration", tmpLocalDuration);
+    } else {
+      setPropDuration(duration);
+    }
+  }, []);
+
   return (
     <>
       <Header />
@@ -124,7 +144,7 @@ function Editor() {
           </div>
 
           <div className="CommunicationToolCover">
-            <CommunicationTool />
+            <CommunicationTool duration={propDuration} />
           </div>
         </div>
 
@@ -137,7 +157,12 @@ function Editor() {
             <DataChart
               id="DataChart"
               title="TrippleChartPlayer"
-              dataList={[chatDistributionData, videoData, audioData, chatSuperData]}
+              dataList={[
+                chatDistributionData,
+                videoData,
+                audioData,
+                chatSuperData,
+              ]}
               url={propUrl}
             />
           </div>

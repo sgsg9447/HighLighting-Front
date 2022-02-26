@@ -4,14 +4,21 @@ import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import { format } from "./in_VideoPlayer/Duration";
 import axios from "axios";
 
-function CommunicationTool() {
-  const { pointer } = React.useContext(EditorTimePointerContext);
+function CommunicationTool({ duration }) {
+  const {
+    pointer,
+    callSeekTo,
+    setPlayed,
+    changePointer,
+    setSeeking,
+    playerRef,
+  } = React.useContext(EditorTimePointerContext);
   const [markers, setMarkers] = useState([]);
   const [marker, setMarker] = useState("");
-  const [addMarker, setAddMarker] = useState(null);
+  const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
   const [submitState, setSubmitState] = useState(true);
-  const [memoState, setMemoState] = useState(true);
+  const [memoState, setMemoState] = useState(false);
   const [isStart, setIsStart] = useState(false);
 
   // localstorage
@@ -82,26 +89,40 @@ function CommunicationTool() {
     setSubmitState(false);
     setAddMarker(null);
     setSubmitState(true);
-    setMemoState(false);
+    setMemoState(true);
   }
 
-  function playVideo() {
+  function playVideo(id) {
+    markers.forEach((marker) => {
+      if (marker.id === id) {
+        setSeeking(true);
+        const playTime = marker.startPointer; //시작값
+        console.log(`marker.start`, marker.startPointer);
+        console.log(`marker.start_type`, typeof marker.startPointer);
+        const playTimeRatio = playTime / parseInt(duration);
+        console.log(`duration's type`, typeof duration);
+        callSeekTo(playerRef, playTimeRatio);
+        setPlayed(parseFloat(playTimeRatio));
+        changePointer(playTime);
+        setSeeking(false);
+      }
+    });
     console.log("seekto 함수로 영상재생");
   }
 
-  function goToGetDB(e) {
-    console.log("DB로 get보낼것임");
-    axios
-      .get("http://210.107.130.133:5000/bookmarker")
-      .then((response) => {
-        console.log("Success", response.data);
-      })
-      .catch((error) => {
-        console.log("get메소드 에러");
-        console.log(error);
-        alert("요청에 실패하였습니다.");
-      });
-  }
+  // function goToGetDB(e) {
+  //   console.log("DB로 get보낼것임");
+  //   axios
+  //     .get("http://210.107.130.133:5000/bookmarker")
+  //     .then((response) => {
+  //       console.log("Success", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log("get메소드 에러");
+  //       console.log(error);
+  //       alert("요청에 실패하였습니다.");
+  //     });
+  // }
   function goToPostDB() {
     console.log("DB로 post보낼것임");
     console.log(`prev_axios_markers`, markers);
@@ -130,6 +151,7 @@ function CommunicationTool() {
         <button onClick={handleClick}>
           {isStart ? "북마크종료" : "북마크시작"}
         </button>
+
         {markers.map((marker) => (
           <div key={marker.id}>
             <input
@@ -138,13 +160,13 @@ function CommunicationTool() {
               checked={marker.completed}
             />
 
-            <button onClick={playVideo}>
+            <button onClick={() => playVideo(marker.id)}>
               {format(marker.startPointer)}~{format(marker.endPointer)}
             </button>
 
             <button onClick={() => deleteMarker(marker.id)}>Delete</button>
 
-            {addMarker === marker.id && submitState ? (
+            {addMarker === marker.id && submitState === true ? (
               <>
                 <input
                   type="text"
@@ -154,16 +176,23 @@ function CommunicationTool() {
                 <button onClick={() => addMemoEdit(marker.id)}>Submit</button>
               </>
             ) : memoState === true ? (
-              <button onClick={() => setAddMarker(marker.id)}>Add Memo</button>
+              <button
+                onClick={() => {
+                  setAddMarker(marker.id);
+                  setMemoState(false);
+                }}
+              >
+                Edit Memo
+              </button>
             ) : (
-              <button onClick={() => setAddMarker(marker.id)}>Edit Memo</button>
+              <button onClick={() => setAddMarker(marker.id)}>Add Memo</button>
             )}
 
             <div>{marker.text}</div>
           </div>
         ))}
         <br></br>
-        <button onClick={goToGetDB}>DB로 get 보내기</button>
+        {/* <button onClick={goToGetDB}>DB로 get 보내기</button> */}
         <button onClick={goToPostDB}>DB로 post 보내기</button>
       </>
     </div>
