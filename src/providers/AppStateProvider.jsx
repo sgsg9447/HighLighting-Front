@@ -7,6 +7,7 @@ const AppStateProvider = ({ children }) => {
   const [url, setUrl] = useState();
   const [audio, setAudio] = useState();
   const [video, setVideo] = useState();
+  const [duration, setDuration] = useState();
   const [chatDistribution, setChatDistribution] = useState();
   const [chatSet, setChatSet] = useState();
   const [chatSuper, setChatSuper] = useState();
@@ -47,11 +48,14 @@ const AppStateProvider = ({ children }) => {
 
     axios
       .post("http://143.248.193.140:5000/flask/hello", {
-        // .post("http://localhost:5000/flask/hello", {
         url: url,
       })
       .then((response) => {
         console.log("Success", response.data);
+        localStorage.setItem("localDuration", response.data.result.duration);
+        setDuration(response.data.result.duration);
+        console.log(`duration`, duration);
+
         localStorage.setItem("prevUrl", url);
 
         localStorage.setItem("localAudio", response.data.result.audio);
@@ -109,6 +113,7 @@ const AppStateProvider = ({ children }) => {
         url,
         audio,
         video,
+        duration,
         chatDistribution,
         chatSet,
         chatSuper,
@@ -120,6 +125,7 @@ const AppStateProvider = ({ children }) => {
         setUrl,
         setAudio,
         setVideo,
+        setDuration,
         setChatDistribution,
         setChatSet,
         setChatSuper,
