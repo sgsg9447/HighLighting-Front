@@ -13,7 +13,6 @@ function BookMarker({ duration, bookmarker }) {
     setPlayed,
     changePointer,
     setSeeking,
-    playerRef,
   } = React.useContext(EditorTimePointerContext);
   const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
@@ -92,7 +91,7 @@ function BookMarker({ duration, bookmarker }) {
         console.log(`marker.start_type`, typeof marker.startPointer);
         const playTimeRatio = playTime / parseInt(duration);
         console.log(`duration's type`, typeof duration);
-        callSeekTo(playerRef, playTimeRatio);
+        callSeekTo(playTimeRatio);
         setPlayed(parseFloat(playTimeRatio));
         changePointer(playTime);
         setSeeking(false);
@@ -146,7 +145,7 @@ function BookMarker({ duration, bookmarker }) {
       });
   }
 
-  function downloadGet(e) {
+  function downloadGet() {
     console.log("call getMethod()");
     const method = "GET";
     const url = "http://143.248.193.140:5000/downloadpath";
@@ -167,6 +166,13 @@ function BookMarker({ duration, bookmarker }) {
       });
   }
 
+  function deleteCall() {
+    console.log("다운로드 완료, 삭제요청");
+    axios
+      .get("http://143.248.193.140:5000/flask/download", {
+      })
+  }
+
   function goToDownload() {
     console.log("서버로 post보낼것임");
     let postMarkers;
@@ -182,13 +188,14 @@ function BookMarker({ duration, bookmarker }) {
     const payload = { list: postMarkers };
     console.log('컷을 요청한 북마크', payload);
     axios
-      .post("http://143.248.193.140:5000/downloadpath", {
-        markers: payload,
-        url: localStorage.getItem("prevUrl"),
+      .post("http://143.248.193.140:5000/flask/download", {
+        status: 'download_start',
+        bookmarks: payload,
       })
       .then((response) => {
         console.log("Success", response.data);
         downloadGet();
+        deleteCall();
       })
       .catch((error) => {
         console.log("get메소드 에러");
