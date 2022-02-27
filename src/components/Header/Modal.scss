@@ -7,6 +7,7 @@
   left: 0;
   z-index: 99;
   background-color: rgba(0, 0, 0, 0.6);
+  color: white;
 
   button {
     outline: none;
@@ -20,7 +21,7 @@
     min-width: 450px;
     margin: auto;
     border-radius: 0.3rem;
-    background-color: #fff;
+    background-color: #282c34;
     /* 팝업이 열릴때 스르륵 열리는 효과 */
     animation: modal-show 0.5s;
     overflow: hidden;
@@ -31,7 +32,7 @@
       text-align: center;
       position: relative;
       padding: 16px 64px 16px 16px;
-      background-color: #f1f1f1;
+      background-color: rgb(73, 70, 70);
       font-weight: 700;
 
       button {
@@ -42,7 +43,7 @@
         font-size: 21px;
         font-weight: 700;
         text-align: center;
-        color: #999;
+        color: white;
         background-color: transparent;
       }
     }
@@ -52,9 +53,9 @@
       max-width: 100%;
       padding: 16px;
       /* 모달창 메인파트 윗줄 */
-      border-top: 1px solid #dee2e6;
+      border-top: 1px solid black;
       /* 모달창 메인파트 아래줄 */
-      border-bottom: 1px solid #dee2e6;
+      border-bottom: 1px solid black;
 
       .contents {
         max-width: 80%;
@@ -86,12 +87,13 @@
         }
       }
     }
+
     footer button {
       margin-right: 1rem;
       float: right;
       padding: 6px 12px;
-      color: #fff;
-      background-color: #6c757d;
+      color: #282c34;
+      background-color: white;
       border-radius: 5px;
       font-size: 13px;
     }
