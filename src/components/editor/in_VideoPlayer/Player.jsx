@@ -91,7 +91,7 @@ function Player({url}) {
         />
       </div>
 
-      <div>
+      <div className='hide'>
         <table>
           <tbody>
             <tr>
@@ -134,7 +134,7 @@ function Player({url}) {
         </table>
       </div>
 
-      <div>
+      <div className='hide'>
         <table>
           <tbody>
             <tr>
