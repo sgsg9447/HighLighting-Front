@@ -135,6 +135,46 @@ function CommunicationTool({ duration, bookmarker }) {
       });
   }
 
+  function downloadGet(e) {
+    console.log("call getMethod()");
+    const method = "GET";
+    const url = "http://143.248.193.140:5000/downloadpath";
+    axios
+      .request({
+        url,
+        method,
+        responseType: "blob",
+      })
+      .then(({ data }) => {
+        const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute("download", "HiGHLIGHTING.zip");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      });
+  }
+
+  function goToDownload() {
+    console.log("서버로 post보낼것임");
+    let payload = { list: markers };
+    axios
+      .post("http://143.248.193.140:5000/downloadpath", {
+        markers: payload,
+        url: localStorage.getItem("prevUrl"),
+      })
+      .then((response) => {
+        console.log("Success", response.data);
+        downloadGet();
+      })
+      .catch((error) => {
+        console.log("get메소드 에러");
+        console.log(error);
+        alert("요청에 실패하였습니다.");
+      });
+  }
+
   return (
     <div className="BookMarkerContainer">
       <h1>북마커 영역</h1>
@@ -180,7 +220,9 @@ function CommunicationTool({ duration, bookmarker }) {
         ))}
         <br></br>
         {/* <button onClick={goToGetDB}>DB로 get 보내기</button> */}
-        <button onClick={goToPostDB}>DB로 post 보내기</button>
+        <button onClick={goToPostDB}>post 보내기</button>
+
+        <button onClick={goToDownload}>다운로드</button>
       </>
     </div>
   );
