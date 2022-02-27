@@ -412,7 +412,7 @@ const DataChart = (props) => {
                 let yMin = 999999;
                 let yMax = -999999;
                 for (let x = xStart; x < xEnd; x += STEP_X) {
-                  const dp = receivedDataSetList[i][Math.round(x / STEP_X)];
+                  const dp = receivedDataSet[i][Math.round(x / STEP_X)];
                   if (dp !== undefined) {
                     yMin = Math.min(yMin, dp.y);
                     yMax = Math.max(yMax, dp.y);
@@ -695,7 +695,7 @@ const DataChart = (props) => {
     seriesList[chartNum].dispose();
     seriesList[chartNum] = undefined;
     // const receivedDataSetList = receivedDataSetListRef.current;
-    console.log('changeChartDataReceivedDataSetList', receivedDataSetList);
+    // console.log('changeChartDataReceivedDataSetList', receivedDataSetList);
     const chart = chartListRef.current[chartNum]
     // chartList[atChart].dispose();
     // let axisY = axisListRef.current.y;
@@ -720,7 +720,7 @@ const DataChart = (props) => {
   // 슈퍼챗으로 데이터 차트 전환하는 렌더링
   useEffect(() => {
     if (isChatSuper === -1) return;
-    console.log('receivedDataSetList', receivedDataSetList)
+    // console.log('receivedDataSetList', receivedDataSetList)
     if (!receivedDataSetList) return;
 
     // SuperChat 데이터는 데이터리스트 인덱스 3, false일 때 전환
