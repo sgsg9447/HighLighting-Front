@@ -13,14 +13,22 @@ import useResult from "../hooks/useResult";
 import { useState, useEffect } from "react";
 
 function Editor() {
-  const { url, duration, chatDistribution, chatSuper, audio, video } =
-    useResult();
+  const {
+    bookmarker,
+    url,
+    duration,
+    chatDistribution,
+    chatSuper,
+    audio,
+    video,
+  } = useResult();
   const [chatDistributionData, setChatDistributionData] = useState([]);
   const [chatSuperData, setChatSuperData] = useState([]);
   const [audioData, setAudioData] = useState([]);
   const [videoData, setVideoData] = useState([]);
   const [propUrl, setPropUrl] = useState();
   const [propDuration, setPropDuration] = useState();
+  const [propBookmarker, setPropBookmarker] = useState();
 
   // 채팅 데이터 수신1
   useEffect(() => {
@@ -130,6 +138,19 @@ function Editor() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!bookmarker) {
+      const tmpLocalBookmarker = JSON.parse(localStorage.getItem("marker"));
+      if (tmpLocalBookmarker) {
+        setPropBookmarker(tmpLocalBookmarker);
+      }
+      setPropBookmarker(tmpLocalBookmarker);
+      console.log("bookmarker <- localBookmarker", tmpLocalBookmarker);
+    } else {
+      setPropBookmarker(bookmarker);
+    }
+  }, []);
+
   return (
     <>
       <Header />
@@ -144,7 +165,10 @@ function Editor() {
           </div>
 
           <div className="CommunicationToolCover">
-            <CommunicationTool duration={propDuration} />
+            <CommunicationTool
+              duration={propDuration}
+              bookmarker={propBookmarker}
+            />
           </div>
         </div>
 

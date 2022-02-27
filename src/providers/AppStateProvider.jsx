@@ -14,6 +14,7 @@ const AppStateProvider = ({ children }) => {
   const [isChatSuperOn, setIsChatSuperOn] = useState(-1);
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
+  const [bookmarker, setBookmarker] = useState();
 
   const history = useHistory();
   const goEditor = () => {
@@ -54,9 +55,17 @@ const AppStateProvider = ({ children }) => {
         console.log("Success", response.data);
         localStorage.setItem("localDuration", response.data.result.duration);
         setDuration(response.data.result.duration);
-        console.log(`duration`, duration);
+        console.log(`duration`, response.data.result.duration);
 
         localStorage.setItem("prevUrl", url);
+
+        localStorage.setItem(
+          "markers",
+          JSON.stringify(response.data.bookmarker)
+        );
+
+        setBookmarker(response.data.bookmarker);
+        console.log(response.data.bookmarker);
 
         localStorage.setItem("localAudio", response.data.result.audio);
         setAudio(response.data.result.audio);
@@ -110,6 +119,7 @@ const AppStateProvider = ({ children }) => {
   return (
     <AppStateContext.Provider
       value={{
+        bookmarker,
         url,
         audio,
         video,
@@ -122,6 +132,7 @@ const AppStateProvider = ({ children }) => {
         setTitle,
         setThumNail,
 
+        setBookmarker,
         setUrl,
         setAudio,
         setVideo,
