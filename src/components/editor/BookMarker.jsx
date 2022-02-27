@@ -20,6 +20,19 @@ function BookMarker({ duration, bookmarker }) {
   const [isStart, setIsStart] = useState(false);
   const [markers, setMarkers] = useState([]);
   // localstorage;
+  useEffect(() => {
+    const temp = localStorage.getItem("markers");
+    const loadedMarkers = JSON.parse(temp);
+
+    if (loadedMarkers) {
+      setMarkers(loadedMarkers);
+    }
+  }, []);
+
+  useEffect(() => {
+    const temp = JSON.stringify(markers);
+    localStorage.setItem("markers", temp);
+  }, [markers]);
 
   useEffect(() => {
     if (!bookmarker) return;
