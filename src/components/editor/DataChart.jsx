@@ -40,6 +40,9 @@ const TITLE2 = "Audio Power";
 const TITLE3 = "Super Chat";
 const TITLE4 = "Keyword Flow";
 
+// 좌우 화살표 키 누를 때 이동 시간(초)
+const ARROW_MOVING_TIME = 10;
+
 // x축 확대축소 사용여부(boolean)
 const AXIS_X_WHEEL_ZOOM = true;
 
@@ -57,7 +60,7 @@ const jumpBarColor = { basic: YELLOW, hover: BLUE }
 // 데이터 차트
 const DataChart = (props) => {
   const { dataList, id, url, duration } = props;
-  const { pointer, callSeekTo, setPlayed, setSeeking, changePointer, setDataChangeRef } = React.useContext(EditorTimePointerContext);
+  const { pointer, isplaying, setIsplaying, callSeekTo, setPlayed, setSeeking, changePointer, setDataChangeRef } = React.useContext(EditorTimePointerContext);
   const { chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
@@ -109,10 +112,11 @@ const DataChart = (props) => {
     setDataChangeRef(dataDataRef)
   }, [])
 
+  // 키워드 데이터 도착할 떄, 데이터리스트에 추가
   useEffect(() => {
     if (chatKeywords) {
       dataList[4] = chatKeywords
-      console.log('chatKeyword into dataList')
+      // console.log('chatKeyword into dataList')
     }
   }, [isKeywordsDownload, chatKeywords])
 
@@ -164,6 +168,7 @@ const DataChart = (props) => {
         name = whichChart(i);
       }
 
+      // 축 생성
       const axisX = chart
         .getDefaultAxisX()
         .setThickness({ min: xThickness })
@@ -174,6 +179,7 @@ const DataChart = (props) => {
       axixXList[i] = axisX;
       axisYList[i] = axisY;
 
+      // 차트 레이아웃
       const uiLayout = chart
         .addUIElement(UILayoutBuilders.Column, {
           x: chart.getDefaultAxisX(),
@@ -206,6 +212,7 @@ const DataChart = (props) => {
       return chart;
     }
 
+    // 차트 생성 함수 ref 저장
     makeChartRef.current = makeChart
 
     // 메인 차트 리스트 생성
@@ -457,6 +464,7 @@ const DataChart = (props) => {
               changePointer(startTime);
               setSeeking(false)
 
+              // 드래그 종료 시, 시간 표시 삭제
               resultTable.dispose();
               xTicksStart.forEach((xTick) => xTick.dispose());
               xTicksEnd.forEach((xTick) => xTick.dispose());
@@ -513,6 +521,9 @@ const DataChart = (props) => {
           setPlayed(parseFloat(playTimeRatio));
           changePointer(playTime);
           setSeeking(false)
+
+          // 구간 반복 있다면 제거
+          replayRef.current.isReplay = false;
         });
       });
 
@@ -619,8 +630,6 @@ const DataChart = (props) => {
       // receivedDataSetListRef.current = undefined
     };    
   }, [url, chatKeywords]);
-    // 렌더링 후 변화 안 줄만한 값은 url
-    // url는 로컬에서 오는 듯??
 
     // band 구간변경
     // useEffect(() => {
@@ -668,7 +677,7 @@ const DataChart = (props) => {
 
 
   // 구간 반복 재생 함수(pointer, 시작 시간, 종료 시간)
-  function replayBand(pointer, startTime, endTime) {
+  function replayBand(pointer, startTime, endTime = undefined) {
     if (pointer === endTime + 1) {
       const playTime = startTime
       const playTimeRatio = playTime / duration
@@ -746,7 +755,7 @@ const DataChart = (props) => {
   useEffect(() => {
     if (isChatKeywords === -1) return;
     if (receivedDataSetList.length === 3) return;
-    console.log('Keywords Chart arrived', isChatKeywords, isKeywordsDownload, receivedDataSetList)
+    // console.log('Keywords Chart arrived', isChatKeywords, isKeywordsDownload, receivedDataSetList)
     let series;
     // keywords 데이터는 데이터리스트 인덱스 4, isChatKeywords false일 떄 전환
     if (!isChatKeywords) {
@@ -850,19 +859,47 @@ const DataChart = (props) => {
     };
   }, [id, url, TIMELINE]);
 
-  // // window click event 확인해보기
-  // useEffect(() => {
-  //   const handleClickOutside = (e) => {
-  //     console.log('localName', e.target.localName, 'className', e.target.className);
-  //     if (e.target.localName === "canvas")
-  //       console.log('canvast by click')
-  //   };
+  // 좌, 우 화살표 재생 이동 함수
+  function arrowPlayBarMove(isLeft, padding = 10) {
+    setSeeking(true)
+    let playTime;
+    if (isLeft) {
+      playTime = pointer - padding;
+    }
+    else {
+      playTime = pointer + padding;
+    }
+    let playTimeRatio = playTime / duration
+    callSeekTo(playTimeRatio)
+    setPlayed(parseFloat(playTimeRatio));
+    changePointer(playTime);
+    setSeeking(false)
+  }
 
-  //   window.addEventListener("click", handleClickOutside);
-  //   return () => {
-  //     window.removeEventListener("click", handleClickOutside);
-  //   };
-  // }, []);
+  // window keyboard event 스페이스 바 재생/중지, 화살표 좌우 재생이동
+  useEffect(() => {
+    const handlePushSpaceBar = (event) => {
+      // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+      const keyCode = event.code;
+      switch (keyCode) {
+        case 'Space':
+          setIsplaying(!isplaying);
+          return;
+        case 'ArrowLeft':
+          arrowPlayBarMove(true, ARROW_MOVING_TIME)
+          return;
+        case 'ArrowRight':
+          arrowPlayBarMove(false, ARROW_MOVING_TIME)
+          return;
+        default:
+          return;
+      }
+    };
+    window.addEventListener("keydown", handlePushSpaceBar);
+    return () => {
+      window.removeEventListener("keydown", handlePushSpaceBar);
+    };
+  }, [isplaying, pointer]);
 
   return (
     <div id={id} className="TrippleChart"></div>
