@@ -1,50 +1,71 @@
-import React, {useState} from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import useResult from "../../hooks/useResult";
 
-function DataChartController() {
+function DataChartController({ url }) {
   const { pointer } = React.useContext(EditorTimePointerContext);
-  const { isChatSuper, setIsChatSuper } = useResult();
-  const { isChatSearch, setIsChatSearch } = useResult();
-  const [keyword, setKeyword] = useState();
+  const { requestKeywordsData, isChatSuper, setIsChatSuper, isChatKeywords, setIsChatKeywords } = useResult();
+  const [keywords, setKeywords] = useState('');
+  // const [isKeywordInputOpen, setIsKeywordInputOpen] = useState(false);
+  const keywordInputRef = useRef();
+  // console.log(url);
 
   function handleIsChatSuper() {
-    if (isChatSuper === -1) {
-      setIsChatSuper(true)
-    }
+    if (isChatSuper === -1)
+      setIsChatSuper(false)
     else {
       setIsChatSuper(prev => !prev);
     }
+    console.log('isChatSuper', isChatSuper);
   }
 
-  function handleIsChatSearch() {
-    if (isChatSuper === -1) {
-      setIsChatSearch(true)
-    }
+  function handleIsChatKeywords() {
+    if (isChatKeywords === -1)
+      setIsChatKeywords(prev => prev+ 1);
     else {
-      // setIsChatSearch(prev => !prev);
+      setIsChatKeywords(prev => prev? 0 : prev + 1);
     }
   }
-  
+
+  function postUrlKeyword() {
+    console.log('url', url, 'keywords', keywords);
+    // getMethodKeywords(e);
+    requestKeywordsData(url, keywords);
+    localStorage.setItem('localSearchKeywords', keywords)
+  }
+
+  const onChangeInput = useCallback((e) => {
+    const tmpKeywords = e.target.value;
+    setKeywords(tmpKeywords);
+  }, []);
+
+
   return (
     <>
       <div className="container__chat">
-      <h2>Time Pointer = {pointer}</h2>
+        <h2>Time Pointer = {pointer}</h2>
+
         <button className="btn__ChatSuper" onClick={handleIsChatSuper} value={isChatSuper}>
-          { isChatSuper ? '슈퍼챗 OFF' : '슈퍼챗 ON'}
+          {isChatSuper ? '슈퍼챗 ON' : '슈퍼챗 OFF'}
         </button>
-        <button className="btn__ChatKeyWord" onClick={handleIsChatSearch} >
-          { isChatSearch ?
-          <>
-          <span>{keyword}</span>
-          <input type="text" onChange={(e) => setKeyword(e.target.value)} required />
-          <button type="submit" onSubmit={handleIsChatSearch}>검색</button>
-          {/* {console.log(isChatSearch)} */}
-          </>
-          : '키워드 검색 ON'}
-        </button>
+
+        <button className="btn__ChatKeyWord" onClick={handleIsChatKeywords}>{isChatKeywords ? '키워드 검색 ON' : '키워드 검색 OFF'}</button>
+          {isChatKeywords ?
+            null :
+            <>
+              <input
+                className="keywordInputBar"
+                ref={keywordInputRef}
+                placeholder="키워드 , 으로 구분해주세요"
+                value={keywords}
+                onChange={onChangeInput}
+              />
+              <button type="submit" onClick={postUrlKeyword}>검색</button>
+              <h3>[검색 키워드]: {keywords ? keywords : localStorage.getItem('localSearchKeyword')}</h3>
+            </>
+          }
       </div>
       <div className="container__video">
         <h2>비디오</h2>
@@ -52,11 +73,6 @@ function DataChartController() {
       <div className="container__audio">
         <h2>오디오</h2>
       </div>
-
-      {/* <button onClick={() => addTag(pointer)}>북마크</button> */}
-      {/* 콘솔에러나서 주석처리해둡니다 - 지훈 */}
-      {/* <button onClick={(pointer)}>북마크</button> */}
-      {/* <Tags /> */}
     </>
   );
 }
