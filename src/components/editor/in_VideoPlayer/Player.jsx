@@ -64,8 +64,7 @@ function Player({url}) {
   const handleEnded = () => {
     setIsplaying(loop);
   };
-
-
+  
   return (
     <div>
       <div className="player-wrapper">

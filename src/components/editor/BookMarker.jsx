@@ -22,6 +22,19 @@ function BookMarker({ duration, bookmarker }) {
   const [isStart, setIsStart] = useState(false);
   const {markers, setMarkers} = useResult();
   // localstorage;
+  useEffect(() => {
+    const temp = localStorage.getItem("markers");
+    const loadedMarkers = JSON.parse(temp);
+
+    if (loadedMarkers) {
+      setMarkers(loadedMarkers);
+    }
+  }, []);
+
+  useEffect(() => {
+    const temp = JSON.stringify(markers);
+    localStorage.setItem("markers", temp);
+  }, [markers]);
 
   useEffect(() => {
     if (!bookmarker) return;
@@ -161,7 +174,7 @@ function BookMarker({ duration, bookmarker }) {
       });
   }
 
-  function downloadGet(e) {
+  function downloadGet() {
     console.log("call getMethod()");
     const method = "GET";
     const url = "http://143.248.193.140:5000/downloadpath";
@@ -182,6 +195,13 @@ function BookMarker({ duration, bookmarker }) {
       });
   }
 
+  function deleteCall() {
+    console.log("다운로드 완료, 삭제요청");
+    axios
+      .get("http://143.248.193.140:5000/flask/download", {
+      })
+  }
+
   function goToDownload() {
     console.log("서버로 post보낼것임");
     let postMarkers;
@@ -197,13 +217,14 @@ function BookMarker({ duration, bookmarker }) {
     const payload = { list: postMarkers };
     console.log('컷을 요청한 북마크', payload);
     axios
-      .post("http://143.248.193.140:5000/downloadpath", {
-        markers: payload,
-        url: localStorage.getItem("prevUrl"),
+      .post("http://143.248.193.140:5000/flask/download", {
+        status: 'download_start',
+        bookmarks: payload,
       })
       .then((response) => {
         console.log("Success", response.data);
         downloadGet();
+        deleteCall();
       })
       .catch((error) => {
         console.log("get메소드 에러");
