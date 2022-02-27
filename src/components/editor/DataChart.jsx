@@ -40,6 +40,9 @@ const TITLE2 = "Audio Power";
 const TITLE3 = "Super Chat";
 const TITLE4 = "Keyword Flow";
 
+// 좌우 화살표 키 누를 때 이동 시간(초)
+const ARROW_MOVING_TIME = 10;
+
 // x축 확대축소 사용여부(boolean)
 const AXIS_X_WHEEL_ZOOM = true;
 
@@ -883,10 +886,10 @@ const DataChart = (props) => {
           setIsplaying(!isplaying);
           return;
         case 'ArrowLeft':
-          arrowPlayBarMove(true, 10)
+          arrowPlayBarMove(true, ARROW_MOVING_TIME)
           return;
         case 'ArrowRight':
-          arrowPlayBarMove(false, 10)
+          arrowPlayBarMove(false, ARROW_MOVING_TIME)
           return;
         default:
           return;
