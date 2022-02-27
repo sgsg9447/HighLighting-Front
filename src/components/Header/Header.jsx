@@ -17,8 +17,10 @@ export default function Header() {
         return window.removeEventListener("click", handleClickOutside);
       }
       console.log(target.className);
-      if (modalOpen && target.className === "openModal modal")
+      if (modalOpen && target.className === "openModal modal") {
+        document.body.style.overflow = "unset";
         setModalOpen(false);
+      }
     };
 
     window.addEventListener("click", handleClickOutside);
@@ -28,9 +30,11 @@ export default function Header() {
   }, [modalOpen]);
 
   const openModal = () => {
+    document.body.style.overflow = "hidden";
     setModalOpen(true);
   };
   const closeModal = () => {
+    document.body.style.overflow = "unset";
     setModalOpen(false);
   };
 
@@ -70,7 +74,6 @@ export default function Header() {
           close={closeModal}
           Header="회원가입 및 로그인 "
         >
-          여기가 회원가입 및 로그인창이 떠야될 부분.
           <LoginPage />
         </Modal>
       )}
