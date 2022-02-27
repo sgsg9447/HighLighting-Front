@@ -5,7 +5,7 @@ import VideoPlayer from "../components/editor/VideoPlayer";
 import ChatViewer from "../components/editor/ChatViewer";
 import DataChart from "../components/editor/DataChart";
 import DataChartController from "../components/editor/DataChartController";
-import CommunicationTool from "../components/editor/CommunicationTool";
+import BookMarker from "../components/editor/BookMarker";
 import EditorTimePointerProvider from "../providers/EditorTimePointerProvider";
 import "./Editor.scss";
 
@@ -165,8 +165,8 @@ function Editor() {
             <ChatViewer />
           </div>
 
-          <div className="CommunicationToolCover">
-            <CommunicationTool
+          <div className="BookMarker">
+            <BookMarker
               duration={propDuration}
               bookmarker={propBookmarker}
             />
