@@ -3,7 +3,7 @@ import AppStateContext from "../contexts/AppStateContext";
 
 export default function useRoute() {
   const {
-    getMethod,
+    getMethodHello,
     goEditor,
     goLoading,
     goNotFound,
@@ -11,7 +11,7 @@ export default function useRoute() {
   } = useContext(AppStateContext);
 
   return {
-    getMethod,
+    getMethodHello,
     goEditor,
     goLoading,
     goNotFound,

@@ -20,6 +20,8 @@ const AppStateProvider = ({ children }) => {
   const [bookmarker, setBookmarker] = useState();
   const [receivedDataSetList, setReceivedDataSetList] = useState();
 
+  const server_addr = "http://143.248.193.140:5000";
+
   const history = useHistory();
   const goEditor = () => {
     history.push("/editor");
@@ -36,7 +38,7 @@ const AppStateProvider = ({ children }) => {
   function getMethodHello(e) {
     console.log("call getMethod()");
     axios
-      .get("http://143.248.193.140:5000/flask/hello")
+      .get(server_addr+"/flask/hello")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -52,7 +54,7 @@ const AppStateProvider = ({ children }) => {
     console.time("requestTime");
 
     axios
-      .post("http://143.248.193.140:5000/flask/hello", {
+      .post(server_addr + "/flask/hello", {
         url: url,
       })
       .then((response) => {
@@ -115,7 +117,7 @@ const AppStateProvider = ({ children }) => {
   function getMethodKeywords(e) {
     console.log("call getMethod()");
     axios
-      .get("http://143.248.193.140:5000/flask/keywords")
+      .get(server_addr + "/flask/keywords")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -129,7 +131,7 @@ const AppStateProvider = ({ children }) => {
   function requestKeywordsData(url, keywords) {
     console.log("call getMethod()");
     axios
-      .post("http://143.248.193.140:5000/flask/keywords", {
+      .post(server_addr + "/flask/keywords", {
         url: url,
         keywords: keywords,
       })

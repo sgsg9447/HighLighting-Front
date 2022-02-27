@@ -10,7 +10,7 @@ export default function Home() {
   const urlInput = useRef();
 
   const { url, setUrl } = useResult();
-  const { getMethod, requestResult } = useRoute();
+  const { getMethodHello, requestResult } = useRoute();
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
@@ -82,7 +82,7 @@ export default function Home() {
         />
         <h3>URL : {url}</h3>
         <button onClick={linkCheck}>보내기 버튼</button>
-        <button onClick={getMethod}>get method 버튼</button>
+        <button onClick={getMethodHello}>get method 버튼</button>
         <button onClick={removeUrl}>주소 삭제</button>
       </div>
     </div>
