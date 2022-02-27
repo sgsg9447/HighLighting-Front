@@ -4,7 +4,9 @@ import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import { format } from "./in_VideoPlayer/Duration";
 import axios from "axios";
 
-function CommunicationTool({ duration }) {
+import "./CommunicationTool.scss";
+
+function CommunicationTool({ duration, bookmarker }) {
   const {
     pointer,
     callSeekTo,
@@ -13,28 +15,17 @@ function CommunicationTool({ duration }) {
     setSeeking,
     playerRef,
   } = React.useContext(EditorTimePointerContext);
-  const [markers, setMarkers] = useState([]);
   const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
-  const [submitState, setSubmitState] = useState(true);
-  const [memoState, setMemoState] = useState(false);
   const [isStart, setIsStart] = useState(false);
-
+  const [markers, setMarkers] = useState([]);
   // localstorage;
-  useEffect(() => {
-    const temp = localStorage.getItem("markers");
-    const loadedMarkers = JSON.parse(temp);
-
-    if (loadedMarkers) {
-      setMarkers(loadedMarkers);
-    }
-  }, []);
 
   useEffect(() => {
-    const temp = JSON.stringify(markers);
-    localStorage.setItem("markers", temp);
-  }, [markers]);
+    if (!bookmarker) return;
+    setMarkers(bookmarker);
+  }, [bookmarker]);
 
   function handleClick(e) {
     e.preventDefault(); //새로고침 되지않게 막음!
@@ -58,7 +49,6 @@ function CommunicationTool({ duration }) {
       };
       setIsStart(true);
       setMarkers([...markers].concat(newMarker));
-      setMemoState(true); //아직안함!!!!!! 안하는게맞지않나,,,?
     }
 
     setMarker(""); //얜왜하지?
@@ -90,10 +80,7 @@ function CommunicationTool({ duration }) {
     });
     setMarkers(updateMarkers);
     setEditingText("");
-    setSubmitState(false);
     setAddMarker(null);
-    setSubmitState(true);
-    setMemoState(true);
   }
 
   function playVideo(id) {
@@ -114,6 +101,8 @@ function CommunicationTool({ duration }) {
     console.log("seekto 함수로 영상재생");
   }
 
+  //get test!!!
+
   // function goToGetDB(e) {
   //   console.log("DB로 get보낼것임");
   //   axios
@@ -132,7 +121,7 @@ function CommunicationTool({ duration }) {
     console.log(`prev_axios_markers`, markers);
     let payload = { list: markers };
     axios
-      .post("http://210.107.130.133:5000/bookmarker", {
+      .post("http://143.248.193.140:5000/bookmarker", {
         markers: payload,
         url: localStorage.getItem("prevUrl"),
       })
@@ -168,31 +157,25 @@ function CommunicationTool({ duration }) {
               {format(marker.startPointer)}~{format(marker.endPointer)}
             </button>
 
-            <button onClick={() => deleteMarker(marker.id)}>Delete</button>
+            <button onClick={() => deleteMarker(marker.id)}>삭제</button>
 
-            {addMarker === marker.id && submitState === true ? (
-              <>
-                <input
-                  type="text"
-                  onChange={(e) => setEditingText(e.target.value)}
-                  value={editingText}
-                />
-                <button onClick={() => addMemoEdit(marker.id)}>Submit</button>
-              </>
-            ) : memoState === true ? (
-              <button
-                onClick={() => {
-                  setAddMarker(marker.id);
-                  setMemoState(false);
-                }}
-              >
-                Edit Memo
-              </button>
+            {addMarker === marker.id ? (
+              <input
+                type="text"
+                onChange={(e) => setEditingText(e.target.value)}
+                value={editingText}
+              />
             ) : (
-              <button onClick={() => setAddMarker(marker.id)}>Add Memo</button>
+              <div>{marker.text}</div>
             )}
 
-            <div>{marker.text}</div>
+            {addMarker === marker.id ? (
+              <button onClick={() => addMemoEdit(marker.id)}>저장</button>
+            ) : (
+              <button onClick={() => setAddMarker(marker.id)}>
+                한줄메모 작성!
+              </button>
+            )}
           </div>
         ))}
         <br></br>
