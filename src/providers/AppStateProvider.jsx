@@ -18,6 +18,7 @@ const AppStateProvider = ({ children }) => {
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
   const [bookmarker, setBookmarker] = useState();
+  const [markers, setMarkers] = useState([]);
   const [receivedDataSetList, setReceivedDataSetList] = useState();
 
   const server_addr = "http://143.248.193.140:5000";
@@ -157,6 +158,7 @@ const AppStateProvider = ({ children }) => {
   return (
     <AppStateContext.Provider
       value={{
+        markers,
         bookmarker,
         url,
         audio,
@@ -175,6 +177,7 @@ const AppStateProvider = ({ children }) => {
         setTitle,
         setThumNail,
 
+        setMarkers,
         setBookmarker,
         setUrl,
         setAudio,
