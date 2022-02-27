@@ -5,6 +5,7 @@ import { GoSignIn } from "react-icons/go";
 import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
+import LoginPage from "./auth/LoginPage";
 
 export default function Header() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -70,6 +71,7 @@ export default function Header() {
           Header="회원가입 및 로그인 "
         >
           여기가 회원가입 및 로그인창이 떠야될 부분.
+          <LoginPage />
         </Modal>
       )}
     </div>
