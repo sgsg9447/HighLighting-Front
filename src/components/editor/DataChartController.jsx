@@ -18,7 +18,7 @@ function DataChartController({ url }) {
     else {
       setIsChatSuper(prev => !prev);
     }
-    console.log('isChatSuper', isChatSuper);
+    // console.log('isChatSuper', isChatSuper);
   }
 
   function handleIsChatKeywords() {
