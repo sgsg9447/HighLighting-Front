@@ -15,6 +15,8 @@ const EditorTimePointerContext = React.createContext({
   replayRef: undefined,
   setReplayRef: () => {},
   callReplay: () => {},
+  dataChangeRef: undefined,
+  setDataChangeRef: () => {},
 });
 
 export default EditorTimePointerContext;

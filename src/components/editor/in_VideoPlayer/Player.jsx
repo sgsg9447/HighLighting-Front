@@ -5,7 +5,6 @@ import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext
 import "./Player.scss";
 function Player({url}) {
   const { changePointer, isplaying, setIsplaying, seeking, setSeeking, played, setPlayed, setPlayerRef } = React.useContext(EditorTimePointerContext);
-  
   const [controls] = useState(false);
   const [volume, setVolume] = useState(0.8);
   // const [played, setPlayed] = useState(0);

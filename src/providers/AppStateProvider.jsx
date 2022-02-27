@@ -7,14 +7,17 @@ const AppStateProvider = ({ children }) => {
   const [url, setUrl] = useState();
   const [audio, setAudio] = useState();
   const [video, setVideo] = useState();
-  // const [duration, setDuration] = useState();
+  const [duration, setDuration] = useState();
   const [chatDistribution, setChatDistribution] = useState();
   const [chatSet, setChatSet] = useState();
   const [chatSuper, setChatSuper] = useState();
+  const [chatKeywords, setChatKeywords] = useState();
   const [isChatSuper, setIsChatSuper] = useState(-1);
-  const [isChatSearch, setIsChatSearch] = useState(-1);
+  const [isChatKeywords, setIsChatKeywords] = useState(-1);
+  const [isKeywordsDownload, setIsKeywordsDownload] = useState(0);
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
+  const [receivedDataSetList, setReceivedDataSetList] = useState();
 
 
   const history = useHistory();
@@ -30,10 +33,10 @@ const AppStateProvider = ({ children }) => {
     history.push("/notfound");
   };
 
-  function getMethod(e) {
+  function getMethodHello(e) {
     console.log("call getMethod()");
     axios
-      .get("http://192.168.172.101:5000/flask/hello")
+      .get("http://143.248.193.140:5000/flask/hello")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -49,23 +52,19 @@ const AppStateProvider = ({ children }) => {
     console.time("requestTime");
 
     axios
-      // .post("http://143.248.193.110:5000/flask/hello", {
-      .post("http://localhost:5000/flask/hello", {
+      .post("http://143.248.193.140:5000/flask/hello", {
+      // .post("http://localhost:5000/flask/hello", {
         url: url,
       })
       .then((response) => {
         console.log("Success", response.data);
         localStorage.setItem("prevUrl", url);
 
-        // localStorage.setItem("localDuration", response.data.result.duration);
-        // setDuration(response.data.result.duration);
+        localStorage.setItem("localDuration", response.data.result.duration);
+        setDuration(response.data.result.duration);
 
         localStorage.setItem("localAudio", response.data.result.audio);
         setAudio(response.data.result.audio);
-
-        console.log(response.data.result.chat[0]);
-        console.log(response.data.result.chat[1]);
-        console.log(response.data.result.chat[2]);
 
         localStorage.setItem("localChatDistribution", response.data.result.chat[0]);
         setChatDistribution(response.data.result.chat[0]);
@@ -99,6 +98,40 @@ const AppStateProvider = ({ children }) => {
     goLoading();
   }
 
+  function getMethodKeywords(e) {
+    console.log("call getMethod()");
+    axios
+      .get("http://143.248.193.140:5000/flask/keywords")
+      .then((response) => {
+        console.log("Success", response.data);
+      })
+      .catch((error) => {
+        console.log("get메소드 에러");
+        console.log(error);
+        alert("요청에 실패하였습니다.");
+      });
+  }
+  
+  function requestKeywordsData(url, keywords) {
+    console.log("call getMethod()");
+    axios
+      .post("http://143.248.193.140:5000/flask/keywords", {
+        url: url,
+        keywords: keywords,
+      })
+      .then((response) => {
+        console.log("Success", response.data);
+        const objChatKeywords = response.data.result.distribution.map((value, index) => ({ x: index, y: value }))
+        setChatKeywords(objChatKeywords);
+        setIsKeywordsDownload(prev => prev + 1);
+      })
+      .catch((error) => {
+        console.log("keyword 요청실패");
+        console.log(error);
+        alert("키워드 검색요청에 실패하였습니다.");
+      });
+  }
+
   function mapValueToObj(raw) {
     return raw.map((value, index) => ({ name: index, value: value }));
   }
@@ -109,9 +142,15 @@ const AppStateProvider = ({ children }) => {
         url,
         audio,
         video,
+        duration,
         chatDistribution,
         chatSet,
         chatSuper,
+        chatKeywords,
+        isChatSuper,
+        isChatKeywords,
+        isKeywordsDownload,
+        receivedDataSetList,
         title,
         thumbnail,
         setTitle,
@@ -120,19 +159,22 @@ const AppStateProvider = ({ children }) => {
         setUrl,
         setAudio,
         setVideo,
+        setDuration,
         setChatDistribution,
         setChatSet,
         setChatSuper,
+        setIsChatSuper,
+        setChatKeywords,
+        setIsChatKeywords,
+        setIsKeywordsDownload,
+        setReceivedDataSetList,
+
         mapValueToObj,
 
-        isChatSuper,
-        setIsChatSuper,
-
-        isChatSearch,
-        setIsChatSearch,
-
+        requestKeywordsData,
+        getMethodKeywords,
         requestResult,
-        getMethod,
+        getMethodHello,
         goEditor,
         goLoading,
         goNotFound,
