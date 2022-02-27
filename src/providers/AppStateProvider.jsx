@@ -17,8 +17,8 @@ const AppStateProvider = ({ children }) => {
   const [isKeywordsDownload, setIsKeywordsDownload] = useState(0);
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
+  const [bookmarker, setBookmarker] = useState();
   const [receivedDataSetList, setReceivedDataSetList] = useState();
-
 
   const history = useHistory();
   const goEditor = () => {
@@ -53,22 +53,36 @@ const AppStateProvider = ({ children }) => {
 
     axios
       .post("http://143.248.193.140:5000/flask/hello", {
-      // .post("http://localhost:5000/flask/hello", {
         url: url,
       })
       .then((response) => {
         console.log("Success", response.data);
-        localStorage.setItem("prevUrl", url);
-
         localStorage.setItem("localDuration", response.data.result.duration);
         setDuration(response.data.result.duration);
+        console.log(`duration`, response.data.result.duration);
+
+        localStorage.setItem("prevUrl", url);
+
+        localStorage.setItem(
+          "markers",
+          JSON.stringify(response.data.bookmarker)
+        );
+
+        setBookmarker(response.data.bookmarker);
+        console.log(response.data.bookmarker);
 
         localStorage.setItem("localAudio", response.data.result.audio);
         setAudio(response.data.result.audio);
 
-        localStorage.setItem("localChatDistribution", response.data.result.chat[0]);
+        localStorage.setItem(
+          "localChatDistribution",
+          response.data.result.chat[0]
+        );
         setChatDistribution(response.data.result.chat[0]);
-        localStorage.setItem("localChatSet", JSON.stringify(response.data.result.chat[1]));
+        localStorage.setItem(
+          "localChatSet",
+          JSON.stringify(response.data.result.chat[1])
+        );
         setChatSet(response.data.result.chat[1]);
         localStorage.setItem("localChatSuper", response.data.result.chat[2]);
         setChatSuper(response.data.result.chat[2]);
@@ -111,7 +125,7 @@ const AppStateProvider = ({ children }) => {
         alert("요청에 실패하였습니다.");
       });
   }
-  
+
   function requestKeywordsData(url, keywords) {
     console.log("call getMethod()");
     axios
@@ -121,9 +135,11 @@ const AppStateProvider = ({ children }) => {
       })
       .then((response) => {
         console.log("Success", response.data);
-        const objChatKeywords = response.data.result.distribution.map((value, index) => ({ x: index, y: value }))
+        const objChatKeywords = response.data.result.distribution.map(
+          (value, index) => ({ x: index, y: value })
+        );
         setChatKeywords(objChatKeywords);
-        setIsKeywordsDownload(prev => prev + 1);
+        setIsKeywordsDownload((prev) => prev + 1);
       })
       .catch((error) => {
         console.log("keyword 요청실패");
@@ -139,6 +155,7 @@ const AppStateProvider = ({ children }) => {
   return (
     <AppStateContext.Provider
       value={{
+        bookmarker,
         url,
         audio,
         video,
@@ -156,6 +173,7 @@ const AppStateProvider = ({ children }) => {
         setTitle,
         setThumNail,
 
+        setBookmarker,
         setUrl,
         setAudio,
         setVideo,
