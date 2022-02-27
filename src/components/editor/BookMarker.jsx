@@ -5,6 +5,7 @@ import { format } from "./in_VideoPlayer/Duration";
 import axios from "axios";
 
 import "./BookMarker.scss";
+import useResult from "../../hooks/useResult";
 
 function BookMarker({ duration, bookmarker }) {
   const {
@@ -13,13 +14,13 @@ function BookMarker({ duration, bookmarker }) {
     setPlayed,
     changePointer,
     setSeeking,
-    playerRef,
+    replayRef,
   } = React.useContext(EditorTimePointerContext);
   const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
-  const [markers, setMarkers] = useState([]);
+  const {markers, setMarkers} = useResult();
   // localstorage;
 
   useEffect(() => {
@@ -29,28 +30,41 @@ function BookMarker({ duration, bookmarker }) {
 
   function handleClick(e) {
     e.preventDefault(); //새로고침 되지않게 막음!
-    console.log(`isStart`, isStart);
-    if (isStart) {
-      if (markers.length === 0) {
-        setIsStart(false);
-      } else {
-        const endPointerValue = markers[markers.length - 1];
-        endPointerValue["endPointer"] = pointer;
-        setIsStart(false);
-        console.log(`markers`, markers);
-      }
-    } else {
+
+    console.log(`is replayRef?`, replayRef.current);
+    if (replayRef.current.isReplay) {
       const newMarker = {
-        id: new Date().getTime(),
-        text: marker,
-        startPointer: pointer,
-        endPointer: null,
-        completed: false,
-      };
-      setIsStart(true);
+      id: new Date().getTime(),
+      text: marker,
+      startPointer: replayRef.current.startTime,
+      endPointer: replayRef.current.endTime,
+      completed: false,
+      }
       setMarkers([...markers].concat(newMarker));
     }
-
+    else {
+      console.log(`isStart`, isStart);
+      if (isStart) {
+        if (markers.length === 0) {
+          setIsStart(false);
+        } else {
+          const endPointerValue = markers[markers.length - 1];
+          endPointerValue["endPointer"] = pointer;
+          setIsStart(false);
+          console.log(`markers`, markers);
+        }
+      } else {
+        const newMarker = {
+          id: new Date().getTime(),
+          text: marker,
+          startPointer: pointer,
+          endPointer: null,
+          completed: false,
+        };
+        setIsStart(true);
+        setMarkers([...markers].concat(newMarker));
+      }
+    }
     setMarker(""); //얜왜하지?
   }
 
@@ -91,8 +105,9 @@ function BookMarker({ duration, bookmarker }) {
         console.log(`marker.start`, marker.startPointer);
         console.log(`marker.start_type`, typeof marker.startPointer);
         const playTimeRatio = playTime / parseInt(duration);
+        console.log(`duration`, duration, 'playerTimeRatio', playTimeRatio);
         console.log(`duration's type`, typeof duration);
-        callSeekTo(playerRef, playTimeRatio);
+        callSeekTo(playTimeRatio);
         setPlayed(parseFloat(playTimeRatio));
         changePointer(playTime);
         setSeeking(false);
@@ -204,7 +219,7 @@ function BookMarker({ duration, bookmarker }) {
       <h3>유저 클릭 북마크의 start 값으로 Time Pointer 변경</h3>
       <>
         <button onClick={handleClick}>
-          {isStart ? "북마크종료" : "북마크시작"}
+          {isStart ? "북마크종료" : (replayRef?.current.isReplay ? "북마크저장" : "북마크시작")}
         </button>
 
         {markers.map((marker) => (

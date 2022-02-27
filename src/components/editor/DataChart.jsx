@@ -60,8 +60,8 @@ const jumpBarColor = { basic: YELLOW, hover: BLUE }
 // 데이터 차트
 const DataChart = (props) => {
   const { dataList, id, url, duration } = props;
-  const { pointer, isplaying, setIsplaying, callSeekTo, setPlayed, setSeeking, changePointer, setDataChangeRef } = React.useContext(EditorTimePointerContext);
-  const { chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList } = useResult();
+  const { pointer, isplaying, setIsplaying, callSeekTo, setPlayed, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
+  const { markers, chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
   const playBarListRef = useRef(undefined);
@@ -106,10 +106,15 @@ const DataChart = (props) => {
     }
   }
 
+  // 리플레이 키트 Ref 전역으로 보내기, 북마커 사용
+  useEffect(() => {
+    setReplayRef(replayRef);
+  }, []);
+
   // 데이터 차트 변수, 함수 전역으로 보내기 dataChartRef
   useEffect(() => {
     // if (!dataDataRef) return;
-    setDataChangeRef(dataDataRef)
+    setDataChangeRef(dataDataRef);
   }, [])
 
   // 키워드 데이터 도착할 떄, 데이터리스트에 추가
@@ -631,50 +636,6 @@ const DataChart = (props) => {
     };    
   }, [url, chatKeywords]);
 
-    // band 구간변경
-    // useEffect(() => {
-    //   if (!dragStartRef.current.isDrag) return;
-
-    //   function handleDragBand(band, start, end) {
-    //     onBandChangeRef.current = true;
-    //     const bandChart = chartListRef.current;
-    //     const bandList = dragBandList.current;
-
-    //     bandList.forEach((band, i) => {
-    //       band.off
-    //     })
-
-    //     // band.offValueChange()
-    //     console.log('band is changing', band, start, end)
-    //     band
-    //       .restore()
-    //       .setValueStart(start)
-    //       .setValueEnd(end)
-    //     //   const xAxisLocationStart = translatePoint(
-    //     //     bandChart.engine.clientLocation2Engine(
-    //     //       startLocation.x,
-    //     //       startLocation.y
-    //     //     ),
-    //     //     bandChart.engine.scale,
-    //     //     { x: axisX, y: axisY }
-    //     //   ).x;
-    //     //   const xAxisLocationNow = translatePoint(
-    //     //     bandChart.engine.clientLocation2Engine(
-    //     //       event.clientX,
-    //     //       event.clientY
-    //     //     ),
-    //     //     bandChart.engine.scale,
-    //     //     { x: axisX, y: axisY }
-    //     //   ).x;
-    //   }
-
-    //   const BandList = dragBandList.current
-    //   BandList.forEach((band, i) => {
-    //     band.onValueChange(handleDragBand);
-    //   })
-
-    // }, [url, pointer])
-
 
   // 구간 반복 재생 함수(pointer, 시작 시간, 종료 시간)
   function replayBand(pointer, startTime, endTime = undefined) {
@@ -733,9 +694,6 @@ const DataChart = (props) => {
     if (!receivedDataSetList) return;
 
     // SuperChat 데이터는 데이터리스트 인덱스 3, false일 때 전환
-    // if (!isChatSuper && !isChatKeywords) {
-    //   changeChartData(0, 4)
-    // }
     let series;
     if (!isChatSuper) {
       series = changeChartData(0, 3);
@@ -808,6 +766,37 @@ const DataChart = (props) => {
     return playBarList
   }
 
+  // 북마크가 체크되면 해당 범위 밴드로 보여주기
+  useEffect(() => {
+    // chartListRef 값이 없으면 리턴
+    if (!chartListRef.current) return;
+
+    function addBookMarkBand(start, end) {
+      const chartList = chartListRef.current;
+      const newBandList = chartList.map((chart) =>
+        chart.getDefaultAxisX().addBand().dispose()
+      );
+      newBandList.forEach((band, i) => {
+        band
+        .restore()
+        .setValueStart(start * 1000)
+        .setValueEnd(end * 1000)
+      });      
+    return newBandList;
+    };
+
+    // 선택된 북마크 선별해서 그리기
+    const selectedMarkerList = markers.filter((marker) => marker.completed === true);
+    console.log('selectedMarkerList', selectedMarkerList)
+    const markerBandsListSet = selectedMarkerList.map((marker) => addBookMarkBand(marker.startPointer, marker.endPointer));
+    console.log('markerBandsList', markerBandsListSet)
+
+    // 선택 해제시 삭제
+    return (() => {
+      markerBandsListSet.forEach(markerBandList => (markerBandList.forEach(band => band.dispose())));
+    });
+  }, [markers])
+
   // 차트 플레이 바 나타내기
   useEffect(() => {
     // axisListRef 값이 없으면 리턴
@@ -836,26 +825,11 @@ const DataChart = (props) => {
     //   console.log('handlePlayBar', playBar, end);
     //   onChangeBarRef.current = false;
     // }
-    // // Add a Band to the X Axis
-    // const xAxisBand = axisX.addBand()
-    // // Set the start and end values of the Band.
-    // xAxisBand
-    // 	.setValueStart(1800)
-    // 	.setValueEnd(100)
-    // 	// Set the name of the Band
-    // 	.setName('X Axis Band')
-
-    // useEffect(() => {
-    //   const playBarList = playBarListRef.current;
-
-    // }, [])
-
-
 
     // 지우기
     return () => {
       playBarListRef.current.forEach((playBar) => playBar.dispose());
-      playBarListRef.current.forEach((playBar) => (playBar = undefined));
+      playBarListRef.current.forEach((playBar) => playBar = undefined);
     };
   }, [id, url, TIMELINE]);
 
