@@ -11,10 +11,14 @@ const AppStateProvider = ({ children }) => {
   const [chatDistribution, setChatDistribution] = useState();
   const [chatSet, setChatSet] = useState();
   const [chatSuper, setChatSuper] = useState();
-  const [isChatSuperOn, setIsChatSuperOn] = useState(-1);
+  const [chatKeywords, setChatKeywords] = useState();
+  const [isChatSuper, setIsChatSuper] = useState(-1);
+  const [isChatKeywords, setIsChatKeywords] = useState(-1);
+  const [isKeywordsDownload, setIsKeywordsDownload] = useState(0);
   const [title, setTitle] = useState();
   const [thumbnail, setThumNail] = useState();
   const [bookmarker, setBookmarker] = useState();
+  const [receivedDataSetList, setReceivedDataSetList] = useState();
 
   const history = useHistory();
   const goEditor = () => {
@@ -29,7 +33,7 @@ const AppStateProvider = ({ children }) => {
     history.push("/notfound");
   };
 
-  function getMethod(e) {
+  function getMethodHello(e) {
     console.log("call getMethod()");
     axios
       .get("http://143.248.193.140:5000/flask/hello")
@@ -70,10 +74,6 @@ const AppStateProvider = ({ children }) => {
         localStorage.setItem("localAudio", response.data.result.audio);
         setAudio(response.data.result.audio);
 
-        console.log(response.data.result.chat[0]);
-        console.log(response.data.result.chat[1]);
-        console.log(response.data.result.chat[2]);
-
         localStorage.setItem(
           "localChatDistribution",
           response.data.result.chat[0]
@@ -112,6 +112,42 @@ const AppStateProvider = ({ children }) => {
     goLoading();
   }
 
+  function getMethodKeywords(e) {
+    console.log("call getMethod()");
+    axios
+      .get("http://143.248.193.140:5000/flask/keywords")
+      .then((response) => {
+        console.log("Success", response.data);
+      })
+      .catch((error) => {
+        console.log("get메소드 에러");
+        console.log(error);
+        alert("요청에 실패하였습니다.");
+      });
+  }
+
+  function requestKeywordsData(url, keywords) {
+    console.log("call getMethod()");
+    axios
+      .post("http://143.248.193.140:5000/flask/keywords", {
+        url: url,
+        keywords: keywords,
+      })
+      .then((response) => {
+        console.log("Success", response.data);
+        const objChatKeywords = response.data.result.distribution.map(
+          (value, index) => ({ x: index, y: value })
+        );
+        setChatKeywords(objChatKeywords);
+        setIsKeywordsDownload((prev) => prev + 1);
+      })
+      .catch((error) => {
+        console.log("keyword 요청실패");
+        console.log(error);
+        alert("키워드 검색요청에 실패하였습니다.");
+      });
+  }
+
   function mapValueToObj(raw) {
     return raw.map((value, index) => ({ name: index, value: value }));
   }
@@ -127,6 +163,11 @@ const AppStateProvider = ({ children }) => {
         chatDistribution,
         chatSet,
         chatSuper,
+        chatKeywords,
+        isChatSuper,
+        isChatKeywords,
+        isKeywordsDownload,
+        receivedDataSetList,
         title,
         thumbnail,
         setTitle,
@@ -140,13 +181,18 @@ const AppStateProvider = ({ children }) => {
         setChatDistribution,
         setChatSet,
         setChatSuper,
+        setIsChatSuper,
+        setChatKeywords,
+        setIsChatKeywords,
+        setIsKeywordsDownload,
+        setReceivedDataSetList,
+
         mapValueToObj,
 
-        isChatSuperOn,
-        setIsChatSuperOn,
-
+        requestKeywordsData,
+        getMethodKeywords,
         requestResult,
-        getMethod,
+        getMethodHello,
         goEditor,
         goLoading,
         goNotFound,
