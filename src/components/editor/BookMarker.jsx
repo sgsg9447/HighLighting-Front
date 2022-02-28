@@ -16,11 +16,12 @@ function BookMarker({ duration, bookmarker }) {
     setSeeking,
     replayRef,
   } = React.useContext(EditorTimePointerContext);
+  const { server_addr } = useResult();
   const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
-  const {markers, setMarkers} = useResult();
+  const { markers, setMarkers } = useResult();
   // localstorage;
   useEffect(() => {
     const temp = localStorage.getItem("markers");
@@ -47,15 +48,14 @@ function BookMarker({ duration, bookmarker }) {
     console.log(`is replayRef?`, replayRef.current);
     if (replayRef.current.isReplay) {
       const newMarker = {
-      id: new Date().getTime(),
-      text: marker,
-      startPointer: replayRef.current.startTime,
-      endPointer: replayRef.current.endTime,
-      completed: false,
-      }
+        id: new Date().getTime(),
+        text: marker,
+        startPointer: replayRef.current.startTime,
+        endPointer: replayRef.current.endTime,
+        completed: false,
+      };
       setMarkers([...markers].concat(newMarker));
-    }
-    else {
+    } else {
       console.log(`isStart`, isStart);
       if (isStart) {
         if (markers.length === 0) {
@@ -118,7 +118,7 @@ function BookMarker({ duration, bookmarker }) {
         console.log(`marker.start`, marker.startPointer);
         console.log(`marker.start_type`, typeof marker.startPointer);
         const playTimeRatio = playTime / parseInt(duration);
-        console.log(`duration`, duration, 'playerTimeRatio', playTimeRatio);
+        console.log(`duration`, duration, "playerTimeRatio", playTimeRatio);
         console.log(`duration's type`, typeof duration);
         callSeekTo(playTimeRatio);
         setPlayed(parseFloat(playTimeRatio));
@@ -134,7 +134,7 @@ function BookMarker({ duration, bookmarker }) {
   // function goToGetDB(e) {
   //   console.log("DB로 get보낼것임");
   //   axios
-  //     .get("http://210.107.130.133:5000/bookmarker")
+  //     .get(server_addr+"/bookmarker")
   //     .then((response) => {
   //       console.log("Success", response.data);
   //     })
@@ -148,19 +148,20 @@ function BookMarker({ duration, bookmarker }) {
     console.log("DB로 post보낼것임");
     console.log(`prev_axios_markers`, markers);
     let postMarkers;
-    const selectedMarkers = markers.filter((marker) => marker.completed === true)
+    const selectedMarkers = markers.filter(
+      (marker) => marker.completed === true
+    );
     if (selectedMarkers.length > 0) {
       postMarkers = selectedMarkers;
       // console.log('selectedMarkers', selectedMarkers);
-    }
-    else {
+    } else {
       postMarkers = markers;
       // console.log('markers', markers);
     }
     const payload = { list: postMarkers };
-    console.log('new_axios_markers', payload);
+    console.log("new_axios_markers", payload);
     axios
-      .post("http://143.248.193.140:5000/bookmarker", {
+      .post(server_addr + "/bookmarker", {
         markers: payload,
         url: localStorage.getItem("prevUrl"),
       })
@@ -177,7 +178,7 @@ function BookMarker({ duration, bookmarker }) {
   function downloadGet() {
     console.log("call getMethod()");
     const method = "GET";
-    const url = "http://143.248.193.140:5000/downloadpath";
+    const url = server_addr + "/downloadpath";
     axios
       .request({
         url,
@@ -197,28 +198,27 @@ function BookMarker({ duration, bookmarker }) {
 
   function deleteCall() {
     console.log("다운로드 완료, 삭제요청");
-    axios
-      .get("http://143.248.193.140:5000/flask/download", {
-      })
+    axios.get(server_addr + "/flask/download", {});
   }
 
   function goToDownload() {
     console.log("서버로 post보낼것임");
     let postMarkers;
-    const selectedMarkers = markers.filter((marker) => marker.completed === true)
+    const selectedMarkers = markers.filter(
+      (marker) => marker.completed === true
+    );
     if (selectedMarkers.length > 0) {
       postMarkers = selectedMarkers;
       // console.log('selectedMarkers', selectedMarkers);
-    }
-    else {
+    } else {
       postMarkers = markers;
       // console.log('markers', markers);
     }
     const payload = { list: postMarkers };
-    console.log('컷을 요청한 북마크', payload);
+    console.log("컷을 요청한 북마크", payload);
     axios
-      .post("http://143.248.193.140:5000/flask/download", {
-        status: 'download_start',
+      .post(server_addr + "/flask/download", {
+        status: "download_start",
         bookmarks: payload,
       })
       .then((response) => {
@@ -240,7 +240,11 @@ function BookMarker({ duration, bookmarker }) {
       <h3>유저 클릭 북마크의 start 값으로 Time Pointer 변경</h3>
       <>
         <button onClick={handleClick}>
-          {isStart ? "북마크종료" : (replayRef?.current.isReplay ? "북마크저장" : "북마크시작")}
+          {isStart
+            ? "북마크종료"
+            : replayRef?.current.isReplay
+            ? "북마크저장"
+            : "북마크시작"}
         </button>
 
         {markers.map((marker) => (
