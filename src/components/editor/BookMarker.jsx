@@ -196,6 +196,13 @@ function BookMarker({ duration, bookmarker }) {
       });
   }
 
+  const handleKeyPress = (event, id) => {
+    if (event.key === "Enter") {
+      console.log("enter press here! ");
+      addMemoEdit(id);
+    }
+  };
+
   function deleteCall() {
     console.log("다운로드 완료, 삭제요청");
     axios.get(server_addr + "/flask/download", {});
@@ -264,6 +271,7 @@ function BookMarker({ duration, bookmarker }) {
             {addMarker === marker.id ? (
               <input
                 type="text"
+                onKeyPress={(e) => handleKeyPress(e, marker.id)}
                 onChange={(e) => setEditingText(e.target.value)}
                 value={editingText}
               />
