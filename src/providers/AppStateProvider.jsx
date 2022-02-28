@@ -21,7 +21,7 @@ const AppStateProvider = ({ children }) => {
   const [markers, setMarkers] = useState([]);
   const [receivedDataSetList, setReceivedDataSetList] = useState();
 
-  const server_addr = "http://143.248.193.140:5000";
+  const server_addr = "http://143.248.193.175:5000";
 
   const history = useHistory();
   const goEditor = () => {

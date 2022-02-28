@@ -40,9 +40,6 @@ const TITLE2 = "Audio Power";
 const TITLE3 = "Super Chat";
 const TITLE4 = "Keyword Flow";
 
-// 좌우 화살표 키 누를 때 이동 시간(초)
-const ARROW_MOVING_TIME = 10;
-
 // x축 확대축소 사용여부(boolean)
 const AXIS_X_WHEEL_ZOOM = true;
 
@@ -60,7 +57,7 @@ const jumpBarColor = { basic: YELLOW, hover: BLUE }
 // 데이터 차트
 const DataChart = (props) => {
   const { dataList, id, url, duration } = props;
-  const { pointer, isplaying, setIsplaying, callSeekTo, setPlayed, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
+  const { pointer, callSeekTo, setPlayed, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
   const { markers, chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
@@ -286,275 +283,274 @@ const DataChart = (props) => {
     const chartList = chartListRef.current;
     const seriesList = seriesListRef.current;
 
-    Promise.all(
-      dataList.map((data, i) => { 
-          const STEP_X = whichStepX(i);
-          // Map generated XY trace data set into a more realistic trading data set.
-          const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그리도록 설정함.
-          // const baseLine = 10 + Math.random() * 2000;
-          const variationAmplitude = baseLine;
-          const yMin = data.reduce(
-            (min, cur) => Math.min(min, cur.y),
-            Number.MAX_SAFE_INTEGER
-          );
-          const yMax = data.reduce(
-            (max, cur) => Math.max(max, cur.y),
-            -Number.MAX_SAFE_INTEGER
-          );
-          const yIntervalHalf = (yMax - yMin) / 2;
-          const yTraceBaseline = yMin + yIntervalHalf;
-          return data.map((xy) => ({
-            x: xy.x * STEP_X,
-            y:
-              baseLine +
-              ((xy.y - yTraceBaseline) / yIntervalHalf) * variationAmplitude,
-          }))       
-      })  
-    ).then((receivedDataSet) => {
-      if (receivedDataSet && receivedDataSet[0]) {
-        seriesList.forEach((series, i) => {
-          series.add(receivedDataSet[i]);
-        });
-        setReceivedDataSetList(receivedDataSet);
-      }
-
-      // Customize chart interactions. x축 마우스인터렉션 휠 설정 여부
-      chartList.forEach((chart) => {
-        chart.setMouseInteractions(false);
-        chart.getDefaultAxisX().setMouseInteractions(AXIS_X_WHEEL_ZOOM);
-        chart
-          .setMouseInteractionRectangleFit(false)
-          .setMouseInteractionRectangleZoom(false);
-      });
-
-      // Create custom chart interaction for mouse dragging inside chart area.
-      const xBandList = chartList.map((chart) =>
-        chart.getDefaultAxisX().addBand().dispose()
+    const receivedDataSet = dataList.map((data, i) => { 
+      const STEP_X = whichStepX(i);
+      // Map generated XY trace data set into a more realistic trading data set.
+      const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그리도록 설정함.
+      // const baseLine = 10 + Math.random() * 2000;
+      const variationAmplitude = baseLine;
+      const yMin = data.reduce(
+        (min, cur) => Math.min(min, cur.y),
+        Number.MAX_SAFE_INTEGER
       );
-      chartList.forEach((chart) => {
-        // 각 차트에 축 생성
-        const axisX = chart.getDefaultAxisX();
-        const axisY = chart.getDefaultAxisY();
+      const yMax = data.reduce(
+        (max, cur) => Math.max(max, cur.y),
+        -Number.MAX_SAFE_INTEGER
+      );
+      const yIntervalHalf = (yMax - yMin) / 2;
+      const yTraceBaseline = yMin + yIntervalHalf;
+      return data.map((xy) => ({
+        x: xy.x * STEP_X,
+        y:
+          baseLine +
+          ((xy.y - yTraceBaseline) / yIntervalHalf) * variationAmplitude,
+      }))       
+    })  
+    
+    if (receivedDataSet && receivedDataSet[0]) {
+      seriesList.forEach((series, i) => {
+        series.add(receivedDataSet[i]);
+      });
+      setReceivedDataSetList(receivedDataSet);
+    }
 
-        // 해당 축에 x위치 표시해주는 틱 생성
-        const xTicksStart = chartList.map((chart) =>
-          chart.getDefaultAxisX().addCustomTick().dispose()
-        );
-        const xTicksEnd = chartList.map((chart) =>
-          chart.getDefaultAxisX().addCustomTick().dispose()
-        );
+    // Customize chart interactions. x축 마우스인터렉션 휠 설정 여부
+    chartList.forEach((chart) => {
+      chart.setMouseInteractions(false);
+      chart.getDefaultAxisX().setMouseInteractions(AXIS_X_WHEEL_ZOOM);
+      chart
+        .setMouseInteractionRectangleFit(false)
+        .setMouseInteractionRectangleZoom(false);
+    });
 
-        // chart.setMouseInteractionRectangleFit(false).setMouseInteractionRectangleZoom(false)
-        chart.onSeriesBackgroundMouseDrag(
-          (_, event, button, startLocation, delta) => {
-            // event: 이벤트, button: 입력됨 0, startLocation: 시작좌표, delta: 드래그변화량
-            // console.log('event', event, 'startLocation', startLocation, 'delta', delta);
-            if (button !== 0) return;
+    // Create custom chart interaction for mouse dragging inside chart area.
+    const xBandList = chartList.map((chart) =>
+      chart.getDefaultAxisX().addBand().dispose()
+    );
+    chartList.forEach((chart) => {
+      // 각 차트에 축 생성
+      const axisX = chart.getDefaultAxisX();
+      const axisY = chart.getDefaultAxisY();
 
-            xBandList.forEach((band, i) => {
-              const bandChart = chartList[i];
+      // 해당 축에 x위치 표시해주는 틱 생성
+      const xTicksStart = chartList.map((chart) =>
+        chart.getDefaultAxisX().addCustomTick().dispose()
+      );
+      const xTicksEnd = chartList.map((chart) =>
+        chart.getDefaultAxisX().addCustomTick().dispose()
+      );
 
-              const xAxisLocationStart = translatePoint(
-                bandChart.engine.clientLocation2Engine(
-                  startLocation.x,
-                  startLocation.y
-                ),
-                bandChart.engine.scale,
-                { x: axisX, y: axisY }
-              ).x;
-              const xAxisLocationNow = translatePoint(
-                bandChart.engine.clientLocation2Engine(
-                  event.clientX,
-                  event.clientY
-                ),
-                bandChart.engine.scale,
-                { x: axisX, y: axisY }
-              ).x;
-              // console.log('xAxisLocationStart.x', xAxisLocationStart, 'xAxisLocationNow.x', xAxisLocationNow)
-              if (Math.abs(event.clientX - startLocation.x) > 10) {
-                // 드래그 하고 있는 밴드(범위)을 표현하기
-                band
-                  .restore()
-                  .setValueStart(xAxisLocationStart)
-                  .setValueEnd(xAxisLocationNow)
-                // .onValueChange((band, start, end)=>console.log('band is changing', band, start, end));
-                // 드래그로 확대되어 바뀐 클릭 시작 시간 값과 클릭 끝 값 3차트에서 확인
-                // console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
-                xTicksStart.forEach((xTick) =>
-                  xTick.restore().setValue(xAxisLocationStart)
-                );
-                xTicksEnd.forEach((xTick) =>
-                  xTick.restore().setValue(xAxisLocationNow)
-                );
-                dragStartRef.current.xValue = Math.round(
-                  Math.min(xAxisLocationStart, xAxisLocationNow) / 1000
-                );
-              } else {
-                band.dispose();
-              }
-            });
-            dragBandList.current = xBandList;
-            dragStartRef.current.isDrag = true;
-          }
-        );
-        chart.onSeriesBackgroundMouseDragStop(
-          (_, event, button, startLocation) => {
-            if (button !== 0 || xBandList[0].isDisposed()) return;
+      // chart.setMouseInteractionRectangleFit(false).setMouseInteractionRectangleZoom(false)
+      chart.onSeriesBackgroundMouseDrag(
+        (_, event, button, startLocation, delta) => {
+          // event: 이벤트, button: 입력됨 0, startLocation: 시작좌표, delta: 드래그변화량
+          // console.log('event', event, 'startLocation', startLocation, 'delta', delta);
+          if (button !== 0) return;
 
-            // 마우스 드래그 시작과 끝 시간 값
-            const xDragStart = xBandList[0].getValueStart();
-            const xDragEnd = xBandList[0].getValueEnd();
+          xBandList.forEach((band, i) => {
+            const bandChart = chartList[i];
 
-            // 시작과 끝 시간 초 단위 변환
-            const startTime = Math.round(xDragStart / 1000);
-            const endTime = Math.round(xDragEnd / 1000);
-
-            // 마우스 드래그 시작이 끝보다 작으면 좌->우 드래그
-            if (xDragStart > xDragEnd) {
-              // 마우스드래그 좌우방향 무관하게 시작과 끝 값을 크기 순으로 설정
-              const xStart = Math.min(xDragStart, xDragEnd);
-              const xEnd = Math.max(xDragStart, xDragEnd);
-
-              chartList[0]
-                .getDefaultAxisX()
-                .setInterval(xStart, xEnd, false, true);
-              xBandList.forEach((band, i) => {
-                const nChart = chartList[i];
-                const STEP_X = whichStepX(i);
-                let yMin = 999999;
-                let yMax = -999999;
-                for (let x = xStart; x < xEnd; x += STEP_X) {
-                  const dp = receivedDataSet[i][Math.round(x / STEP_X)];
-                  if (dp !== undefined) {
-                    yMin = Math.min(yMin, dp.y);
-                    yMax = Math.max(yMax, dp.y);
-                  }
-                }
-                nChart.getDefaultAxisY().setInterval(yMin, yMax, false, true);
-                band.dispose();
-
-                console.log(
-                  "R->L mouse drag",
-                  "startTime", startTime,
-                  "endTime", endTime,
-                  "yMax", yMax,
-                );
-              });
-              // console.log("mouse drag", "xStart", xStart, "xEnd", xEnd);
-              xTicksStart.forEach((xTick) => xTick.dispose());
-              xTicksEnd.forEach((xTick) => xTick.dispose());
-
+            const xAxisLocationStart = translatePoint(
+              bandChart.engine.clientLocation2Engine(
+                startLocation.x,
+                startLocation.y
+              ),
+              bandChart.engine.scale,
+              { x: axisX, y: axisY }
+            ).x;
+            const xAxisLocationNow = translatePoint(
+              bandChart.engine.clientLocation2Engine(
+                event.clientX,
+                event.clientY
+              ),
+              bandChart.engine.scale,
+              { x: axisX, y: axisY }
+            ).x;
+            // console.log('xAxisLocationStart.x', xAxisLocationStart, 'xAxisLocationNow.x', xAxisLocationNow)
+            if (Math.abs(event.clientX - startLocation.x) > 10) {
+              // 드래그 하고 있는 밴드(범위)을 표현하기
+              band
+                .restore()
+                .setValueStart(xAxisLocationStart)
+                .setValueEnd(xAxisLocationNow)
+              // .onValueChange((band, start, end)=>console.log('band is changing', band, start, end));
+              // 드래그로 확대되어 바뀐 클릭 시작 시간 값과 클릭 끝 값 3차트에서 확인
+              // console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
+              xTicksStart.forEach((xTick) =>
+                xTick.restore().setValue(xAxisLocationStart)
+              );
+              xTicksEnd.forEach((xTick) =>
+                xTick.restore().setValue(xAxisLocationNow)
+              );
+              dragStartRef.current.xValue = Math.round(
+                Math.min(xAxisLocationStart, xAxisLocationNow) / 1000
+              );
+            } else {
+              band.dispose();
             }
-            // 위와 반대방향으로 드래그 (현재 L->R)
-            else {
-              // xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
+          });
+          dragBandList.current = xBandList;
+          dragStartRef.current.isDrag = true;
+        }
+      );
+      chart.onSeriesBackgroundMouseDragStop(
+        (_, event, button, startLocation) => {
+          if (button !== 0 || xBandList[0].isDisposed()) return;
+
+          // 마우스 드래그 시작과 끝 시간 값
+          const xDragStart = xBandList[0].getValueStart();
+          const xDragEnd = xBandList[0].getValueEnd();
+
+          // 시작과 끝 시간 초 단위 변환
+          const startTime = Math.round(xDragStart / 1000);
+          const endTime = Math.round(xDragEnd / 1000);
+
+          // 마우스 드래그 시작이 끝보다 작으면 좌->우 드래그
+          if (xDragStart > xDragEnd) {
+            // 마우스드래그 좌우방향 무관하게 시작과 끝 값을 크기 순으로 설정
+            const xStart = Math.min(xDragStart, xDragEnd);
+            const xEnd = Math.max(xDragStart, xDragEnd);
+
+            chartList[0]
+              .getDefaultAxisX()
+              .setInterval(xStart, xEnd, false, true);
+            xBandList.forEach((band, i) => {
+              const nChart = chartList[i];
+              const STEP_X = whichStepX(i);
+              let yMin = 999999;
+              let yMax = -999999;
+              for (let x = xStart; x < xEnd; x += STEP_X) {
+                const dp = receivedDataSet[i][Math.round(x / STEP_X)];
+                if (dp !== undefined) {
+                  yMin = Math.min(yMin, dp.y);
+                  yMax = Math.max(yMax, dp.y);
+                }
+              }
+              nChart.getDefaultAxisY().setInterval(yMin, yMax, false, true);
+              band.dispose();
 
               console.log(
-                "L->R mouse drag",
-                "startTime",
-                startTime,
-                "endTime",
-                endTime
+                "R->L mouse drag",
+                "startTime", startTime,
+                "endTime", endTime,
+                "yMax", yMax,
               );
+            });
+            // console.log("mouse drag", "xStart", xStart, "xEnd", xEnd);
+            xTicksStart.forEach((xTick) => xTick.dispose());
+            xTicksEnd.forEach((xTick) => xTick.dispose());
 
-              // 드래그 시, 드래그 시작으로 재생 시작, 드래그 구간 반복
-              setSeeking(true);
-              const startTimeRatio = startTime / duration;
-              replayRef.current.isReplay = true;
-              replayRef.current.startTime = startTime;
-              replayRef.current.endTime = endTime;
-              // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
-              callSeekTo(startTimeRatio)
-              setPlayed(parseFloat(startTimeRatio));
-              changePointer(startTime);
-              setSeeking(false)
-
-              // 드래그 종료 시, 시간 표시 삭제
-              resultTable.dispose();
-              xTicksStart.forEach((xTick) => xTick.dispose());
-              xTicksEnd.forEach((xTick) => xTick.dispose());
-            }
           }
-        );
+          // 위와 반대방향으로 드래그 (현재 L->R)
+          else {
+            // xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
 
-        // 차트 전체 보기 전환, x축 더블 클릭
-        chart.getDefaultAxisX().onAxisInteractionAreaMouseDoubleClick((_, event) => {
-          if (event.button !== 0) return;
+            console.log(
+              "L->R mouse drag",
+              "startTime",
+              startTime,
+              "endTime",
+              endTime
+            );
 
-          fitActive = true;
-          chartList.forEach((nChart) => {
-            nChart.getDefaultAxisX().fit(false);
-            nChart.getDefaultAxisY().fit(false);
-          });
-          fitActive = false;
-          // setXTicksStart(xTicksStart.map((xTick) => xTick.dispose()))
-          // setXTicksEnd(xTicksEnd.map((xTick) => xTick.dispose()))
-        });
+            // 드래그 시, 드래그 시작으로 재생 시작, 드래그 구간 반복
+            setSeeking(true);
+            const startTimeRatio = startTime / duration;
+            replayRef.current.isReplay = true;
+            replayRef.current.startTime = startTime;
+            replayRef.current.endTime = endTime;
+            // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
+            callSeekTo(startTimeRatio)
+            setPlayed(parseFloat(startTimeRatio));
+            changePointer(startTime);
+            setSeeking(false)
 
-        // 차트 x값 인식 onSeriesBackgroundMouseClick: 클릭
-        // chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
-        chart.onSeriesBackgroundMouseClick((_, event, button) => {
-          event.preventDefault();
-
-          // 마우스 드래그할 때는 작동되지 않도록 lock-unlock
-          if (dragStartRef.current.isDrag) {
-            dragStartRef.current.isDrag = false
-            return;
+            // 드래그 종료 시, 시간 표시 삭제
+            resultTable.dispose();
+            xTicksStart.forEach((xTick) => xTick.dispose());
+            xTicksEnd.forEach((xTick) => xTick.dispose());
           }
+        }
+      );
 
-          // 클릭 점핑, seeking 준비: clickRef 또는 pointer 둘 다 설정해서 먼저 변하는 값 빠르게 갱신
-          setSeeking(true);
-          clickToJumpRef.current.isJump = true
-          // console.log(clickRef.current)
-          // console.log('isDrag?', dragStartRef.current)
+      // 차트 전체 보기 전환, x축 더블 클릭
+      chart.getDefaultAxisX().onAxisInteractionAreaMouseDoubleClick((_, event) => {
+        if (event.button !== 0) return;
 
-          const mouseLocationEngine = chart.engine.clientLocation2Engine(
-            event.clientX,
-            event.clientY
-          );
-          const mouseLocationAxisX = translatePoint(
-            mouseLocationEngine,
-            chart.engine.scale,
-            { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
-          ).x;
-
-          const playTime = Math.round(mouseLocationAxisX / 1000)
-          const playTimeRatio = mouseLocationAxisX / 1000 / duration;
-          clickToJumpRef.current.jumpTime = playTime;
-          // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
-          callSeekTo(playTimeRatio)
-          setPlayed(parseFloat(playTimeRatio));
-          changePointer(playTime);
-          setSeeking(false)
-
-          // 구간 반복 있다면 제거
-          replayRef.current.isReplay = false;
+        fitActive = true;
+        chartList.forEach((nChart) => {
+          nChart.getDefaultAxisX().fit(false);
+          nChart.getDefaultAxisY().fit(false);
         });
+        fitActive = false;
+        // setXTicksStart(xTicksStart.map((xTick) => xTick.dispose()))
+        // setXTicksEnd(xTicksEnd.map((xTick) => xTick.dispose()))
       });
 
-      let fitActive = false;
-      // When X Axis interval is changed, automatically fit Y axis based on visible data.
-      chartList.forEach((chart, i) => {
-        chart.getDefaultAxisX().onScaleChange((xStart, xEnd) => {
-          if (fitActive) return;
+      // 차트 x값 인식 onSeriesBackgroundMouseClick: 클릭
+      // chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
+      chart.onSeriesBackgroundMouseClick((_, event, button) => {
+        event.preventDefault();
 
-          const STEP_X = whichStepX(i);
-          let yMin = 999999;
-          let yMax = -999999;
-          // let x = xStart < 0 ? 0 : xStart
-          for (let x = xStart; x < xEnd; x += STEP_X) {
-            const dp = receivedDataSet[i][Math.round(x / STEP_X)];
-            if (dp !== undefined) {
-              yMin = Math.min(yMin, dp.y);
-              yMax = Math.max(yMax, dp.y);
-            }
-          }
-          if (yMin < 999999) {
-            chart.getDefaultAxisY().setInterval(yMin, yMax, false, true);
-          }
-        });
+        // 마우스 드래그할 때는 작동되지 않도록 lock-unlock
+        if (dragStartRef.current.isDrag) {
+          dragStartRef.current.isDrag = false
+          return;
+        }
+
+        // 클릭 점핑, seeking 준비: clickRef 또는 pointer 둘 다 설정해서 먼저 변하는 값 빠르게 갱신
+        setSeeking(true);
+        clickToJumpRef.current.isJump = true
+        // console.log(clickRef.current)
+        // console.log('isDrag?', dragStartRef.current)
+
+        const mouseLocationEngine = chart.engine.clientLocation2Engine(
+          event.clientX,
+          event.clientY
+        );
+        const mouseLocationAxisX = translatePoint(
+          mouseLocationEngine,
+          chart.engine.scale,
+          { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
+        ).x;
+
+        const playTime = Math.round(mouseLocationAxisX / 1000)
+        const playTimeRatio = mouseLocationAxisX / 1000 / duration;
+        clickToJumpRef.current.jumpTime = playTime;
+        // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
+        callSeekTo(playTimeRatio)
+        setPlayed(parseFloat(playTimeRatio));
+        changePointer(playTime);
+        setSeeking(false)
+
+        // 구간 반복 있다면 제거
+        replayRef.current.isReplay = false;
       });
     });
+
+    let fitActive = false;
+    // When X Axis interval is changed, automatically fit Y axis based on visible data.
+    chartList.forEach((chart, i) => {
+      chart.getDefaultAxisX().onScaleChange((xStart, xEnd) => {
+        if (fitActive) return;
+
+        const STEP_X = whichStepX(i);
+        let yMin = 999999;
+        let yMax = -999999;
+        // let x = xStart < 0 ? 0 : xStart
+        for (let x = xStart; x < xEnd; x += STEP_X) {
+          const dp = receivedDataSet[i][Math.round(x / STEP_X)];
+          if (dp !== undefined) {
+            yMin = Math.min(yMin, dp.y);
+            yMax = Math.max(yMax, dp.y);
+          }
+        }
+        if (yMin < 999999) {
+          chart.getDefaultAxisY().setInterval(yMin, yMax, false, true);
+        }
+      });
+    });
+    
 
     // Setup custom data cursor.
     const dashboard = dataDataRef.current.dashboard;
@@ -832,48 +828,6 @@ const DataChart = (props) => {
       playBarListRef.current.forEach((playBar) => playBar = undefined);
     };
   }, [id, url, TIMELINE]);
-
-  // 좌, 우 화살표 재생 이동 함수
-  function arrowPlayBarMove(isLeft, padding = 10) {
-    setSeeking(true)
-    let playTime;
-    if (isLeft) {
-      playTime = pointer - padding;
-    }
-    else {
-      playTime = pointer + padding;
-    }
-    let playTimeRatio = playTime / duration
-    callSeekTo(playTimeRatio)
-    setPlayed(parseFloat(playTimeRatio));
-    changePointer(playTime);
-    setSeeking(false)
-  }
-
-  // window keyboard event 스페이스 바 재생/중지, 화살표 좌우 재생이동
-  useEffect(() => {
-    const handlePushSpaceBar = (event) => {
-      // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
-      const keyCode = event.code;
-      switch (keyCode) {
-        case 'Space':
-          setIsplaying(!isplaying);
-          return;
-        case 'ArrowLeft':
-          arrowPlayBarMove(true, ARROW_MOVING_TIME)
-          return;
-        case 'ArrowRight':
-          arrowPlayBarMove(false, ARROW_MOVING_TIME)
-          return;
-        default:
-          return;
-      }
-    };
-    window.addEventListener("keydown", handlePushSpaceBar);
-    return () => {
-      window.removeEventListener("keydown", handlePushSpaceBar);
-    };
-  }, [isplaying, pointer]);
 
   return (
     <div id={id} className="TrippleChart"></div>

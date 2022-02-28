@@ -175,7 +175,7 @@ function Editor() {
 
         <div className="lowerlayer">
           <div className="DataChartControllerCover">
-            <DataChartController url={url ? url : propUrl} />
+            <DataChartController url={url ? url : propUrl} duration={propDuration} />
           </div>
 
           <div className="DataChartCover">
