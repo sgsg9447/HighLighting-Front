@@ -26,7 +26,6 @@ function DataChartController({ url, duration }) {
   }
 
   function handleIsChatKeywords() {
-    console.log('isChatKeywords', isChatKeywords)
     // isChatKeywords ? 닫힌상태 : 열린상태
     if (isChatKeywords === -1) {
       setIsChatKeywords(prev => prev+ 1);
@@ -38,7 +37,6 @@ function DataChartController({ url, duration }) {
       }
       setIsChatKeywords(prev => prev? 0 : prev + 1);
     }
-    console.log('---> isChatKeywords', isChatKeywords)
   }
 
   // 기존 제출 버튼(필요없을 수도 있음)
