@@ -39,7 +39,7 @@ const AppStateProvider = ({ children }) => {
   function getMethodHello(e) {
     console.log("call getMethod()");
     axios
-      .get(server_addr+"/flask/hello")
+      .get(server_addr + "/flask/hello")
       .then((response) => {
         console.log("Success", response.data);
       })
@@ -201,6 +201,7 @@ const AppStateProvider = ({ children }) => {
         goEditor,
         goLoading,
         goNotFound,
+        server_addr,
       }}
     >
       {children}
