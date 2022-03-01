@@ -33,7 +33,7 @@ const STEP_X_AUDIO = 500;  // 0.5초
 const STEP_X_CHAT_SUPER = 1000;  // 1분
 const STEP_X_CHAT_KEYWORDS = 60 * 1000;   // 1분
 
-// 차트 제목 0,1,2,3
+// 차트 제목; 데이터리스트 인덱스 0,1,2,3,4
 const TITLE0 = "Chat Flow";
 const TITLE1 = "Video Frame";
 const TITLE2 = "Audio Power";
@@ -54,7 +54,7 @@ const playBarColor = { basic: YELLOW, hover: RED }
 const jumpBarColor = { basic: YELLOW, hover: BLUE }
 
 
-// 데이터 차트
+/* 데이터 차트 컴포넌트 시작 */
 const DataChart = (props) => {
   const { dataList, id, url, duration } = props;
   const { pointer, callSeekTo, setPlayed, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
@@ -105,18 +105,18 @@ const DataChart = (props) => {
     }
   }
 
-  // 리플레이 키트 Ref 전역으로 보내기, 북마커 사용
+  /* 리플레이 키트 Ref 전역으로 보내기, 북마커 사용 */
   useEffect(() => {
     setReplayRef(replayRef);
   }, []);
 
-  // 데이터 차트 변수, 함수 전역으로 보내기 dataChartRef
+  /* 데이터 차트 변수, 함수 전역으로 보내기 dataChartRef */
   useEffect(() => {
     // if (!dataDataRef) return;
     setDataChangeRef(dataDataRef);
   }, [])
 
-  // 키워드 데이터 도착할 떄, 데이터리스트에 추가
+  /* 키워드 데이터 도착할 떄, 데이터리스트에 추가 */
   useEffect(() => {
     if (chatKeywords) {
       dataList[4] = chatKeywords
@@ -124,7 +124,7 @@ const DataChart = (props) => {
     }
   }, [isKeywordsDownload, chatKeywords])
 
-  // 메인 차트 그리기
+  /* 메인 차트 그리기 */
   useEffect(() => {
     // lcjs 생성
     const lcjs = lightningChart({
@@ -281,6 +281,8 @@ const DataChart = (props) => {
     dataDataRef.current.seriesList = seriesList;
   }, [url, id, chatKeywords]);
 
+
+  /* 데이터 받아서 차트 렌더링 */
   useEffect(() => {
     const chartList = chartListRef.current;
     const seriesList = seriesListRef.current;
@@ -543,7 +545,7 @@ const DataChart = (props) => {
     });
 
     fitActiveRef.current = false;
-    // When X Axis interval is changed, automatically fit Y axis based on visible data.
+    // X축 범위가 바뀌면 Y축 상태 갱신
     chartList.forEach((chart, i) => {
       chart.getDefaultAxisX().onScaleChange((xStart, xEnd) => {
         if (fitActiveRef.current) return;
@@ -566,7 +568,7 @@ const DataChart = (props) => {
     });
   });
 
-    // Setup custom data cursor.
+    // 커서 창 상태
     const dashboard = dataDataRef.current.dashboard;
     const resultTable = dashboard
       .addUIElement(UILayoutBuilders.Column, dashboard.engine.scale)
@@ -660,7 +662,7 @@ const DataChart = (props) => {
     }
   }
 
-  // 구간 반복 기능: isReplay true이면 L->R 드래그 되었거나, 북마크를 선택해서 재생했다는 뜻
+  /* 구간 반복 기능: isReplay true이면 L->R 드래그 되었거나, 북마크를 선택해서 재생했다는 뜻 */
   useEffect(() => {
     if (!replayRef.current.isReplay) return;
 
@@ -713,7 +715,7 @@ const DataChart = (props) => {
       return seriesList[0]
   }
 
-  // 슈퍼챗으로 데이터 차트 전환하는 렌더링
+  /* 슈퍼챗으로 데이터 차트 전환하는 렌더링 */
   useEffect(() => {
     if (isChatSuper === -1) return;
     // console.log('receivedDataSetList', receivedDataSetList)
@@ -735,7 +737,7 @@ const DataChart = (props) => {
     }
   }, [isChatSuper]);
 
-  // 특정 키워드 검색으로 데이터 차트 전환하는 렌더링
+  /* 특정 키워드 검색으로 데이터 차트 전환하는 렌더링 */
   useEffect(() => {
     if (isChatKeywords === -1) return;
     if (receivedDataSetList.length === 3) return;
@@ -760,16 +762,14 @@ const DataChart = (props) => {
   // 다음 시간을 표현할 플레이바 만들기(시간, 컬러)
   function makePlayBarList(time, barColor) {
     const axisTimeList = axisListRef.current.x;
-    // console.log('axisTimeListRef', axisTimeListRef.current)
-    // Add a Constantline to the X Axis
     const playBarList = axisTimeList.map((axisTime) =>
       axisTime
         .addConstantLine()
-        // Position the Constantline in the Axis Scale
+        // 바 생성 축에 붙힘
         .setValue(time)
-        // The name of the Constantline will be shown in the LegendBox
+        // 만약 테이블 사용시 이름표기
         .setName("playBar")
-        // Style the Constantline
+        // 바 스타일
         .setStrokeStyle(
           new SolidLine({
             thickness: 8,
@@ -778,6 +778,7 @@ const DataChart = (props) => {
             }),
           })
         )
+        // 호버 하이라이트
         .setStrokeStyleHighlight(
           new SolidLine({
             thickness: 10,
@@ -787,12 +788,13 @@ const DataChart = (props) => {
           })
         )
         .setHighlightOnHover(true))
-
+    
+    // 사용자가 재생 포인트 임의지정했다면 상태 해제
     clickToJumpRef.current.isJump = false
     return playBarList
   }
 
-  // 북마크가 체크되면 해당 범위 밴드로 보여주기
+  /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
   useEffect(() => {
     // chartListRef 값이 없으면 리턴
     if (!chartListRef.current) return;
@@ -814,16 +816,17 @@ const DataChart = (props) => {
     // 선택된 북마크 선별해서 그리기
     const selectedMarkerList = markers.filter((marker) => marker.completed === true);
     // console.log('selectedMarkerList', selectedMarkerList)
-    const markerBandsListSet = selectedMarkerList.map((marker) => addBookMarkBand(marker.startPointer, marker.endPointer));
+    const selectedBandsListSet = selectedMarkerList.map((marker) => addBookMarkBand(marker.startPointer, marker.endPointer));
     // console.log('markerBandsList', markerBandsListSet)
 
     // 선택 해제시 삭제
     return (() => {
-      markerBandsListSet.forEach(markerBandList => (markerBandList.forEach(band => band.dispose())));
+      selectedBandsListSet.forEach(markerBandList => (markerBandList.forEach(band => band.dispose())));
     });
   }, [markers])
 
-  // 차트 플레이 바 나타내기
+
+  /* 차트 플레이 바 나타내기 */
   useEffect(() => {
     // axisListRef 값이 없으면 리턴
     if (!axisListRef.current.x) return;
@@ -852,7 +855,7 @@ const DataChart = (props) => {
     //   onChangeBarRef.current = false;
     // }
 
-    // 지우기
+    // 이전 막대는 삭제
     return () => {
       playBarListRef.current.forEach((playBar) => playBar.dispose());
       playBarListRef.current.forEach((playBar) => playBar = undefined);
