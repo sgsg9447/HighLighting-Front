@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
@@ -13,7 +13,7 @@ function Player({url}) {
   const [playbackRate] = useState(1.0);
   // const [seeking, setSeeking] = useState(false);
   const [loop] = useState(false);
-  const ref = createRef();
+  const ref = useRef();
 
   useEffect(() => {
     setPlayerRef(ref.current);

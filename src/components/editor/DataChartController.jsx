@@ -67,10 +67,7 @@ function DataChartController({ url, duration }) {
       // getMethodKeywords(e);
       requestKeywordsData(url, keywords);
       localStorage.setItem('localSearchKeywords', keywords)
-      const cursor = inputRef.current.focus();
-      console.log(cursor);
       inputRef.current.focus();
-      isTypingRef.current = false
     };  
   }
 
@@ -93,7 +90,7 @@ function DataChartController({ url, duration }) {
   
     // window keyboard event 스페이스 바 재생/중지, 화살표 좌우 재생이동
     useEffect(() => {
-      const handlePushSpaceBar = (event) => {
+      const handlePushKeyboard = (event) => {
         if (isChatKeywords || !isTypingRef.current) {
         // console.log('isTypingRef.current', isTypingRef.current)
         // console.log('keyEvent', event)
@@ -114,9 +111,9 @@ function DataChartController({ url, duration }) {
           }
         };
       }
-      window.addEventListener("keydown", handlePushSpaceBar);
+      window.addEventListener("keydown", handlePushKeyboard);
       return () => {
-        window.removeEventListener("keydown", handlePushSpaceBar);
+        window.removeEventListener("keydown", handlePushKeyboard);
       };
     }, [pointer, isplaying, isChatKeywords]);
 
@@ -149,6 +146,8 @@ function DataChartController({ url, duration }) {
             <form onSubmit={onSubmitForm}>
               <input
                 className="keywordInputBar"
+                onFocus={(e) => {isTypingRef.current = true}}
+                // onBlur={(e) => {isTypingRef.current = false}}
                 ref={inputRef}
                 placeholder="키워드 , 으로 구분해주세요"
                 value={keywords}

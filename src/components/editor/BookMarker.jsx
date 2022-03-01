@@ -13,6 +13,7 @@ function BookMarker({ duration, bookmarker }) {
     callSeekTo,
     setPlayed,
     changePointer,
+    seeking,
     setSeeking,
     replayRef,
   } = React.useContext(EditorTimePointerContext);
@@ -21,7 +22,7 @@ function BookMarker({ duration, bookmarker }) {
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
-  const { markers, setMarkers } = useResult();
+  const { markers, setMarkers, setRelay } = useResult();
   // localstorage;
   useEffect(() => {
     const temp = localStorage.getItem("markers");
@@ -44,7 +45,7 @@ function BookMarker({ duration, bookmarker }) {
 
   function handleClick(e) {
     e.preventDefault(); //새로고침 되지않게 막음!
-
+    if (seeking) return;
     console.log(`is replayRef?`, replayRef.current);
     if (replayRef.current.isReplay) {
       const newMarker = {
@@ -53,6 +54,7 @@ function BookMarker({ duration, bookmarker }) {
         startPointer: replayRef.current.startTime,
         endPointer: replayRef.current.endTime,
         completed: false,
+        isPlaying: false,
       };
       setMarkers([...markers].concat(newMarker));
     } else {
@@ -73,6 +75,7 @@ function BookMarker({ duration, bookmarker }) {
           startPointer: pointer,
           endPointer: null,
           completed: false,
+          isPlaying: false,
         };
         setIsStart(true);
         setMarkers([...markers].concat(newMarker));
@@ -88,6 +91,7 @@ function BookMarker({ duration, bookmarker }) {
   }
 
   function toggleComplete(id) {
+    setSeeking(true);
     const updateMarkers = [...markers].map((marker) => {
       if (marker.id === id) {
         marker.completed = !marker.completed;
@@ -96,6 +100,7 @@ function BookMarker({ duration, bookmarker }) {
     });
 
     setMarkers(updateMarkers);
+    setSeeking(false);
   }
 
   function addMemoEdit(id) {
@@ -124,6 +129,11 @@ function BookMarker({ duration, bookmarker }) {
         setPlayed(parseFloat(playTimeRatio));
         changePointer(playTime);
         setSeeking(false);
+        replayRef.current.isReplay = true;
+        replayRef.current.startTime = marker.startPointer;
+        replayRef.current.endTime = marker.endPointer;
+        setRelay(prev => prev = true)
+        console.log('marker click play', replayRef.current)
       }
     });
     console.log("seekto 함수로 영상재생");
