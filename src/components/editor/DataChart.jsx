@@ -30,7 +30,7 @@ const CHANNELS = 3;
 const STEP_X_CHAT_DISTRIBUTION = 10 * 1000; // 10분
 const STEP_X_VIDEO = 1000; // 1초
 const STEP_X_AUDIO = 500;  // 0.5초
-const STEP_X_CHAT_SUPER = 5 * 60 * 1000;  // 5분
+const STEP_X_CHAT_SUPER = 1000;  // 1분
 const STEP_X_CHAT_KEYWORDS = 60 * 1000;   // 1분
 
 // 차트 제목 0,1,2,3
@@ -72,6 +72,8 @@ const DataChart = (props) => {
   const dragBandList = useRef(undefined);
   const makeChartRef = useRef(undefined);
   const whichChartRef = useRef(undefined);
+  const fitActiveRef = useRef(false);
+  const yMaxRef = useRef([]);
 
   // console.log('id, url', id, url)
   // console.log("Charts received Data", dataList);
@@ -283,12 +285,9 @@ const DataChart = (props) => {
     const chartList = chartListRef.current;
     const seriesList = seriesListRef.current;
 
-    const receivedDataSet = dataList.map((data, i) => { 
+    Promise.all(dataList.map((data, i) => { 
       const STEP_X = whichStepX(i);
-      // Map generated XY trace data set into a more realistic trading data set.
-      const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그리도록 설정함.
-      // const baseLine = 10 + Math.random() * 2000;
-      const variationAmplitude = baseLine;
+
       const yMin = data.reduce(
         (min, cur) => Math.min(min, cur.y),
         Number.MAX_SAFE_INTEGER
@@ -297,6 +296,21 @@ const DataChart = (props) => {
         (max, cur) => Math.max(max, cur.y),
         -Number.MAX_SAFE_INTEGER
       );
+
+      yMaxRef.current[i] = yMax;
+      
+      // 1번 차트 데이터들은 y 고유값으로 유지
+      if (i === 0 || i === 3 || i === 4) {
+        return data.map((xy) => ({
+          x: xy.x * STEP_X,
+          y: xy.y
+        }))
+      }
+      
+      // Map generated XY trace data set into a more realistic trading data set.
+      const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그리도록 설정함.
+      // const baseLine = 10 + Math.random() * 2000;
+      const variationAmplitude = baseLine;
       const yIntervalHalf = (yMax - yMin) / 2;
       const yTraceBaseline = yMin + yIntervalHalf;
       return data.map((xy) => ({
@@ -304,9 +318,9 @@ const DataChart = (props) => {
         y:
           baseLine +
           ((xy.y - yTraceBaseline) / yIntervalHalf) * variationAmplitude,
-      }))       
+      }))
     })  
-    
+  ).then((receivedDataSet) => {
     if (receivedDataSet && receivedDataSet[0]) {
       seriesList.forEach((series, i) => {
         series.add(receivedDataSet[i]);
@@ -477,12 +491,12 @@ const DataChart = (props) => {
       chart.getDefaultAxisX().onAxisInteractionAreaMouseDoubleClick((_, event) => {
         if (event.button !== 0) return;
 
-        fitActive = true;
+        fitActiveRef.current = true;
         chartList.forEach((nChart) => {
           nChart.getDefaultAxisX().fit(false);
           nChart.getDefaultAxisY().fit(false);
         });
-        fitActive = false;
+        fitActiveRef.current = false;
         // setXTicksStart(xTicksStart.map((xTick) => xTick.dispose()))
         // setXTicksEnd(xTicksEnd.map((xTick) => xTick.dispose()))
       });
@@ -528,11 +542,11 @@ const DataChart = (props) => {
       });
     });
 
-    let fitActive = false;
+    fitActiveRef.current = false;
     // When X Axis interval is changed, automatically fit Y axis based on visible data.
     chartList.forEach((chart, i) => {
       chart.getDefaultAxisX().onScaleChange((xStart, xEnd) => {
-        if (fitActive) return;
+        if (fitActiveRef.current) return;
 
         const STEP_X = whichStepX(i);
         let yMin = 999999;
@@ -550,7 +564,7 @@ const DataChart = (props) => {
         }
       });
     });
-    
+  });
 
     // Setup custom data cursor.
     const dashboard = dataDataRef.current.dashboard;
@@ -660,12 +674,28 @@ const DataChart = (props) => {
     const seriesList = seriesListRef.current;
     seriesList[chartNum].dispose();
     seriesList[chartNum] = undefined;
-    // const receivedDataSetList = receivedDataSetListRef.current;
-    // console.log('changeChartDataReceivedDataSetList', receivedDataSetList);
-    const chart = chartListRef.current[chartNum]
-    // chartList[atChart].dispose();
-    // let axisY = axisListRef.current.y;
-    // axisY.dispose();
+    const chartList = chartListRef.current;
+    const chart = chartList[chartNum];
+    const yMax = yMaxRef.current[toIndex];
+    // console.log('chartList', chartList)
+    // console.log('yMaxRef.current', yMaxRef.current, yMax)
+
+    if (toIndex === 0 || toIndex === 3 || toIndex === 4) {
+      // 차트 0번 y축 한계를 각 고유값으로 셋팅한다.
+      chart.getDefaultAxisY().setInterval(0, yMax, false, true)
+    }
+    else {
+      // 그 외에는 상대지수 100으로 셋팅한다.
+      chart.getDefaultAxisY().setInterval(0, 100, false, true)
+    }
+    // 바뀌도록 차트를 돌며 갱신한다.
+    fitActiveRef.current = true;
+    chartList.forEach((nChart) => {
+      nChart.getDefaultAxisX().fit(false, true);
+      nChart.getDefaultAxisY().fit(false);
+    });
+    fitActiveRef.current = false;
+
     const name = whichChartRef.current(toIndex)
     chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: 80 });
 
@@ -674,7 +704,7 @@ const DataChart = (props) => {
         dataPattern: {
           pattern: "ProgressiveX",
         },
-        automaticColorIndex: toIndex+3 * GRAPH_COLOR_NUMBER,
+        automaticColorIndex: toIndex * GRAPH_COLOR_NUMBER,
       })
       .setName('Super Chat')
       .setCursorInterpolationEnabled(false)
@@ -783,9 +813,9 @@ const DataChart = (props) => {
 
     // 선택된 북마크 선별해서 그리기
     const selectedMarkerList = markers.filter((marker) => marker.completed === true);
-    console.log('selectedMarkerList', selectedMarkerList)
+    // console.log('selectedMarkerList', selectedMarkerList)
     const markerBandsListSet = selectedMarkerList.map((marker) => addBookMarkBand(marker.startPointer, marker.endPointer));
-    console.log('markerBandsList', markerBandsListSet)
+    // console.log('markerBandsList', markerBandsListSet)
 
     // 선택 해제시 삭제
     return (() => {
