@@ -5,7 +5,7 @@ import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import useResult from "../../hooks/useResult";
 
 function DataChartController({ url, duration }) {
-  const { pointer, isplaying, setIsplaying, setSeeking, callSeekTo, setPlayed, changePointer } = React.useContext(EditorTimePointerContext);
+  const { replayRef, pointer, isplaying, setIsplaying, setSeeking, callSeekTo, setPlayed, changePointer } = React.useContext(EditorTimePointerContext);
   const { requestKeywordsData, isChatSuper, setIsChatSuper, isChatKeywords, setIsChatKeywords } = useResult();
   const [keywords, setKeywords] = useState('');
   // const [isTyping, setIsTyping] = useState(false);
@@ -67,11 +67,9 @@ function DataChartController({ url, duration }) {
       // getMethodKeywords(e);
       requestKeywordsData(url, keywords);
       localStorage.setItem('localSearchKeywords', keywords)
-      const cursor = inputRef.current.focus();
-      console.log(cursor);
       inputRef.current.focus();
-      isTypingRef.current = false
-    };  
+    };
+    isTypingRef.current = true;
   }
 
     // 좌, 우 화살표 재생 이동 함수
@@ -91,16 +89,18 @@ function DataChartController({ url, duration }) {
       setSeeking(false)
     }
   
-    // window keyboard event 스페이스 바 재생/중지, 화살표 좌우 재생이동
+    // window Keydown event
     useEffect(() => {
-      const handlePushSpaceBar = (event) => {
+      const handleKeyboardDown = (event) => {
         if (isChatKeywords || !isTypingRef.current) {
         // console.log('isTypingRef.current', isTypingRef.current)
         // console.log('keyEvent', event)
         // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+        // console.log('event.ctrlKey', event.ctrlKey)
         const keyCode = event.code;
         switch (keyCode) {
           case 'Space':
+            if (isTypingRef.current) return;
             setIsplaying(!isplaying);
             return;
           case 'ArrowLeft':
@@ -109,14 +109,68 @@ function DataChartController({ url, duration }) {
           case 'ArrowRight':
             arrowPlayBarMove(false, ARROW_MOVING_TIME)
             return;
+          case 'ShiftLeft':
+            replayRef.current.subKey.isShiftKey = true;
+            // console.log('shift keydown')
+            return;
+          case 'ControlLeft':
+            replayRef.current.subKey.isCtrlKey = true;
+            // console.log('ctrl keydown')
+            return;
+          case 'KeyK':
+            if (replayRef.current.subKey.isShiftKey && replayRef.current.subKey.isCtrlKey) {
+              replayRef.current.saveMarker()
+            }
+            replayRef.current.wordKey.isK = true;
+            // console.log('K keydown')
+            return;
           default:
             return;
           }
         };
       }
-      window.addEventListener("keydown", handlePushSpaceBar);
+      window.addEventListener("keydown", handleKeyboardDown);
       return () => {
-        window.removeEventListener("keydown", handlePushSpaceBar);
+        window.removeEventListener("keydown", handleKeyboardDown);
+      };
+    }, [pointer, isplaying, isChatKeywords]);
+
+    // window Keyup event
+    useEffect(() => {
+      const handleKeyboardUp = (event) => {
+        if (isChatKeywords || !isTypingRef.current) {
+        // console.log('isTypingRef.current', isTypingRef.current)
+        // console.log('keyEvent', event)
+        // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+
+        const keyCode = event.code;
+        switch (keyCode) {
+          case 'ShiftLeft':
+            replayRef.current.subKey.isShiftKey = false;
+            // console.log('shift keyup')
+            break;
+          case 'ControlLeft':
+            replayRef.current.subKey.isCtrlKey = false;
+            // console.log('ctrl keyup')
+            break;
+          case 'keyK':
+            replayRef.current.wordKey.isK = false;
+            // console.log('K keyup')
+            break;
+          case 'Space':
+            break;
+          case 'ArrowLeft':
+            break;
+          case 'ArrowRight':
+            break;
+          default:
+            return;
+          }
+        };
+      }
+      window.addEventListener("keyup", handleKeyboardUp);
+      return () => {
+        window.removeEventListener("keyup", handleKeyboardUp);
       };
     }, [pointer, isplaying, isChatKeywords]);
 
@@ -149,6 +203,8 @@ function DataChartController({ url, duration }) {
             <form onSubmit={onSubmitForm}>
               <input
                 className="keywordInputBar"
+                onFocus={(e) => {isTypingRef.current = true}}
+                // onBlur={(e) => {isTypingRef.current = false}}
                 ref={inputRef}
                 placeholder="키워드 , 으로 구분해주세요"
                 value={keywords}
