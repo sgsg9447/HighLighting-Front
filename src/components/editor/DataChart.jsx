@@ -30,10 +30,10 @@ let REPLAY_ONLE_ONCE = true;
 
 // 각 차트별로 x개수와 간격이 다르지만, 같은 시간을 가리키도록 하자.
 // STEP_X: X좌표 간격(1밀리초)
-const STEP_X_CHAT_DISTRIBUTION = 60 * 1000; // 10분
+const STEP_X_CHAT_DISTRIBUTION = 30 * 1000; // 30초
 const STEP_X_VIDEO = 1000; // 1초
 const STEP_X_AUDIO = 500;  // 0.5초
-const STEP_X_CHAT_SUPER = 1000;  // 1분
+const STEP_X_CHAT_SUPER = 1000;  // 1초
 const STEP_X_CHAT_KEYWORDS = 60 * 1000;   // 1분
 
 // 차트 제목; 데이터리스트 인덱스 0,1,2,3,4
