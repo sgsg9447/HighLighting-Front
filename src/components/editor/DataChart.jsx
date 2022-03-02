@@ -25,6 +25,9 @@ import useResult from "../../hooks/useResult";
 const CHANNELS = 3;
 // const DATA_PER_CHANNEL = 5 * 1000 * 1000
 
+// 리플레이 재생 시 1회만 재생
+let REPLAY_ONLE_ONCE = true;
+
 // 각 차트별로 x개수와 간격이 다르지만, 같은 시간을 가리키도록 하자.
 // STEP_X: X좌표 간격(1밀리초)
 const STEP_X_CHAT_DISTRIBUTION = 10 * 1000; // 10분
@@ -57,7 +60,7 @@ const jumpBarColor = { basic: YELLOW, hover: BLUE }
 /* 데이터 차트 컴포넌트 시작 */
 const DataChart = (props) => {
   const { dataList, id, url, duration } = props;
-  const { pointer, callSeekTo, setPlayed, seeking, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
+  const { pointer, callSeekTo, setPlayed, setIsplaying, seeking, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
   const { relay, setRelay, markers, setMarkers, chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
@@ -66,7 +69,9 @@ const DataChart = (props) => {
   const seriesListRef = useRef(undefined);
   const dragStartRef = useRef({ isDrag: false, xValue: Number.MAX_SAFE_INTEGER });
   const clickToJumpRef = useRef({ isJump: false, jumpTime: undefined });
-  const replayRef = useRef({ isReplay: false, startTime: undefined, endTime: undefined, duration: undefined, replay: replayBand });
+  const replayRef = useRef({ 
+    isReplay: false, startTime: undefined, endTime: undefined, duration: undefined,
+    replay: replayBand, playingId: undefined, isPlayOnce: REPLAY_ONLE_ONCE, isShiftKey: false });
   const dataDataRef = useRef({ isChange: false, dashboard: undefined, chartList: undefined, seriesList: undefined, change: changeChartData });
   const onBarChangeRef = useRef(false);
   const dragBandList = useRef(undefined);
@@ -456,39 +461,49 @@ const DataChart = (props) => {
           }
           // 위와 반대방향으로 드래그 (현재 L->R)
           else {
-
-            // 키보드 SHIFT가 눌린 상태
-
-            // 키보드 SHIFT가 안 눌린 상태
-
             // xTicks1.forEach((xTick) => xTick.restore().setValue(xDragEnd))
-
             console.log(
               "L->R mouse drag",
               "startTime",
               startTime,
               "endTime",
               endTime
-            );
+              );
+              
+            // 키보드 SHIFT가 눌린 상태는 자동재생 막고 드래그만 하기
+            if (replayRef.current.isShiftKey) {
+              // 드래그 시, 드래그 시작으로 재생 시작, 드래그 구간 반복
+              replayRef.current.isReplay = true;
+              replayRef.current.startTime = startTime;
+              replayRef.current.endTime = endTime;
 
-            // 드래그 시, 드래그 시작으로 재생 시작, 드래그 구간 반복
-            setSeeking(true);
-            const startTimeRatio = startTime / duration;
-            replayRef.current.isReplay = true;
-            replayRef.current.startTime = startTime;
-            replayRef.current.endTime = endTime;
-            // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
-            callSeekTo(startTimeRatio)
-            setPlayed(parseFloat(startTimeRatio));
-            changePointer(startTime);
-            setSeeking(false) 
-            // 드래그 종료 시, 시간 표시 삭제
-            resultTable.dispose();
-            xTicksStart.forEach((xTick) => xTick.dispose());
-            xTicksEnd.forEach((xTick) => xTick.dispose());
-            // 북마크 재생중 벗어나면 markers의 isPlaying 체크, relay 해제
-            markerInfoRef.current.interruption = true;
-            setRelay(false);
+              // 드래그 종료 시, 시간 표시 삭제
+              resultTable.dispose();
+              xTicksStart.forEach((xTick) => xTick.dispose());
+              xTicksEnd.forEach((xTick) => xTick.dispose());
+              // 북마크 재생중 벗어나도 relay 유지
+            }
+            // 키보드 SHIFT가 안 눌린 상태
+            else {
+              // 드래그 시, 드래그 시작지점에서 재생 시작, 드래그 구간 리플레이(REPLAY_ONLY_ONCE: false 일 때)
+              setSeeking(true);
+              const startTimeRatio = startTime / duration;
+              replayRef.current.isReplay = true;
+              replayRef.current.startTime = startTime;
+              replayRef.current.endTime = endTime;
+              // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
+              callSeekTo(startTimeRatio)
+              setPlayed(parseFloat(startTimeRatio));
+              changePointer(startTime);
+              setSeeking(false) 
+              // 드래그 종료 시, 시간 표시 삭제
+              resultTable.dispose();
+              xTicksStart.forEach((xTick) => xTick.dispose());
+              xTicksEnd.forEach((xTick) => xTick.dispose());
+              // 북마크 재생중 벗어나면 markers의 isPlaying 체크, relay 해제
+              markerInfoRef.current.interruption = true;
+              setRelay(false);
+            }
           }        
         }
       );
@@ -745,11 +760,11 @@ const DataChart = (props) => {
 
 
   // 구간 반복 재생 함수(pointer, 시작 시간, 종료 시간, 옵션: markers)
-  function replayBand(pointer, startTime, endTime, markerList = undefined) {
-    console.log('replayBand', startTime, endTime, markerList)
+  function replayBand(pointer, startTime, endTime, playingId = undefined, markerList = undefined) {
+    console.log('replayBand', startTime, endTime, playingId, markerList)
     if (pointer === endTime + 1) {
-      // markers 안 받았으면 start로 돌아가기
-      if (!markerList) {
+      // id, markers 안 받았으면 start로 돌아가기
+      if (!playingId || !markerList) {
         const playTime = startTime
         const playTimeRatio = playTime / duration
         setSeeking(true)
@@ -758,28 +773,55 @@ const DataChart = (props) => {
         changePointer(playTime);
         setSeeking(false)
       }
-      // markers를 받았다면, 다음 marker 탐색이동
+      
+      // id, markers를 받았다면, 다음 marker 탐색이동
       else {
         const selectedMarkers = findSelectedMarkers(markerList);
-        const nowPlayingId = markerInfoRef.current.playingId;
+        // 선택된 리스트 없으면 중지
+        if (selectedMarkers.length === 0) {
+          setIsplaying(false);
+          return; 
+        }
+
+        // 재생할 다음 북마크 찾기
+        const nowPlayingId = playingId;
         // const nowIndex = markerInfoRef.current.playingIndex;
         const nowIndex = selectedMarkers.findIndex((marker, i) => marker.id === nowPlayingId);
         const totalIndex = selectedMarkers.length - 1;
         let nextMarker, firstMarker, playTime;
+
+        // 다음 북마크가 있다면
         if (nowIndex < totalIndex) {
           nextMarker = selectedMarkers[nowIndex+1];
           playTime = nextMarker.startPointer;
+
+          // 다음 북마크로 리플레이 상태 저장
           replayRef.current.startTime = nextMarker.startPointer;
           replayRef.current.endTime = nextMarker.endPointer;
+          replayRef.current.playingId = nextMarker.id;
           // replayBand(pointer, nextMarker.startPointer, nextMarker.endPointer, markers);
         }
+
+        // 마지막 북마크였다면
         else {
-          firstMarker = selectedMarkers[0];
-          playTime = firstMarker.startPointer;
-          replayRef.current.startTime = firstMarker.startPointer;
-          replayRef.current.endTime = firstMarker.endPointer;
-          // replayBand(pointer, firstMarker.startPointer, firstMarker.endPointer, markers);
+          // '리플레이 1회 재생'이 켜졌다면 중지
+          if (replayRef.current.isPlayOnce) {
+            setIsplaying(false);
+            return;
+          }
+          // 그 외 반복
+          else {
+            firstMarker = selectedMarkers[0];
+            playTime = firstMarker.startPointer;
+
+            // 첫 북마크로 리플레이 상태 저장
+            replayRef.current.startTime = firstMarker.startPointer;
+            replayRef.current.endTime = firstMarker.endPointer;
+            replayRef.current.playingId = firstMarker.id;
+            // replayBand(pointer, firstMarker.startPointer, firstMarker.endPointer, markers);
+          }
         }
+        // 공통: 재생 지점으로 이동, 1회만 재생이었어도 중지상태로 시작지점으로 이동
         console.log('nowPlayingId', nowPlayingId, 'nowIndex', nowIndex, 'totalIndex', totalIndex, 'nextMarker', nextMarker, 'firstMarker', firstMarker);
         const playTimeRatio = playTime / duration
         setSeeking(true)
@@ -812,7 +854,7 @@ const DataChart = (props) => {
 
     // 북마크 릴레이 반복
     else {
-      replayBand(pointer, replayRef.current.startTime, replayRef.current.endTime, markers)
+      replayBand(pointer, replayRef.current.startTime, replayRef.current.endTime, replayRef.current.playingId, markers)
     }
   }, [pointer])
 

@@ -132,6 +132,7 @@ function BookMarker({ duration, bookmarker }) {
         replayRef.current.isReplay = true;
         replayRef.current.startTime = marker.startPointer;
         replayRef.current.endTime = marker.endPointer;
+        replayRef.current.playingId = marker.id;
         setRelay(prev => prev = true)
         console.log('marker click play', replayRef.current)
       }
