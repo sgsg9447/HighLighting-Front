@@ -5,7 +5,7 @@ import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import useResult from "../../hooks/useResult";
 
 function DataChartController({ url, duration }) {
-  const { pointer, isplaying, setIsplaying, setSeeking, callSeekTo, setPlayed, changePointer } = React.useContext(EditorTimePointerContext);
+  const { replayRef, pointer, isplaying, setIsplaying, setSeeking, callSeekTo, setPlayed, changePointer } = React.useContext(EditorTimePointerContext);
   const { requestKeywordsData, isChatSuper, setIsChatSuper, isChatKeywords, setIsChatKeywords } = useResult();
   const [keywords, setKeywords] = useState('');
   // const [isTyping, setIsTyping] = useState(false);
@@ -68,7 +68,8 @@ function DataChartController({ url, duration }) {
       requestKeywordsData(url, keywords);
       localStorage.setItem('localSearchKeywords', keywords)
       inputRef.current.focus();
-    };  
+    };
+    isTypingRef.current = true;
   }
 
     // 좌, 우 화살표 재생 이동 함수
@@ -88,9 +89,9 @@ function DataChartController({ url, duration }) {
       setSeeking(false)
     }
   
-    // window keyboard event 스페이스 바 재생/중지, 화살표 좌우 재생이동
+    // window Keydown event
     useEffect(() => {
-      const handlePushKeyboard = (event) => {
+      const handleKeyboardDown = (event) => {
         if (isChatKeywords || !isTypingRef.current) {
         // console.log('isTypingRef.current', isTypingRef.current)
         // console.log('keyEvent', event)
@@ -98,6 +99,7 @@ function DataChartController({ url, duration }) {
         const keyCode = event.code;
         switch (keyCode) {
           case 'Space':
+            if (isTypingRef.current) return;
             setIsplaying(!isplaying);
             return;
           case 'ArrowLeft':
@@ -106,14 +108,48 @@ function DataChartController({ url, duration }) {
           case 'ArrowRight':
             arrowPlayBarMove(false, ARROW_MOVING_TIME)
             return;
+          case 'ShiftLeft':
+            replayRef.current.isShiftKey = true;
+            console.log('shiftkeydown')
+            return;
           default:
             return;
           }
         };
       }
-      window.addEventListener("keydown", handlePushKeyboard);
+      window.addEventListener("keydown", handleKeyboardDown);
       return () => {
-        window.removeEventListener("keydown", handlePushKeyboard);
+        window.removeEventListener("keydown", handleKeyboardDown);
+      };
+    }, [pointer, isplaying, isChatKeywords]);
+
+    // window Keyup event
+    useEffect(() => {
+      const handleKeyboardUp = (event) => {
+        if (isChatKeywords || !isTypingRef.current) {
+        // console.log('isTypingRef.current', isTypingRef.current)
+        // console.log('keyEvent', event)
+        // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+        const keyCode = event.code;
+        switch (keyCode) {
+          case 'ShiftLeft':
+            replayRef.current.isShiftKey = false;
+            console.log('shiftkeyup')
+            return;
+            case 'Space':
+              return;
+            case 'ArrowLeft':
+              return;
+            case 'ArrowRight':
+              return;
+          default:
+            return;
+          }
+        };
+      }
+      window.addEventListener("keyup", handleKeyboardUp);
+      return () => {
+        window.removeEventListener("keyup", handleKeyboardUp);
       };
     }, [pointer, isplaying, isChatKeywords]);
 
