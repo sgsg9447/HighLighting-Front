@@ -43,6 +43,8 @@ function BookMarker({ duration, bookmarker }) {
     setMarkers(bookmarker);
   }, [bookmarker]);
 
+  replayRef.current.saveMarker = handleClick;
+
   function handleClick(e) {
     e.preventDefault(); //새로고침 되지않게 막음!
     if (seeking) return;
@@ -84,6 +86,7 @@ function BookMarker({ duration, bookmarker }) {
     setMarker(""); //얜왜하지?
   }
 
+  
   function deleteMarker(id) {
     const updateMarkers = [...markers].filter((marker) => marker.id !== id);
 

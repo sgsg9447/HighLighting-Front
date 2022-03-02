@@ -71,7 +71,12 @@ const DataChart = (props) => {
   const clickToJumpRef = useRef({ isJump: false, jumpTime: undefined });
   const replayRef = useRef({ 
     isReplay: false, startTime: undefined, endTime: undefined, duration: undefined,
-    replay: replayBand, playingId: undefined, isPlayOnce: REPLAY_ONLE_ONCE, isShiftKey: false });
+    replay: replayBand, 
+    saveMarker: undefined,
+    playingId: undefined, isPlayOnce: REPLAY_ONLE_ONCE,
+    subKey: {isShiftKey: false, isCtrlKey: false},
+    wordKey: {isK: false}
+  });
   const dataDataRef = useRef({ isChange: false, dashboard: undefined, chartList: undefined, seriesList: undefined, change: changeChartData });
   const onBarChangeRef = useRef(false);
   const dragBandList = useRef(undefined);

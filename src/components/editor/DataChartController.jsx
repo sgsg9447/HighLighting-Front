@@ -96,6 +96,7 @@ function DataChartController({ url, duration }) {
         // console.log('isTypingRef.current', isTypingRef.current)
         // console.log('keyEvent', event)
         // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+        // console.log('event.ctrlKey', event.ctrlKey)
         const keyCode = event.code;
         switch (keyCode) {
           case 'Space':
@@ -109,8 +110,19 @@ function DataChartController({ url, duration }) {
             arrowPlayBarMove(false, ARROW_MOVING_TIME)
             return;
           case 'ShiftLeft':
-            replayRef.current.isShiftKey = true;
-            console.log('shiftkeydown')
+            replayRef.current.subKey.isShiftKey = true;
+            // console.log('shift keydown')
+            return;
+          case 'ControlLeft':
+            replayRef.current.subKey.isCtrlKey = true;
+            // console.log('ctrl keydown')
+            return;
+          case 'KeyK':
+            if (replayRef.current.subKey.isShiftKey && replayRef.current.subKey.isCtrlKey) {
+              replayRef.current.saveMarker()
+            }
+            replayRef.current.wordKey.isK = true;
+            // console.log('K keydown')
             return;
           default:
             return;
@@ -130,18 +142,27 @@ function DataChartController({ url, duration }) {
         // console.log('isTypingRef.current', isTypingRef.current)
         // console.log('keyEvent', event)
         // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+
         const keyCode = event.code;
         switch (keyCode) {
           case 'ShiftLeft':
-            replayRef.current.isShiftKey = false;
-            console.log('shiftkeyup')
-            return;
-            case 'Space':
-              return;
-            case 'ArrowLeft':
-              return;
-            case 'ArrowRight':
-              return;
+            replayRef.current.subKey.isShiftKey = false;
+            // console.log('shift keyup')
+            break;
+          case 'ControlLeft':
+            replayRef.current.subKey.isCtrlKey = false;
+            // console.log('ctrl keyup')
+            break;
+          case 'keyK':
+            replayRef.current.wordKey.isK = false;
+            // console.log('K keyup')
+            break;
+          case 'Space':
+            break;
+          case 'ArrowLeft':
+            break;
+          case 'ArrowRight':
+            break;
           default:
             return;
           }
