@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import useResult from "../../hooks/useResult";
+import "./DataChartController.scss";
 
 function DataChartController({ url, duration }) {
   const {
@@ -145,13 +146,16 @@ function DataChartController({ url, duration }) {
   return (
     <>
       <div className="container__chat">
-        <h2>Time Pointer = {pointer}</h2>
+        <h2>채팅 빈도</h2>
+        <h4>높을수록 시청자들의 반응이 좋은 장면이에요</h4>
       </div>
       <div className="container__video">
-        <h2>비디오</h2>
+        <h2>화면 변화</h2>
+        <h4>뾰족한 부분이 장면이 바뀌는 부분이에요</h4>
       </div>
       <div className="container__audio">
-        <h2>오디오</h2>
+        <h2>오디오 볼륨</h2>
+        <h4>두꺼우면 시끄러운 장면, 얇으면 조용한 장면이에요</h4>
       </div>
     </>
   );

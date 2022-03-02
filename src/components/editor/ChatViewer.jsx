@@ -201,7 +201,7 @@ function ChatViewer({ url, duration }) {
           onClick={handleIsChatSuper}
           value={isChatSuper}
         >
-          {isChatSuper ? "슈퍼챗 통계" : "슈퍼챗 OFF"}
+          {isChatSuper ? "후원 그래프" : "슈퍼챗 OFF"}
         </button>
         <button className="btn__ChatKeyWord" onClick={handleIsChatKeywords}>
           {isChatKeywords ? "키워드 검색" : "키워드 검색"}
