@@ -18,7 +18,7 @@ function BookMarker({ duration, bookmarker }) {
     replayRef,
   } = React.useContext(EditorTimePointerContext);
   const { server_addr } = useResult();
-  const [marker, setMarker] = useState("");
+  // const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
@@ -43,16 +43,21 @@ function BookMarker({ duration, bookmarker }) {
     setMarkers(bookmarker);
   }, [bookmarker]);
 
-  replayRef.current.saveMarker = handleClick;
+  useEffect(() => {
+    if (!replayRef) return;
+    replayRef.current.saveMarker = handleClick;
+  }, [markers]);
 
   function handleClick(e) {
-    e.preventDefault(); //새로고침 되지않게 막음!
+    if (e) {
+      e.preventDefault(); //새로고침 되지않게 막음!
+    }
     if (seeking) return;
     console.log(`is replayRef?`, replayRef.current);
     if (replayRef.current.isReplay) {
       const newMarker = {
         id: new Date().getTime(),
-        text: marker,
+        text: "",
         startPointer: replayRef.current.startTime,
         endPointer: replayRef.current.endTime,
         completed: false,
@@ -73,7 +78,7 @@ function BookMarker({ duration, bookmarker }) {
       } else {
         const newMarker = {
           id: new Date().getTime(),
-          text: marker,
+          text: "",
           startPointer: pointer,
           endPointer: null,
           completed: false,
@@ -83,7 +88,7 @@ function BookMarker({ duration, bookmarker }) {
         setMarkers([...markers].concat(newMarker));
       }
     }
-    setMarker(""); //얜왜하지?
+    // setMarker(""); //얜왜하지?
   }
 
   
