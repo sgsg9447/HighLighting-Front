@@ -162,7 +162,7 @@ function Editor() {
           </div>
 
           <div className="ChatViewerCover">
-            <ChatViewer />
+            <ChatViewer url={url ? url : propUrl} duration={propDuration} />
           </div>
 
           <div className="BookMarker">
@@ -175,7 +175,7 @@ function Editor() {
 
         <div className="lowerlayer">
           <div className="DataChartControllerCover">
-            <DataChartController url={url ? url : propUrl} duration={propDuration} />
+            <DataChartController />
           </div>
 
           <div className="DataChartCover">
