@@ -45,7 +45,7 @@
   }
   .loginBtn {
     width: 370px;
-    height: 40px;
+    height: 45px;
     font-size: 14px;
     padding: 13px 30px;
     cursor: pointer;
@@ -57,57 +57,9 @@
     border-radius: 3px;
     border-style: none;
   }
-
-  .socialBox {
-    margin-bottom: 30px;
-    .kakao {
-      background-color: #f8df02;
-      border-color: #f8df02;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-      margin-bottom: 10px;
-      border-radius: 3px;
-
-      .kakaoLogo {
-        width: 24px;
-        height: 25px;
-      }
-      .kakaoText {
-        width: 300px;
-        font-size: 15px;
-        text-align: center;
-        display: inline-block;
-        box-sizing: border-box;
-      }
-    }
-
-    .facebook {
-      background-color: #3a5996;
-      border-color: #3a5996;
-      height: 40px;
-      display: flex;
-      justify-content: center;
-      box-sizing: border-box;
-      color: #fff;
-      border-radius: 3px;
-
-      .facebookText {
-        padding-top: 12px;
-        width: 310px;
-        color: #fff;
-        font-size: 15px;
-        text-align: center;
-        box-sizing: border-box;
-      }
-
-      .facebookLogo {
-        padding-top: 7px;
-        width: 24px;
-        height: 25px;
-      }
-    }
+  .googleButton {
+    width: 370px;
+    height: 45px;
+    justify-content: center;
   }
 }

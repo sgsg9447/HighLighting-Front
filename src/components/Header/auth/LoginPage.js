@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import GoogleLogin from "react-google-login";
+import KakaoLogin from "react-kakao-login";
 import "./LoginPage.scss";
+
+const googleClientId =
+  "901844463722-nmmshl1dpm1ejgpenpm78q8andq510hm.apps.googleusercontent.com";
+const KakaoJsKey = "22cbe8edb7c41751940fa343ed0d9287";
 
 const LoginPage = () => {
   const [id, setId] = useState("");
   const [pwd, setPwd] = useState("");
+  const [name, setName] = useState("");
+  const [provider, setProvider] = useState("");
 
   const loginHandler = (e) => {
     if (e.target.id === "ID") {
@@ -20,12 +28,51 @@ const LoginPage = () => {
     console.log("id :", id, "pwd :", pwd);
   };
 
+  // Google Login 요청 성공했을 시
+  const responseGoogle = (res) => {
+    console.log("구글 response 데이터 : ", res);
+    setId(res.googleId);
+    setName(res.profileObj.name);
+    setProvider("google");
+  };
+
+  // Kakao Login 요청 성공했을 시
+  const responseKakao = (res) => {
+    console.log("카카오 response 데이터 : ", res);
+    setId(res.profile.id);
+    setName(res.profile.properties.nickname);
+    setProvider("kakao");
+  };
+
+  // 요청 실패했을 시
+  const responseFail = (err) => {
+    console.log(err);
+  };
+
+  // Hook 에러 방지겸 값 화인용 구문
+  if (name !== "" && id !== "" && provider !== "")
+    console.log("id :", id, "name :", name, "provider :", provider);
+
+  // 카카오톡 버튼 인라인 style
+  const KakaoButton = {
+    width: "370px",
+    height: "45px",
+    justifyContent: "center",
+    marginBottom: "12px",
+    color: "#783c0",
+    backgroundColor: "#f8df02",
+    border: "1px solid transparent",
+  };
+
+  useEffect(() => {
+    const tempGoogle = document.querySelector("#googleLogin>button>span");
+    tempGoogle.innerHTML = "Google 로그인";
+  }, []);
+
   return (
     <div className="LoginContainer">
       <div>
-        <label id="ID" htmlFor="ID">
-          ID
-        </label>
+        <label htmlFor="ID">ID</label>
         <br />
         <input
           id="ID"
@@ -47,25 +94,34 @@ const LoginPage = () => {
         />
       </div>
       <div className="loginMid">
-        <label className="autoLogin" htmlFor="hint">
-          {" "}
-          <input type="checkbox" id="hint" /> 로그인 유지하기
-        </label>
-        <div className="autoLogin">아이디/비밀번호 찾기</div>
+        <label className="autoLogin" htmlFor="hint"></label>
       </div>
       <button className="loginBtn" onClick={login}>
         {" "}
         로그인{" "}
       </button>
-      <div className="socialBox">
-        <div className="kakao">
-          <img className="kakaoLogo" src={require("./Image/kakaotalk.png")} />
-          <div className="kakaoText">카카오 계정으로 신규가입</div>
-        </div>
-        <div className="facebook">
-          <img className="facebookLogo" src={require("./Image/facebook.png")} />
-          <div className="facebookText">페이스북 계정으로 신규가입</div>
-        </div>
+      <br />
+      <div id="googleLogin">
+        <GoogleLogin
+          clientId={googleClientId}
+          buttonText="Google"
+          onSuccess={responseGoogle}
+          onFailure={responseFail}
+          className="googleButton"
+        />
+      </div>
+      <br />
+      <div id="kakaotalk">
+        <KakaoLogin
+          class="kakads"
+          style={KakaoButton}
+          jsKey={KakaoJsKey}
+          buttonText="Kakao"
+          onSuccess={responseKakao}
+          onFailure={responseFail}
+          getProfile="true"
+          id="kakaobutton"
+        />
       </div>
     </div>
   );
