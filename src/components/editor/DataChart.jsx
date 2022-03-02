@@ -75,7 +75,8 @@ const DataChart = (props) => {
     saveMarker: undefined,
     playingId: undefined, isPlayOnce: REPLAY_ONLE_ONCE,
     subKey: {isShiftKey: false, isCtrlKey: false},
-    wordKey: {isK: false}
+    wordKey: {isK: false},
+    isTyping: undefined,
   });
   const dataDataRef = useRef({ isChange: false, dashboard: undefined, chartList: undefined, seriesList: undefined, change: changeChartData });
   const onBarChangeRef = useRef(false);

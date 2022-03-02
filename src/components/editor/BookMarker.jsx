@@ -261,9 +261,8 @@ function BookMarker({ duration, bookmarker }) {
 
   return (
     <div className="BookMarkerContainer">
-      <h1>북마커 영역</h1>
-      <h2>Time Pointer = {pointer}</h2>
-      <h3>유저 클릭 북마크의 start 값으로 Time Pointer 변경</h3>
+      <h2>컷 보관함</h2>
+      <h3>드래그로 선택한 구간을 컷으로 보관할 수 있어요 (Ctrl+Shift+K)</h3>
       <>
         <button onClick={handleClick}>
           {isStart

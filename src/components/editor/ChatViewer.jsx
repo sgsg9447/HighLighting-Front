@@ -7,6 +7,7 @@ import { format } from "./in_VideoPlayer/Duration";
 import "./ChatViewer.scss";
 function ChatViewer({ url, duration }) {
   const {
+    replayRef,
     pointer,
     isplaying,
     setIsplaying,
@@ -28,9 +29,6 @@ function ChatViewer({ url, duration }) {
   const isTypingRef = useRef(false);
   const inputRef = useRef();
   // console.log(url);
-
-  // 좌우 화살표 키 누를 때 이동 시간(초)
-  const ARROW_MOVING_TIME = 10;
 
   function handleIsChatSuper() {
     if (isChatSuper === -1) setIsChatSuper(false);
@@ -86,6 +84,8 @@ function ChatViewer({ url, duration }) {
     }
   };
 
+  // 좌우 화살표 키 누를 때 이동 시간(초)
+  const ARROW_MOVING_TIME = 5;
   // 좌, 우 화살표 재생 이동 함수
   function arrowPlayBarMove(isLeft, padding = 10) {
     setSeeking(true);
@@ -102,16 +102,18 @@ function ChatViewer({ url, duration }) {
     setSeeking(false);
   }
 
-  // window keyboard event 스페이스 바 재생/중지, 화살표 좌우 재생이동
+  // window Keydown event
   useEffect(() => {
-    const handlePushSpaceBar = (event) => {
+    const handleKeyboardDown = (event) => {
       if (isChatKeywords || !isTypingRef.current) {
         // console.log('isTypingRef.current', isTypingRef.current)
         // console.log('keyEvent', event)
         // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+        // console.log('event.ctrlKey', event.ctrlKey)
         const keyCode = event.code;
         switch (keyCode) {
           case "Space":
+            if (isTypingRef.current) return;
             setIsplaying(!isplaying);
             return;
           case "ArrowLeft":
@@ -120,14 +122,71 @@ function ChatViewer({ url, duration }) {
           case "ArrowRight":
             arrowPlayBarMove(false, ARROW_MOVING_TIME);
             return;
+          case "ShiftLeft":
+            replayRef.current.subKey.isShiftKey = true;
+            // console.log('shift keydown')
+            return;
+          case "ControlLeft":
+            replayRef.current.subKey.isCtrlKey = true;
+            // console.log('ctrl keydown')
+            return;
+          case "KeyK":
+            if (
+              replayRef.current.subKey.isShiftKey &&
+              replayRef.current.subKey.isCtrlKey
+            ) {
+              replayRef.current.saveMarker();
+            }
+            replayRef.current.wordKey.isK = true;
+            // console.log('K keydown')
+            return;
           default:
             return;
         }
       }
     };
-    window.addEventListener("keydown", handlePushSpaceBar);
+    window.addEventListener("keydown", handleKeyboardDown);
     return () => {
-      window.removeEventListener("keydown", handlePushSpaceBar);
+      window.removeEventListener("keydown", handleKeyboardDown);
+    };
+  }, [pointer, isplaying, isChatKeywords]);
+
+  // window Keyup event
+  useEffect(() => {
+    const handleKeyboardUp = (event) => {
+      if (isChatKeywords || !isTypingRef.current) {
+        // console.log('isTypingRef.current', isTypingRef.current)
+        // console.log('keyEvent', event)
+        // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
+
+        const keyCode = event.code;
+        switch (keyCode) {
+          case "ShiftLeft":
+            replayRef.current.subKey.isShiftKey = false;
+            // console.log('shift keyup')
+            break;
+          case "ControlLeft":
+            replayRef.current.subKey.isCtrlKey = false;
+            // console.log('ctrl keyup')
+            break;
+          case "keyK":
+            replayRef.current.wordKey.isK = false;
+            // console.log('K keyup')
+            break;
+          case "Space":
+            break;
+          case "ArrowLeft":
+            break;
+          case "ArrowRight":
+            break;
+          default:
+            return;
+        }
+      }
+    };
+    window.addEventListener("keyup", handleKeyboardUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyboardUp);
     };
   }, [pointer, isplaying, isChatKeywords]);
 
@@ -195,6 +254,7 @@ function ChatViewer({ url, duration }) {
           )}
         </div>
       </div>
+
       <div>
         <button
           className="btn__ChatSuper"
@@ -211,20 +271,24 @@ function ChatViewer({ url, duration }) {
             <input
               className="keywordInputBar"
               ref={inputRef}
-              placeholder="키워드 , 으로 구분해주세요"
+              placeholder="여러개 입력 가능! , 로 구분"
               value={keywords}
               onChange={onChangeInput}
+              onFocus={(e) => {
+                isTypingRef.current = true;
+              }}
             />
             <button type="submit" onClick={postUrlKeyword}>
               검색
             </button>
-            <h3 className = 'hide'>
+            <h3 className="hide">
               [검색 키워드]:{" "}
               {keywords ? keywords : localStorage.getItem("localSearchKeyword")}
             </h3>
           </form>
         )}
       </div>
+      <a>찾고싶은 장면의 키워드를 검색해보세요</a>
     </div>
   );
 }
