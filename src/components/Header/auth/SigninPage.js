@@ -72,8 +72,10 @@ const SigninPage = () => {
   };
 
   useEffect(() => {
-    const temp = document.querySelector("#kakaotalk > button");
-    temp.innerHTML = "카카오톡으로 회원가입";
+    const tempKakao = document.querySelector("#kakaotalk > button");
+    tempKakao.innerHTML = "카카오톡으로 회원가입";
+    const tempGoogle = document.querySelector("#google>button>span");
+    tempGoogle.innerHTML = 'Google로 회원가입'
   }, []);
 
   return (
@@ -116,13 +118,15 @@ const SigninPage = () => {
           회원가입
         </button>
         <br />
-        <GoogleLogin
-          clientId={googleClientId}
-          buttonText="Google"
-          onSuccess={responseGoogle}
-          onFailure={responseFail}
-          className="googleButton"
-        />
+        <civ id="google">
+          <GoogleLogin
+            clientId={googleClientId}
+            buttonText="Google"
+            onSuccess={responseGoogle}
+            onFailure={responseFail}
+            className="googleButton"
+          />
+        </civ>
         <br />
         <div id="kakaotalk">
           <KakaoLogin
