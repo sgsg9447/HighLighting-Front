@@ -146,8 +146,9 @@ function DataChartController({ url, duration }) {
   return (
     <>
       <div className="container__chat">
-        <h2>채팅 빈도</h2>
-        <h4>높을수록 시청자들의 반응이 좋은 장면이에요</h4>
+        <h2>{isChatKeywords ? "채팅 빈도" : "키워드 감지"}</h2>
+        <h4>{isChatKeywords ? "높을수록 시청자 반응이 좋은 장면이에요" : "검색한 키워드가 얼마나 등장했는지 보여줘요"}</h4>
+        
       </div>
       <div className="container__video">
         <h2>화면 변화</h2>
