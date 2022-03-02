@@ -30,7 +30,7 @@ let REPLAY_ONLE_ONCE = true;
 
 // 각 차트별로 x개수와 간격이 다르지만, 같은 시간을 가리키도록 하자.
 // STEP_X: X좌표 간격(1밀리초)
-const STEP_X_CHAT_DISTRIBUTION = 10 * 1000; // 10분
+const STEP_X_CHAT_DISTRIBUTION = 60 * 1000; // 10분
 const STEP_X_VIDEO = 1000; // 1초
 const STEP_X_AUDIO = 500;  // 0.5초
 const STEP_X_CHAT_SUPER = 1000;  // 1분
@@ -476,7 +476,7 @@ const DataChart = (props) => {
               );
               
             // 키보드 SHIFT가 눌린 상태는 자동재생 막고 드래그만 하기
-            if (replayRef.current.isShiftKey) {
+            if (replayRef.current.subKey.isShiftKey) {
               // 드래그 시, 드래그 시작으로 재생 시작, 드래그 구간 반복
               replayRef.current.isReplay = true;
               replayRef.current.startTime = startTime;
