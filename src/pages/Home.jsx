@@ -21,7 +21,7 @@ export default function Home() {
   function linkCheck() {
     if (inputValue === null) {
       alert("빈 값입니다. 입력창에 유튜브 주소를 입력해 주세요.");
-      removeUrl();
+      focusUrl();
       return;
     } else if (inputValue !== null) {
       const gapCheck = inputValue.value.split(" ");
@@ -31,7 +31,7 @@ export default function Home() {
         alert(
           "유튜브 링크에 공백 문자가 포함되어 있습니다. 공백 문자를 제거한 주소를 입력해 주세요."
         );
-        removeUrl();
+        focusUrl();
         return;
       }
       if (correctLink !== "https://www.youtube.com/watch?v=") {
@@ -39,7 +39,7 @@ export default function Home() {
           "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요1."
         );
         console.log(correctLink);
-        removeUrl();
+        focusUrl();
         return;
       }
       if (backAddressCheck[1].length !== 11) {
@@ -47,7 +47,7 @@ export default function Home() {
         alert(
           "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요2."
         );
-        removeUrl();
+        focusUrl();
         return;
       }
       sendUrl();
@@ -62,7 +62,7 @@ export default function Home() {
     }
   }
 
-  function removeUrl() {
+  function focusUrl() {
     if (inputValue === null) return;
     inputValue.value = "";
     urlInput.current.focus();
