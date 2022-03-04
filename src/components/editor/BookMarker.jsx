@@ -281,28 +281,27 @@ function BookMarker({ duration, bookmarker }) {
                     />
                   </div>
                   <div className="card-body">
-                    <div class="user">
+                    <div className="user">
                       <img
                         src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo"
                         alt="user"
                       />
-                      <div class="user-info">
+                      <div className="user-info">
                         <h5>July Dec</h5>
                       </div>
                     </div>
                     {/* <h4>Why is the Tesla Cybertruck designed the way it is?</h4> */}
-                    <p>
-                      {addMarker === marker.id ? (
-                        <input
-                          type="text"
-                          onKeyPress={(e) => handleKeyPress(e, marker.id)}
-                          onChange={(e) => setEditingText(e.target.value)}
-                          value={editingText}
-                        />
-                      ) : (
-                        <div>{marker.text}</div>
-                      )}
-                    </p>
+                    {/* <p></p> */}
+                    {addMarker === marker.id ? (
+                      <input
+                        type="text"
+                        onKeyPress={(e) => handleKeyPress(e, marker.id)}
+                        onChange={(e) => setEditingText(e.target.value)}
+                        value={editingText}
+                      />
+                    ) : (
+                      <div>{marker.text}</div>
+                    )}
                     <div className="botoom">
                       <input
                         type="checkbox"
