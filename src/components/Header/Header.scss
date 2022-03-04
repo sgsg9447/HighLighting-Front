@@ -73,3 +73,22 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.loginEnd {
+  text-align: center;
+  font-size: 11px;
+
+  .loginLine {
+    color: #bcbcbc;
+    font-size: 11px;
+    margin-bottom: 35px;
+    b {
+      color: white;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+  .noUser {
+    text-decoration: underline;
+  }
+}
