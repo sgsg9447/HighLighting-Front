@@ -165,11 +165,8 @@ function Editor() {
             <ChatViewer url={url ? url : propUrl} duration={propDuration} />
           </div>
 
-          <div className="BookMarker">
-            <BookMarker
-              duration={propDuration}
-              bookmarker={propBookmarker}
-            />
+          <div className="BookMarkerToolCover">
+            <BookMarker duration={propDuration} bookmarker={propBookmarker} />
           </div>
         </div>
 
