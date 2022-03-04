@@ -11,7 +11,7 @@ export default function Home() {
 
   const { logged, onLogout } = useResult();
   const { url, setUrl } = useResult();
-  const { getMethodHello, requestResult } = useRoute();
+  const { requestResult } = useRoute();
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
@@ -21,7 +21,7 @@ export default function Home() {
   function linkCheck() {
     if (inputValue === null) {
       alert("빈 값입니다. 입력창에 유튜브 주소를 입력해 주세요.");
-      removeUrl();
+      focusUrl();
       return;
     } else if (inputValue !== null) {
       const gapCheck = inputValue.value.split(" ");
@@ -31,7 +31,7 @@ export default function Home() {
         alert(
           "유튜브 링크에 공백 문자가 포함되어 있습니다. 공백 문자를 제거한 주소를 입력해 주세요."
         );
-        removeUrl();
+        focusUrl();
         return;
       }
       if (correctLink !== "https://www.youtube.com/watch?v=") {
@@ -39,7 +39,7 @@ export default function Home() {
           "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요1."
         );
         console.log(correctLink);
-        removeUrl();
+        focusUrl();
         return;
       }
       if (backAddressCheck[1].length !== 11) {
@@ -47,7 +47,7 @@ export default function Home() {
         alert(
           "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요2."
         );
-        removeUrl();
+        focusUrl();
         return;
       }
       sendUrl();
@@ -62,7 +62,7 @@ export default function Home() {
     }
   }
 
-  function removeUrl() {
+  function focusUrl() {
     if (inputValue === null) return;
     inputValue.value = "";
     urlInput.current.focus();
@@ -73,18 +73,17 @@ export default function Home() {
       <Header logged={logged} onLogout={onLogout} />
       <div className="App-body">
         <h1>HIGHLIGHTING</h1>
-
         <input
           className="InputBar"
           ref={urlInput}
-          placeholder="URL을 입력해주세요"
+          placeholder="다시보기 영상 URL을 입력해주세요"
           onChange={onChangeUrl}
           id="link"
         />
         <h3>URL : {url}</h3>
-        <button onClick={linkCheck}>보내기 버튼</button>
-        <button onClick={getMethodHello}>get method 버튼</button>
-        <button onClick={removeUrl}>주소 삭제</button>
+        <button className="resultButton" onClick={linkCheck}>
+          <span>결과 보기</span>
+        </button>
       </div>
     </div>
   );

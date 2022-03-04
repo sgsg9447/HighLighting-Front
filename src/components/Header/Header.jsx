@@ -1,6 +1,6 @@
 import "./Header.scss";
 import { GiFilmProjector } from "react-icons/gi";
-import { FiLogIn } from "react-icons/fi";
+import { FiLogIn, FiUser, FiLogOut } from "react-icons/fi";
 import { GoSignIn } from "react-icons/go";
 import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -53,10 +53,8 @@ export default function Header() {
     if (target === "Home") {
       const result = window.confirm("홈페이지로 이동합니까?");
       if (result) {
-        alert("홈페이지로 이동합니다.");
         history.push("/");
       } else {
-        alert("이동을 취소합니다.");
       }
     }
   };
@@ -75,8 +73,13 @@ export default function Header() {
         </li>
         {logged ? (
           <div className="SignTool">
-            <li>마이 페이지</li>
-            <li onClick={onLogout}>로그아웃</li>
+            <li>
+              <FiUser />
+              마이 페이지
+            </li>
+            <li onClick={onLogout}>
+              <FiLogOut /> 로그아웃
+            </li>
           </div>
         ) : (
           <div className="SignTool">

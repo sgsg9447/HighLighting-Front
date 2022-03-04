@@ -12,14 +12,16 @@
   line-height: 1.25rem;
   line-height: 2;
   border-width: 1px;
-  border-color: red;
+  border-color: #935ef4;
   --tw-border-opacity: 0;
   --tw-bg-opacity: 1;
   background-color: #272c34;
   border-radius: 0.5rem;
+  width: 300px;
+  height: 60px;
 
   &:focus {
-    outline: 3px solid red;
+    outline: 3px solid #935ef4;
     background-color: #272c34;
     color: white;
   }
@@ -34,4 +36,41 @@ h1 {
   background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.resultButton {
+  width: 150px;
+  height: 50px;
+  background-color: #935ef4;
+  border: none;
+  color: white;
+  font-size: 20px;
+  border-radius: 0.5rem;
+  transition: all 0.5s;
+  text-align: center;
+  cursor: pointer;
+
+  span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+
+    &:after {
+      content: "\00bb";
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+  }
+  &:hover span {
+    padding-right: 25px;
+  }
+
+  &:hover span:after {
+    opacity: 1;
+    right: 0;
+  }
 }
