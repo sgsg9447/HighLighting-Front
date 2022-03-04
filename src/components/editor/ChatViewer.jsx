@@ -130,14 +130,14 @@ function ChatViewer({ url, duration }) {
             replayRef.current.subKey.isCtrlKey = true;
             // console.log('ctrl keydown')
             return;
-          case "KeyK":
+          case "KeyS":
             if (
               replayRef.current.subKey.isShiftKey &&
               replayRef.current.subKey.isCtrlKey
             ) {
               replayRef.current.saveMarker();
             }
-            replayRef.current.wordKey.isK = true;
+            replayRef.current.wordKey.isS = true;
             // console.log('K keydown')
             return;
           default:
@@ -169,9 +169,9 @@ function ChatViewer({ url, duration }) {
             replayRef.current.subKey.isCtrlKey = false;
             // console.log('ctrl keyup')
             break;
-          case "keyK":
-            replayRef.current.wordKey.isK = false;
-            // console.log('K keyup')
+          case "KeyS":
+            replayRef.current.wordKey.isS = false;
+            // console.log('S keyup')
             break;
           case "Space":
             break;
@@ -225,7 +225,7 @@ function ChatViewer({ url, duration }) {
     if (!mounted.current) {
       mounted.current = true;
     } else {
-      if (Math.abs(prevPointer - pointer) > 5) {
+      if (Math.abs(prevPointer - pointer) > 4) {
         setFlow([]);
       }
       if (data[pointer] !== undefined) {
@@ -288,7 +288,6 @@ function ChatViewer({ url, duration }) {
           </form>
         )}
       </div>
-      <a>찾고싶은 장면의 키워드를 검색해보세요</a>
     </div>
   );
 }

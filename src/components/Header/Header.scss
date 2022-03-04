@@ -58,7 +58,7 @@
       &:hover::after {
         width: 35%;
         height: 35%;
-        border-color: rgb(194, 39, 39);
+        border-color: #935ef4;
       }
     }
   }
@@ -69,7 +69,9 @@
 }
 
 #Home {
-  background: linear-gradient(to right, #fff, #f00);
+  font-size: 50px;
+  font-weight: bold;
+  background: #935ef4;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

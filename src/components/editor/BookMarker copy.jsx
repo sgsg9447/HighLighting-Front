@@ -7,19 +7,6 @@ import axios from "axios";
 import "./BookMarker.scss";
 import useResult from "../../hooks/useResult";
 
-/* 카드형식 */
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
-import Checkbox from "@mui/material/Checkbox";
-import Stack from "@mui/material/Stack";
-
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
 function BookMarker({ duration, bookmarker }) {
   const {
     pointer,
@@ -101,11 +88,10 @@ function BookMarker({ duration, bookmarker }) {
         setMarkers([...markers].concat(newMarker));
       }
     }
-
     // setMarker(""); //얜왜하지?
   }
 
-
+  
   function deleteMarker(id) {
     const updateMarkers = [...markers].filter((marker) => marker.id !== id);
 
@@ -277,113 +263,55 @@ function BookMarker({ duration, bookmarker }) {
     <div className="BookMarkerContainer">
       <h2>컷 보관함</h2>
       <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
-      <br />
-      <div
-        className="hello"
-        style={{
-          width: 900,
-          height: 240,
-        }}
+      <>
+        <button onClick={handleClick}>
+          {isStart
+            ? "북마크종료"
+            : replayRef?.current.isReplay
+            ? "북마크저장"
+            : "북마크시작"}
+        </button>
 
-        
-      >
         {markers.map((marker) => (
           <div key={marker.id}>
-            <Card sx={({ maxWidth: 120 }, { margin: 0.2 })}>
-              <CardMedia
-                onClick={() => {
-                  console.log("hi");
-                }}
-                component="img"
-                height="100"
-                image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRx3jIbMYkLPXe8L30kclAJXuyS6HEIwELRA&usqp=CAU"
-                alt="thumbnail"
-              />
-              <CardContent>
-                {/* <Typography
-                  gutterBottom
-                  variant="h10"
-                  component="div"
-                ></Typography>
-                 */}
-                <Button color="secondary" onClick={() => playVideo(marker.id)}>
-                  {format(marker.startPointer)}~{format(marker.endPointer)}
-                </Button>
-                <Typography variant="body2" color="text.secondary">
-                  {" "}
-                </Typography>
-
-                {addMarker === marker.id ? (
-                  <TextareaAutosize
-                    maxRows={2}
-                    aria-label="maximum height"
-                    style={{ width: 100 }}
-                    onKeyPress={(e) => handleKeyPress(e, marker.id)}
-                    onChange={(e) => setEditingText(e.target.value)}
-                    value={editingText}
-                  />
-                ) : (
-                  <div>{marker.text}</div>
-                )}
-              </CardContent>
-
-              <CardActions>
-                <Stack spacing={-3} direction="row">
-                  <Checkbox
-                    color="secondary"
-                    {...label}
-                    onChange={() => toggleComplete(marker.id)}
-                    checked={marker.completed}
-                  />
-                  {/* <input
+            <input
               type="checkbox"
               onChange={() => toggleComplete(marker.id)}
               checked={marker.completed}
-            /> */}
-                  {addMarker === marker.id ? (
-                    <Button
-                      color="secondary"
-                      onClick={() => addMemoEdit(marker.id)}
-                    >
-                      저장
-                    </Button>
-                  ) : (
-                    <Button
-                      color="secondary"
-                      size="small"
-                      onClick={() => setAddMarker(marker.id)}
-                    >
-                      메모
-                    </Button>
-                  )}
+            />
 
-                  <Button
-                    color="secondary"
-                    size="small"
-                    onClick={() => deleteMarker(marker.id)}
-                  >
-                    삭제
-                  </Button>
-                </Stack>
-              </CardActions>
-            </Card>
+            <button onClick={() => playVideo(marker.id)}>
+              {format(marker.startPointer)}~{format(marker.endPointer)}
+            </button>
+
+            <button onClick={() => deleteMarker(marker.id)}>삭제</button>
+
+            {addMarker === marker.id ? (
+              <input
+                type="text"
+                onKeyPress={(e) => handleKeyPress(e, marker.id)}
+                onChange={(e) => setEditingText(e.target.value)}
+                value={editingText}
+              />
+            ) : (
+              <div>{marker.text}</div>
+            )}
+
+            {addMarker === marker.id ? (
+              <button onClick={() => addMemoEdit(marker.id)}>저장</button>
+            ) : (
+              <button onClick={() => setAddMarker(marker.id)}>
+                한줄메모 작성!
+              </button>
+            )}
           </div>
         ))}
-      </div>
-      <div className='parent'>
-      <button
-          className="btn__ChatSuper"
-          onClick={handleClick}
-        >컷 만들기</button>
-      <button
-          className="btn__ChatKeyWord right"
-          onClick={goToPostDB}
-        >저장하기</button>
-      <button
-          className="btn__ChatSuper"
-          onClick={goToDownload}
-        >내보내기</button>
-      </div>
+        <br></br>
+        {/* <button onClick={goToGetDB}>DB로 get 보내기</button> */}
+        <button onClick={goToPostDB}>post 보내기</button>
+
+        <button onClick={goToDownload}>다운로드</button>
+      </>
     </div>
   );
 }

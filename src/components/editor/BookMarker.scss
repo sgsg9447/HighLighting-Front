@@ -2,3 +2,27 @@
   padding: 1rem;
   color: white;
 }
+
+.hello {
+  display: flex;
+  width: 700;
+  height: 250;
+}
+
+.btn__ChatSuper {
+  font-size:20px;
+  padding:10px 10px;
+  color: white;
+  border: 0;
+  background-color: #8d6ffa;
+}
+.btn__ChatKeyWord {
+  font-size:20px;
+  padding:10px 10px;
+  color: white;
+  border: 0;
+  background-color: #653bfc;
+}
+
+.parent {display: flex;}
+.right {margin-left: auto;}
