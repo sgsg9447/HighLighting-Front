@@ -21,6 +21,7 @@ const AppStateProvider = ({ children }) => {
   const [markers, setMarkers] = useState([]);
   const [relay, setRelay] = useState(false);
   const [receivedDataSetList, setReceivedDataSetList] = useState();
+  const [logged, setLogged] = useState(false);
 
   const server_addr = "http://143.248.193.175:5000";
 
@@ -152,6 +153,15 @@ const AppStateProvider = ({ children }) => {
       });
   }
 
+  function onLogin() {
+    setLogged(true);
+  }
+
+  const onLogout = () => {
+    setLogged(false);
+    history.push("/");
+  };
+
   function mapValueToObj(raw) {
     return raw.map((value, index) => ({ name: index, value: value }));
   }
@@ -176,6 +186,8 @@ const AppStateProvider = ({ children }) => {
         receivedDataSetList,
         title,
         thumbnail,
+        logged,
+        setLogged,
         setTitle,
         setThumNail,
 
@@ -196,7 +208,8 @@ const AppStateProvider = ({ children }) => {
         setReceivedDataSetList,
 
         mapValueToObj,
-
+        onLogin,
+        onLogout,
         requestKeywordsData,
         getMethodKeywords,
         requestResult,
