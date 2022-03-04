@@ -104,7 +104,7 @@ export default function Home() {
               </p>
             </div>
             <div className="Home_introduction_heading_wrap">
-              <h2> 가이드라인 </h2>
+              <h2> 단계별 가이드라인 </h2>
             </div>
             <ul class="Home_list">
               <li class="Home_list-item">
@@ -152,18 +152,21 @@ export default function Home() {
             </ul>
           </div>
           <div className="Home_Column2">
-            <h1>URL 입력창</h1>
-            <input
-              className="InputBar"
-              ref={urlInput}
-              placeholder="다시보기 영상 URL을 입력해주세요"
-              onChange={onChangeUrl}
-              id="link"
-            />
-            <h1>URL : {url}</h1>
-            <button className="resultButton" onClick={linkCheck}>
-              <span>결과 보기</span>
-            </button>
+            <div className="Home_urlInput">
+              <h1>URL 입력창</h1>
+              <input
+                className="InputBar"
+                ref={urlInput}
+                placeholder="다시보기 영상 URL을 입력해주세요"
+                onChange={onChangeUrl}
+                id="link"
+              />
+              <h3>URL : {url}</h3>
+              <button className="resultButton" onClick={linkCheck}>
+                <span>결과 보기</span>
+              </button>
+            </div>
+            <div class="Home_GuidelineContainer">단계별 가이드라인 파트</div>
           </div>
         </div>
       </div>

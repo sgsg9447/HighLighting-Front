@@ -16,7 +16,7 @@ body {
         linear-gradient(to right bottom, hsl(270, 50%, 8%), transparent 86%),
         linear-gradient(to bottom, transparent, hsl(270, 50%, 8%) 86%),
         url("./image/background.png") no-repeat;
-      background-size: auto 1000px;
+      background-size: auto 98rem;
       display: flex;
 
       h1 {
@@ -25,48 +25,51 @@ body {
 
       .Home_Column1 {
         padding-top: 4rem;
-        margin-left: 4rem;
+        margin-left: 6rem;
         width: 40%;
 
         .HC1_heading {
           font-weight: bold;
           letter-spacing: 2px;
           padding: 0.2rem 0.7rem;
-          font-size: 3.5rem;
+          font-size: 6rem;
           border-radius: 4px;
           .HC1-logo {
-            height: 48px;
+            height: 80px;
           }
         }
         .HC1-p1 {
+          font-size: 24px;
           width: 90%;
           color: rgb(163, 163, 163);
 
           .point1 {
             color: white;
-            font-size: 24px;
+            font-size: 36px;
             font-weight: bold;
           }
         }
         .HC1-p2 {
+          font-size: 24px;
           width: 90%;
           color: rgb(163, 163, 163);
 
           .point1 {
             color: rgb(196, 95, 255);
-            font-size: 18px;
+            font-size: 30px;
             font-weight: bold;
           }
 
           .point2 {
             color: rgb(196, 95, 255);
-            font-size: 18px;
+            font-size: 30px;
             font-weight: bold;
             cursor: pointer;
             text-decoration: underline;
           }
         }
         .HC1-p3 {
+          font-size: 20px;
           width: 90%;
           color: rgb(119, 119, 119);
 
@@ -98,7 +101,7 @@ body {
             content: "HIGHLIGHT";
             position: absolute;
             bottom: 17%;
-            left: -18%;
+            left: -10%;
             opacity: 0.03;
             font-size: 18rem;
             font-weight: bold;
@@ -120,11 +123,11 @@ body {
               position: absolute;
               left: 0;
               top: 8px;
-              width: 8px;
-              height: 8px;
-              border-radius: 4px;
+              width: 12px;
+              height: 12px;
+              border-radius: 8px;
               background: rgb(196, 95, 255);
-              transform: translateX(-3px);
+              transform: translateX(-6px);
             }
 
             &:first-of-type::before {
@@ -158,44 +161,97 @@ body {
       }
       .Home_Column2 {
         width: 60%;
-        padding-left: 5rem;
+        padding-left: 4rem;
+        padding-top: 4rem;
         justify-content: center;
         text-align: center;
+
+        .Home_urlInput {
+          h1 {
+            font-size: 96px;
+          }
+          h3 {
+            font-size: 48px;
+            color: white;
+          }
+
+          .InputBar {
+            flex-shrink: 1;
+            transition-property: color, background-color, border-color,
+              text-decoration-color, fill, stroke, opacity, box-shadow,
+              transform, filter, backdrop-filter;
+            transition-duration: 0.2s;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            height: 3rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-size: 1.7rem;
+            line-height: 1.25rem;
+            line-height: 2;
+            border-width: 1px;
+            border: 3px solid #935ef4;
+            --tw-border-opacity: 0;
+            --tw-bg-opacity: 1;
+            background-color: #191023;
+            border-radius: 0.5rem;
+            width: 45rem;
+            height: 5rem;
+
+            &:focus {
+              outline: 3px solid #935ef4;
+              background-color: #191023;
+              color: white;
+            }
+
+            &:-webkit-autofill {
+              -webkit-box-shadow: 0 0 0 1000px #191023 inset;
+              -webkit-text-fill-color: #fff !important;
+            }
+          }
+        }
+        .resultButton {
+          width: 18rem;
+          height: 6rem;
+          background-color: #935ef4;
+          border: none;
+          color: white;
+          font-size: 45px;
+          border-radius: 0.5rem;
+          transition: all 0.5s;
+          text-align: center;
+          cursor: pointer;
+
+          span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+
+            &:after {
+              content: "\00bb";
+              position: absolute;
+              opacity: 0;
+              top: 0;
+              right: -20px;
+              transition: 0.5s;
+            }
+          }
+          &:hover span {
+            padding-right: 40px;
+          }
+
+          &:hover span:after {
+            opacity: 1;
+            right: 0;
+          }
+        }
+
+        .Home_GuidelineContainer {
+          margin: 25rem 0 4rem;
+          color: white;
+        }
       }
     }
-  }
-}
-.InputBar {
-  flex-shrink: 1;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter;
-  transition-duration: 0.2s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  height: 3rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  line-height: 2;
-  border-width: 1px;
-  border-color: #935ef4;
-  --tw-border-opacity: 0;
-  --tw-bg-opacity: 1;
-  background-color: #272c34;
-  border-radius: 0.5rem;
-  width: 300px;
-  height: 60px;
-
-  &:focus {
-    outline: 3px solid #935ef4;
-    background-color: #272c34;
-    color: white;
-  }
-
-  &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px #272c34 inset;
-    -webkit-text-fill-color: #fff !important;
   }
 }
 
@@ -203,41 +259,4 @@ h1 {
   background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.resultButton {
-  width: 150px;
-  height: 50px;
-  background-color: #935ef4;
-  border: none;
-  color: white;
-  font-size: 20px;
-  border-radius: 0.5rem;
-  transition: all 0.5s;
-  text-align: center;
-  cursor: pointer;
-
-  span {
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    transition: 0.5s;
-
-    &:after {
-      content: "\00bb";
-      position: absolute;
-      opacity: 0;
-      top: 0;
-      right: -20px;
-      transition: 0.5s;
-    }
-  }
-  &:hover span {
-    padding-right: 25px;
-  }
-
-  &:hover span:after {
-    opacity: 1;
-    right: 0;
-  }
 }
