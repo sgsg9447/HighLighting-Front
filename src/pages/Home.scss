@@ -1,3 +1,170 @@
+body {
+  background-color: #282c34;
+
+  .HomeContainer {
+    display: flex;
+    flex-grow: 2;
+    height: 100%;
+    .Home_main {
+      flex-grow: 2;
+      background: linear-gradient(
+          to right top,
+          hsla(270, 50%, 8%, 0.5),
+          hsla(270, 50%, 8%, 0.6) 20%,
+          hsla(270, 50%, 8%, 0.1)
+        ),
+        linear-gradient(to right bottom, hsl(270, 50%, 8%), transparent 86%),
+        linear-gradient(to bottom, transparent, hsl(270, 50%, 8%) 86%),
+        url("./image/background.png") no-repeat;
+      background-size: auto 1000px;
+      display: flex;
+
+      h1 {
+        margin-bottom: 1rem;
+      }
+
+      .Home_Column1 {
+        padding-top: 4rem;
+        margin-left: 4rem;
+        width: 40%;
+
+        .HC1_heading {
+          font-weight: bold;
+          letter-spacing: 2px;
+          padding: 0.2rem 0.7rem;
+          font-size: 3.5rem;
+          border-radius: 4px;
+          .HC1-logo {
+            height: 48px;
+          }
+        }
+        .HC1-p1 {
+          width: 90%;
+          color: rgb(163, 163, 163);
+
+          .point1 {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+          }
+        }
+        .HC1-p2 {
+          width: 90%;
+          color: rgb(163, 163, 163);
+
+          .point1 {
+            color: rgb(196, 95, 255);
+            font-size: 18px;
+            font-weight: bold;
+          }
+
+          .point2 {
+            color: rgb(196, 95, 255);
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+          }
+        }
+        .HC1-p3 {
+          width: 90%;
+          color: rgb(119, 119, 119);
+
+          .point1 {
+            color: white;
+            font-weight: bold;
+          }
+        }
+
+        .Home_introduction_heading_wrap {
+          display: flex;
+          align-items: center;
+          font-size: 1rem;
+          margin: 12rem 0 5rem;
+
+          h2 {
+            color: rgb(196, 95, 255);
+            font-size: 36px;
+            font-weight: bold;
+          }
+        }
+
+        .Home_list {
+          list-style: none;
+          position: relative;
+          color: white;
+
+          &:before {
+            content: "HIGHLIGHT";
+            position: absolute;
+            bottom: 17%;
+            left: -18%;
+            opacity: 0.03;
+            font-size: 18rem;
+            font-weight: bold;
+          }
+
+          .Home_list-item {
+            padding: 0 0 5.7rem 3rem;
+            border-left: 3px solid hsla(0, 0%, 100%, 0.2);
+            position: relative;
+            display: flex;
+            color: #9d9dac;
+
+            &:first-of-type .Home_list-content {
+              color: hsl(0, 0%, 100%);
+            }
+
+            &::before {
+              content: "";
+              position: absolute;
+              left: 0;
+              top: 8px;
+              width: 8px;
+              height: 8px;
+              border-radius: 4px;
+              background: rgb(196, 95, 255);
+              transform: translateX(-3px);
+            }
+
+            &:first-of-type::before {
+              top: 0;
+            }
+
+            &:first-of-type .Home_list-content {
+              line-height: 0.5;
+            }
+
+            &:last-of-type {
+              padding-bottom: 3rem;
+            }
+
+            .Home_list-content {
+              font-size: 1.4rem;
+              cursor: pointer;
+
+              &:hover {
+                color: hsl(240, 8%, 90%);
+              }
+            }
+
+            .Home_list-sub {
+              margin-top: 0.4rem;
+              font-size: 1.1rem;
+              opacity: 0.6;
+            }
+          }
+        }
+      }
+      .Home_Column2 {
+        width: 60%;
+        padding-left: 5rem;
+        justify-content: center;
+        text-align: center;
+      }
+    }
+  }
+}
 .InputBar {
   flex-shrink: 1;
   transition-property: color, background-color, border-color,
