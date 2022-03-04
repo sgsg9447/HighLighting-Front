@@ -9,6 +9,7 @@ export default function Home() {
   const inputValue = document.getElementById("link");
   const urlInput = useRef();
 
+  const { logged, onLogout } = useResult();
   const { url, setUrl } = useResult();
   const { getMethodHello, requestResult } = useRoute();
 
@@ -69,7 +70,7 @@ export default function Home() {
 
   return (
     <div>
-      <Header />
+      <Header logged={logged} onLogout={onLogout} />
       <div className="App-body">
         <h1>HIGHLIGHTING</h1>
 
