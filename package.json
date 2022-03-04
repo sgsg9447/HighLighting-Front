@@ -4,17 +4,10 @@
   "private": true,
   "dependencies": {
     "@arction/lcjs": "^3.4.0",
-<<<<<<< HEAD
-    "@arction/xydata": "^1.4.0",
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
     "@mui/material": "^5.4.4",
     "@mui/styled-engine-sc": "^5.4.2",
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
-=======
->>>>>>> 494b442d8d5ff1bda5031cb8ec44ad4f7df5d87a
     "axios": "^0.25.0",
     "node-sass": "^7.0.1",
     "react": "^17.0.2",
