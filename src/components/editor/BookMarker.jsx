@@ -270,8 +270,8 @@ function BookMarker({ duration, bookmarker }) {
         <h2>컷 보관함</h2>
         <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
         <div className="hello">
-          {markers.map((marker) => (
-            <div className="card-container">
+          <div className="card-container">
+            {markers.map((marker) => (
               <div key={marker.id}>
                 <div className="card">
                   <div className="card-header">
@@ -329,8 +329,8 @@ function BookMarker({ duration, bookmarker }) {
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         <div className="parent">
