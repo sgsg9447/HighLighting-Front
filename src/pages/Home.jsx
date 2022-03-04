@@ -11,7 +11,7 @@ export default function Home() {
 
   const { logged, onLogout } = useResult();
   const { url, setUrl } = useResult();
-  const { getMethodHello, requestResult } = useRoute();
+  const { requestResult } = useRoute();
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
@@ -73,18 +73,17 @@ export default function Home() {
       <Header logged={logged} onLogout={onLogout} />
       <div className="App-body">
         <h1>HIGHLIGHTING</h1>
-
         <input
           className="InputBar"
           ref={urlInput}
-          placeholder="URL을 입력해주세요"
+          placeholder="다시보기 영상 URL을 입력해주세요"
           onChange={onChangeUrl}
           id="link"
         />
         <h3>URL : {url}</h3>
-        <button onClick={linkCheck}>보내기 버튼</button>
-        <button onClick={getMethodHello}>get method 버튼</button>
-        <button onClick={removeUrl}>주소 삭제</button>
+        <button className="resultButton" onClick={linkCheck}>
+          <span>결과 보기</span>
+        </button>
       </div>
     </div>
   );

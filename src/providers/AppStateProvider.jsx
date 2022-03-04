@@ -38,20 +38,6 @@ const AppStateProvider = ({ children }) => {
     history.push("/notfound");
   };
 
-  function getMethodHello(e) {
-    console.log("call getMethod()");
-    axios
-      .get(server_addr + "/flask/hello")
-      .then((response) => {
-        console.log("Success", response.data);
-      })
-      .catch((error) => {
-        console.log("get메소드 에러");
-        console.log(error);
-        alert("요청에 실패하였습니다.");
-      });
-  }
-
   function requestResult(url) {
     console.log("request start");
     console.time("requestTime");
@@ -213,7 +199,6 @@ const AppStateProvider = ({ children }) => {
         requestKeywordsData,
         getMethodKeywords,
         requestResult,
-        getMethodHello,
         goEditor,
         goLoading,
         goNotFound,
