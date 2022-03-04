@@ -53,10 +53,8 @@ export default function Header() {
     if (target === "Home") {
       const result = window.confirm("홈페이지로 이동합니까?");
       if (result) {
-        alert("홈페이지로 이동합니다.");
         history.push("/");
       } else {
-        alert("이동을 취소합니다.");
       }
     }
   };
