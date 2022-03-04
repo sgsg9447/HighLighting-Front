@@ -2,16 +2,20 @@ import React, { useState, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import KakaoLogin from "react-kakao-login";
 import "./LoginPage.scss";
+import useResult from "../../../hooks/useResult";
+import { useHistory } from "react-router-dom";
 
 const googleClientId =
   "901844463722-nmmshl1dpm1ejgpenpm78q8andq510hm.apps.googleusercontent.com";
 const KakaoJsKey = "22cbe8edb7c41751940fa343ed0d9287";
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   const [id, setId] = useState("");
   const [pwd, setPwd] = useState("");
   const [name, setName] = useState("");
   const [provider, setProvider] = useState("");
+  const { onLogin } = useResult();
+  const history = useHistory();
 
   const loginHandler = (e) => {
     if (e.target.id === "ID") {
@@ -34,6 +38,7 @@ const LoginPage = () => {
     setId(res.googleId);
     setName(res.profileObj.name);
     setProvider("google");
+    loginSuccess();
   };
 
   // Kakao Login 요청 성공했을 시
@@ -42,11 +47,20 @@ const LoginPage = () => {
     setId(res.profile.id);
     setName(res.profile.properties.nickname);
     setProvider("kakao");
+    loginSuccess();
+  };
+
+  const loginSuccess = () => {
+    console.log(props);
+    props.setModalOpen(false);
+    props.setLogIn(false);
+    onLogin();
+    history.push("/");
   };
 
   // 요청 실패했을 시
   const responseFail = (err) => {
-    console.log(err);
+    console.log("에러 : ", err);
   };
 
   // Hook 에러 방지겸 값 화인용 구문
