@@ -1,28 +1,35 @@
-.BookMarker {
+.BookMarkerContainer {
+  width: 95%;
+  height: 60%;
   padding: 1rem;
   color: white;
-}
 
-.hello {
-  display: flex;
-  width: 700;
-  height: 250;
+  .hello {
+    width: 95%;
+    height: 90%;
+    border: 2px solid #653bfc;
+    margin: 0.5rem;
+  }
 }
 
 .btn__ChatSuper {
-  font-size:20px;
-  padding:10px 10px;
+  font-size: 20px;
+  padding: 10px 10px;
   color: white;
   border: 0;
   background-color: #8d6ffa;
 }
 .btn__ChatKeyWord {
-  font-size:20px;
-  padding:10px 10px;
+  font-size: 20px;
+  padding: 10px 10px;
   color: white;
   border: 0;
   background-color: #653bfc;
 }
 
-.parent {display: flex;}
-.right {margin-left: auto;}
+.parent {
+  display: flex;
+}
+.right {
+  margin-left: auto;
+}
