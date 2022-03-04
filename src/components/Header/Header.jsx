@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import LoginPage from "./auth/LoginPage";
 import SigninPage from "./auth/SigninPage";
+import useResult from "../../hooks/useResult";
 
 export default function Header() {
   const [modalOpen, setModalOpen] = useState(false);
   const [logIn, setLogIn] = useState(false);
   const [signIn, setSignIn] = useState(false);
+  const { logged, onLogout } = useResult();
   const history = useHistory();
 
   useEffect(() => {
@@ -71,27 +73,34 @@ export default function Header() {
         <li id="Home" onClick={onClickEvent}>
           <GiFilmProjector /> HiGHLIGHTING
         </li>
-        <div className="SignTool">
-          <li
-            id="SignIn"
-            onClick={() => {
-              openModal();
-              setSignIn(true);
-              console.log("SignIn 값 : ", signIn);
-            }}
-          >
-            <GoSignIn /> 회원가입
-          </li>
-          <li
-            id="LogIn"
-            onClick={() => {
-              openModal();
-              setLogIn(true);
-            }}
-          >
-            <FiLogIn /> 로그인
-          </li>
-        </div>
+        {logged ? (
+          <div className="SignTool">
+            <li>마이 페이지</li>
+            <li onClick={onLogout}>로그아웃</li>
+          </div>
+        ) : (
+          <div className="SignTool">
+            <li
+              id="SignIn"
+              onClick={() => {
+                openModal();
+                setSignIn(true);
+                console.log("SignIn 값 : ", signIn);
+              }}
+            >
+              <GoSignIn /> 회원가입
+            </li>
+            <li
+              id="LogIn"
+              onClick={() => {
+                openModal();
+                setLogIn(true);
+              }}
+            >
+              <FiLogIn /> 로그인
+            </li>
+          </div>
+        )}
       </ul>
       {modalOpen && logIn && (
         <Modal
@@ -100,7 +109,7 @@ export default function Header() {
           close={closeModal}
           Header="회원가입 및 로그인 "
         >
-          <LoginPage />
+          <LoginPage setModalOpen={setModalOpen} setLogIn={setLogIn} />
           <div className="loginEnd">
             <div className="loginLine">
               회원이 아니신가요? <b onClick={SignInToggle}>회원가입</b>
@@ -115,7 +124,7 @@ export default function Header() {
           close={closeModal}
           Header="회원가입 및 로그인 "
         >
-          <SigninPage />
+          <SigninPage setModalOpen={setModalOpen} setSignIn={setSignIn} />
         </Modal>
       )}
     </div>
