@@ -105,7 +105,6 @@ function BookMarker({ duration, bookmarker }) {
     // setMarker(""); //얜왜하지?
   }
 
-
   function deleteMarker(id) {
     const updateMarkers = [...markers].filter((marker) => marker.id !== id);
 
@@ -155,8 +154,8 @@ function BookMarker({ duration, bookmarker }) {
         replayRef.current.startTime = marker.startPointer;
         replayRef.current.endTime = marker.endPointer;
         replayRef.current.playingId = marker.id;
-        setRelay(prev => prev = true)
-        console.log('marker click play', replayRef.current)
+        setRelay((prev) => (prev = true));
+        console.log("marker click play", replayRef.current);
       }
     });
     console.log("seekto 함수로 영상재생");
@@ -222,7 +221,10 @@ function BookMarker({ duration, bookmarker }) {
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.setAttribute("download", "영상파일과 같은 위치에서 압축을 풀어주세요.zip");
+        link.setAttribute(
+          "download",
+          "영상파일과 같은 위치에서 압축을 풀어주세요.zip"
+        );
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -277,16 +279,7 @@ function BookMarker({ duration, bookmarker }) {
     <div className="BookMarkerContainer">
       <h2>컷 보관함</h2>
       <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
-      <br />
-      <div
-        className="hello"
-        style={{
-          width: 900,
-          height: 240,
-        }}
-
-        
-      >
+      <div className="hello">
         {markers.map((marker) => (
           <div key={marker.id}>
             <Card sx={({ maxWidth: 120 }, { margin: 0.2 })}>
@@ -370,19 +363,16 @@ function BookMarker({ duration, bookmarker }) {
           </div>
         ))}
       </div>
-      <div className='parent'>
-      <button
-          className="btn__ChatSuper"
-          onClick={handleClick}
-        >컷 만들기</button>
-      <button
-          className="btn__ChatKeyWord right"
-          onClick={goToPostDB}
-        >저장하기</button>
-      <button
-          className="btn__ChatSuper"
-          onClick={goToDownload}
-        >내보내기</button>
+      <div className="parent">
+        <button className="btn__ChatSuper" onClick={handleClick}>
+          컷 만들기
+        </button>
+        <button className="btn__ChatKeyWord right" onClick={goToPostDB}>
+          저장하기
+        </button>
+        <button className="btn__ChatSuper" onClick={goToDownload}>
+          내보내기
+        </button>
       </div>
     </div>
   );
