@@ -4,10 +4,6 @@
   "private": true,
   "dependencies": {
     "@arction/lcjs": "^3.4.0",
-    "@arction/xydata": "^1.4.0",
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
     "axios": "^0.25.0",
     "node-sass": "^7.0.1",
     "react": "^17.0.2",
@@ -21,13 +17,7 @@
     "react-scripts": "5.0.0",
     "react-share": "^4.4.0",
     "react-spinners": "^0.11.0",
-    "recharts": "^2.1.9",
-    "styled-components": "^5.3.3",
-    "web-vitals": "^2.1.4",
-    "y-webrtc": "^10.2.2",
-    "yjs": "^13.5.27",
-    "zustand": "^3.7.0",
-    "zustand-middleware-yjs": "^1.2.6"
+    "styled-components": "^5.3.3"
   },
   "scripts": {
     "prepare": "husky install",
