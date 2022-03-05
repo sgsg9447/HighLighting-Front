@@ -89,56 +89,80 @@ const Home = () => {
     const id = e.target.id;
     switch (id) {
       case "zero":
-        setActive0(true);
-        setActive1(false);
-        setActive2(false);
-        setActive3(false);
-        setActive4(false);
-        setActive5(false);
+        activeZero();
         break;
       case "first":
-        setActive0(false);
-        setActive1(true);
-        setActive2(false);
-        setActive3(false);
-        setActive4(false);
-        setActive5(false);
+        activeFirst();
         break;
       case "second":
-        setActive0(false);
-        setActive1(false);
-        setActive2(true);
-        setActive3(false);
-        setActive4(false);
-        setActive5(false);
+        activeSecond();
         break;
       case "third":
-        setActive0(false);
-        setActive1(false);
-        setActive2(false);
-        setActive3(true);
-        setActive4(false);
-        setActive5(false);
+        activeThird();
         break;
       case "fourth":
-        setActive0(false);
-        setActive1(false);
-        setActive2(false);
-        setActive3(false);
-        setActive4(true);
-        setActive5(false);
+        activeFourth();
         break;
       case "fifth":
-        setActive0(false);
-        setActive1(false);
-        setActive2(false);
-        setActive3(false);
-        setActive4(false);
-        setActive5(true);
+        activeFifth();
         break;
       default:
         console.log("아무일도 없었다");
     }
+  };
+
+  const activeZero = () => {
+    setActive0(true);
+    setActive1(false);
+    setActive2(false);
+    setActive3(false);
+    setActive4(false);
+    setActive5(false);
+  };
+
+  const activeFirst = () => {
+    setActive0(false);
+    setActive1(true);
+    setActive2(false);
+    setActive3(false);
+    setActive4(false);
+    setActive5(false);
+  };
+
+  const activeSecond = () => {
+    setActive0(false);
+    setActive1(false);
+    setActive2(true);
+    setActive3(false);
+    setActive4(false);
+    setActive5(false);
+  };
+
+  const activeThird = () => {
+    setActive0(false);
+    setActive1(false);
+    setActive2(false);
+    setActive3(true);
+    setActive4(false);
+    setActive5(false);
+  };
+
+  const activeFourth = () => {
+    setActive0(false);
+    setActive1(false);
+    setActive2(false);
+    setActive3(false);
+    setActive4(true);
+    setActive5(false);
+  };
+
+  const activeFifth = () => {
+    setActive0(false);
+    setActive1(false);
+    setActive2(false);
+    setActive3(false);
+    setActive4(false);
+    setActive5(true);
   };
 
   return (
@@ -378,8 +402,14 @@ const Home = () => {
                     <img src={require("./image/Step0.png")} />
                   </div>
                   <div className="guide_button_box">
-                    <GiPlayButton className="previousButton" />{" "}
-                    <GiPlayButton className="nextButton" />
+                    <GiPlayButton
+                      className="previousButton"
+                      onClick={activeFifth}
+                    />{" "}
+                    <GiPlayButton
+                      className="nextButton"
+                      onClick={activeFirst}
+                    />
                   </div>
                 </div>
               ) : (
@@ -390,8 +420,14 @@ const Home = () => {
                   <h2>편집점 분석</h2>
                   <div className="guide_content_box">내용 박스</div>
                   <div className="guide_button_box">
-                    <GiPlayButton className="previousButton" />{" "}
-                    <GiPlayButton className="nextButton" />
+                    <GiPlayButton
+                      className="previousButton"
+                      onClick={activeZero}
+                    />{" "}
+                    <GiPlayButton
+                      className="nextButton"
+                      onClick={activeSecond}
+                    />
                   </div>
                 </div>
               ) : (
@@ -402,8 +438,14 @@ const Home = () => {
                   <h2>결과 페이지</h2>
                   <div className="guide_content_box">내용 박스</div>
                   <div className="guide_button_box">
-                    <GiPlayButton className="previousButton" />{" "}
-                    <GiPlayButton className="nextButton" />
+                    <GiPlayButton
+                      className="previousButton"
+                      onClick={activeFirst}
+                    />{" "}
+                    <GiPlayButton
+                      className="nextButton"
+                      onClick={activeThird}
+                    />
                   </div>
                 </div>
               ) : (
@@ -414,8 +456,14 @@ const Home = () => {
                   <h2>북마크 기능</h2>
                   <div className="guide_content_box">내용 박스</div>
                   <div className="guide_button_box">
-                    <GiPlayButton className="previousButton" />{" "}
-                    <GiPlayButton className="nextButton" />
+                    <GiPlayButton
+                      className="previousButton"
+                      onClick={activeSecond}
+                    />{" "}
+                    <GiPlayButton
+                      className="nextButton"
+                      onClick={activeFourth}
+                    />
                   </div>
                 </div>
               ) : (
@@ -426,8 +474,14 @@ const Home = () => {
                   <h2>차트 데이터</h2>
                   <div className="guide_content_box">내용 박스</div>
                   <div className="guide_button_box">
-                    <GiPlayButton className="previousButton" />{" "}
-                    <GiPlayButton className="nextButton" />
+                    <GiPlayButton
+                      className="previousButton"
+                      onClick={activeThird}
+                    />{" "}
+                    <GiPlayButton
+                      className="nextButton"
+                      onClick={activeFifth}
+                    />
                   </div>
                 </div>
               ) : (
@@ -438,8 +492,11 @@ const Home = () => {
                   <h2>로그인 기능</h2>
                   <div className="guide_content_box">내용 박스</div>
                   <div className="guide_button_box">
-                    <GiPlayButton className="previousButton" />{" "}
-                    <GiPlayButton className="nextButton" />
+                    <GiPlayButton
+                      className="previousButton"
+                      onClick={activeFourth}
+                    />{" "}
+                    <GiPlayButton className="nextButton" onClick={activeZero} />
                   </div>
                 </div>
               ) : (

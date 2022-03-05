@@ -345,6 +345,16 @@ body {
                 color: #935ef4;
                 transform: scaleX(-1);
                 cursor: pointer;
+
+                &:hover {
+                  transform: scaleX(-1) translateY(-3px);
+                  box-shadow: 0 10px 20px rgba(0, 0, 0, 0);
+                }
+
+                &:active {
+                  transform: scaleX(-1) translateY(-7px);
+                  box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
+                }
               }
 
               .nextButton {
@@ -352,6 +362,16 @@ body {
                 font-size: 96px;
                 color: #935ef4;
                 cursor: pointer;
+
+                &:hover {
+                  transform: translateY(-3px);
+                  box-shadow: 0 10px 20px rgba(0, 0, 0, 0);
+                }
+
+                &:active {
+                  transform: translateY(-7px);
+                  box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
+                }
               }
             }
           }
