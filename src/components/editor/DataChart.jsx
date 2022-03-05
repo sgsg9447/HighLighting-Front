@@ -926,6 +926,38 @@ const DataChart = (props) => {
   }, [markers])
 
 
+  // 차트 위에서 영상 미리보기 썸네일 마우스 툴팁 시간 정보 가져오기
+  // useEffect(() => {
+  //   if (!clickToJumpRef.current || !chartListRef.current) return;
+  //   const handleMouseMove = (event) => {
+  //     console.log('event', event);
+  //     console.log('mouseMove', event.target.className);
+  //     console.log('playTime', clickToJumpRef.current.jumpTime);
+  //     chartListRef.current.forEach((chart) => {
+  //       chart.onSeriesBackgroundMouseMove((_, event) => {
+  //         const mouseLocationEngine = chart.engine.clientLocation2Engine(
+  //           event.clientX,
+  //           event.clientY
+  //         );
+  //         const mouseLocationAxisX = translatePoint(
+  //           mouseLocationEngine,
+  //           chart.engine.scale,
+  //           { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
+  //         ).x;
+  //         const playTime = Math.round(mouseLocationAxisX / 10000) // 재생 10초 단위로 캐치
+  //         const formatValue = chart.getDefaultAxisX().formatValue(mouseLocationAxisX) // hh:mm:ss
+  //         console.log('playTime', playTime, 'formatValue', formatValue);
+  //       })
+  //     })
+  //     return window.removeEventListener("mousemove", handleMouseMove);
+  //   };
+  //   window.addEventListener("mousemove", handleMouseMove);
+  //   return () => {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //   };
+  // });
+
+
   /* 차트 플레이 바 나타내기 */
   useEffect(() => {
     // axisListRef 값이 없으면 리턴
