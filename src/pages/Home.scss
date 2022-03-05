@@ -145,7 +145,7 @@ body {
           color: white;
           font-size: 45px;
           border-radius: 0.5rem;
-          transition: all 0.5s;
+          transition: all 0.2s;
           text-align: center;
           cursor: pointer;
 
@@ -153,7 +153,7 @@ body {
             cursor: pointer;
             display: inline-block;
             position: relative;
-            transition: 0.5s;
+            transition: 0.2s;
 
             &:after {
               content: "\00bb";
@@ -161,7 +161,7 @@ body {
               opacity: 0;
               top: 0;
               right: -20px;
-              transition: 0.5s;
+              transition: 0.2s;
             }
           }
           &:hover span {
@@ -179,12 +179,14 @@ body {
 
     .LowerContainer {
       width: 100%;
+      height: 60%;
       display: flex;
       background-color: hsl(269, 51%, 8%);
       .lower_left_container {
         margin-left: 4rem;
         margin-top: 6rem;
         width: 45%;
+        height: 100%;
         flex-grow: 2;
         /* 좌하단 가이드라인 */
         .Home_introduction_heading_wrap {
@@ -192,6 +194,8 @@ body {
           align-items: center;
           font-size: 1rem;
           margin: 12rem 0 5rem;
+          width: 100%;
+          height: 20%;
 
           h2 {
             color: rgb(196, 95, 255);
@@ -204,6 +208,8 @@ body {
           list-style: none;
           position: relative;
           color: white;
+          width: 100%;
+          height: 80%;
 
           &:before {
             content: "HIGHLIGHT";
@@ -251,7 +257,7 @@ body {
             }
 
             .Home_list-content {
-              font-size: 2rem;
+              font-size: 1rem;
               cursor: pointer;
               transition: all 0.5s;
 
@@ -262,21 +268,31 @@ body {
 
             .Home_list-sub {
               margin-top: 0.4rem;
-              font-size: 1.5rem;
+              font-size: 0.75rem;
               opacity: 0.6;
               transition: all 0.5s;
             }
 
             .is-active {
               color: white;
-              font-size: 3.5rem;
+              font-size: 2rem;
               font-weight: bold;
             }
 
             .sub-active {
-              font-size: 2.2rem;
+              font-size: 1.5rem;
               opacity: 0.6;
-              margin-top: 0.4rem;
+            }
+            .UPscroll {
+              margin-top: 1rems;
+
+              .point2 {
+                color: rgb(196, 95, 255);
+                font-size: 30px;
+                font-weight: bold;
+                cursor: pointer;
+                text-decoration: underline;
+              }
             }
           }
         }
@@ -289,6 +305,7 @@ body {
         width: 55%;
         justify-content: center;
         text-align: center;
+
         /* 우하단 컨테이너 */
         .Home_GuidelineContainer {
           margin: 22rem 0 4rem;
@@ -297,15 +314,46 @@ body {
           height: 70%;
           border: 3px solid white;
           background-color: white;
+
           border-radius: 2rem;
+          .GuideLine_content {
+            width: 100%;
+            height: 100%;
 
-          h2 {
-            color: black;
-            font-size: 72px;
-          }
+            h2 {
+              color: rgb(0, 0, 0);
+              font-size: 48px;
+            }
 
-          img {
-            width: 90%;
+            img {
+              width: 90%;
+            }
+
+            .guide_content_box {
+              width: 100%;
+              height: 76%;
+            }
+            .guide_button_box {
+              width: 100%;
+              height: 10%;
+              display: flex;
+              justify-content: space-between;
+
+              .previousButton {
+                margin-left: 2rem;
+                font-size: 96px;
+                color: #935ef4;
+                transform: scaleX(-1);
+                cursor: pointer;
+              }
+
+              .nextButton {
+                margin-right: 2rem;
+                font-size: 96px;
+                color: #935ef4;
+                cursor: pointer;
+              }
+            }
           }
         }
         /* 우하단 컨테이너 */

@@ -3,6 +3,7 @@ import React, { useState, useRef, useCallback } from "react";
 import useResult from "../hooks/useResult";
 import useRoute from "../hooks/useRoute";
 import Header from "../components/Header/Header";
+import { GiPlayButton } from "react-icons/gi";
 import "./Home.scss";
 const Home = () => {
   const inputValue = document.getElementById("link");
@@ -88,7 +89,6 @@ const Home = () => {
     const id = e.target.id;
     switch (id) {
       case "zero":
-        console.log("zero다요");
         setActive0(true);
         setActive1(false);
         setActive2(false);
@@ -231,10 +231,8 @@ const Home = () => {
                       "Home_list-sub" + " " + (active0 ? "sub-active" : "")
                     }
                   >
-                    저희 웹서비스는 위에 간단히 기재한 바와 같이 Youtube
                     다시보기 영상 링크만으로 영상을 분석하여 편집에 도움이 되는
-                    데이터들을 제공하는 웹서비스 입니다. 사용방법은 매우
-                    간단합니다.
+                    데이터들을 제공합니다.
                   </p>
                 </div>
               </li>
@@ -255,9 +253,7 @@ const Home = () => {
                       "Home_list-sub" + " " + (active1 ? "sub-active" : "")
                     }
                   >
-                    0단계에서 안내된 바와 같이 url 입력창에 간단한 데이터를
-                    입력하시고 나면 데이터 분석에 어느정도 시간이 소요됩니다.
-                    분석이 끝나면 다음과 같은 결과페이지가 나타나게 됩니다.
+                    url을 입력하면 데이터 분석에 어느정도 시간이 소요됩니다.
                   </p>
                 </div>
               </li>
@@ -279,10 +275,7 @@ const Home = () => {
                       "Home_list-sub" + " " + (active2 ? "sub-active" : "")
                     }
                   >
-                    결과 페이지에서 저희가 제공하는 기능은 다양합니다. 차트
-                    데이터의 분석, 원하는 컷부분에 대한 편집, 키워드 검색,
-                    다시보기 영상의 실시간 채팅 플로우, 시간대 별 도네이션 등의
-                    데이터를 확인할 수 있습니다.
+                    결과 페이지에서는 다양한 기능을 제공합니다.
                   </p>
                 </div>
               </li>
@@ -303,8 +296,7 @@ const Home = () => {
                       "Home_list-sub" + " " + (active3 ? "sub-active" : "")
                     }
                   >
-                    북마크 기능은 본인이 원하는 부분을 기록 ~ 종료함으로써
-                    북마크 형식으로 남길 수 있습니다. 여러 단축키또한 지원하고
+                    원하는 부분을 기록 ~ 종료함으로써 북마크 형식으로 남길 수
                     있습니다.
                   </p>
                 </div>
@@ -326,11 +318,8 @@ const Home = () => {
                       "Home_list-sub" + " " + (active4 ? "sub-active" : "")
                     }
                   >
-                    차트 데이터는 Y(세로)축은 해당 데이터의 크기, X(가로)축은
-                    영상의 시간 흐름을 나타내고 있습니다. 차트 데이터 또한
-                    북마크처럼 다양한 기능을 제공하고 있습니다. 영상 플로우의
-                    흐름은 차트데이터를 클릭하는 것으로 원하는 부분으로 이동하실
-                    수 있습니다.
+                    차트 데이터의 세로축은 해당 데이터의 크기, 가로축은 영상의
+                    시간 흐름을 의미합니다.
                   </p>
                 </div>
               </li>
@@ -352,8 +341,24 @@ const Home = () => {
                       "Home_list-sub" + " " + (active5 ? "sub-active" : "")
                     }
                   >
-                    로그인 기능을 얼마나 어떻게 구현하느냐에 따라 달라질 것 같은
-                    부분이라 아직은 공란. 현재 쿼리스트링 구현 예정중
+                    아직은 공란. 현재 쿼리스트링 구현 예정중
+                  </p>
+                  <p>
+                    <br />
+                    <br />
+                    <a className="UPscroll">
+                      <span
+                        className="point2"
+                        onClick={() => {
+                          document
+                            .getElementById("Home")
+                            .scrollIntoView({ behavior: "smooth" });
+                        }}
+                      >
+                        상단
+                      </span>
+                      으로 돌아가기
+                    </a>
                   </p>
                 </div>
               </li>
@@ -362,32 +367,84 @@ const Home = () => {
           </div>
           <div className="lower_right_container">
             {/* 우하단 내용 컨테이너 */}
-            <div className="Home_GuidelineContainer">
-              <div>
-                {active0 ? (
-                  <div>
-                    <h2>HIGHLIGHTING 사용방법</h2>
+            <div className="Home_GuidelineContainer" id="guideContainer">
+              {active0 ? (
+                <div className="GuideLine_content">
+                  <h2>HIGHLIGHTING 사용방법</h2>
+                  <div className="guide_content_box">
                     <img src={require("./image/Step0.png")} />
                     <p>1.메인페이지 URL창에 유튜브 다시보기 URL을 입력한다.</p>
                     <p>2.결과보기 클릭!</p>
+                    <img src={require("./image/Step0.png")} />
                   </div>
-                ) : (
-                  ""
-                )}
-              </div>
-              <div>
-                {active1 ? (
-                  <div>
-                    <h2>편집점 분석</h2>
+                  <div className="guide_button_box">
+                    <GiPlayButton className="previousButton" />{" "}
+                    <GiPlayButton className="nextButton" />
                   </div>
-                ) : (
-                  ""
-                )}
-              </div>
-              <div>{active2 ? <div>2단계 내용이다.</div> : ""}</div>
-              <div>{active3 ? <div>3단계 내용이다.</div> : ""}</div>
-              <div>{active4 ? <div>4단계 내용이다.</div> : ""}</div>
-              <div>{active5 ? <div>5단계 내용이다.</div> : ""}</div>
+                </div>
+              ) : (
+                ""
+              )}
+              {active1 ? (
+                <div className="GuideLine_content">
+                  <h2>편집점 분석</h2>
+                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_button_box">
+                    <GiPlayButton className="previousButton" />{" "}
+                    <GiPlayButton className="nextButton" />
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {active2 ? (
+                <div className="GuideLine_content">
+                  <h2>결과 페이지</h2>
+                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_button_box">
+                    <GiPlayButton className="previousButton" />{" "}
+                    <GiPlayButton className="nextButton" />
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {active3 ? (
+                <div className="GuideLine_content">
+                  <h2>북마크 기능</h2>
+                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_button_box">
+                    <GiPlayButton className="previousButton" />{" "}
+                    <GiPlayButton className="nextButton" />
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {active4 ? (
+                <div className="GuideLine_content">
+                  <h2>차트 데이터</h2>
+                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_button_box">
+                    <GiPlayButton className="previousButton" />{" "}
+                    <GiPlayButton className="nextButton" />
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {active5 ? (
+                <div className="GuideLine_content">
+                  <h2>로그인 기능</h2>
+                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_button_box">
+                    <GiPlayButton className="previousButton" />{" "}
+                    <GiPlayButton className="nextButton" />
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
             {/* 우하단 내용 컨테이너 */}
           </div>
