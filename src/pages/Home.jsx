@@ -1,22 +1,38 @@
-import React, { useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 
 import useResult from "../hooks/useResult";
 import useRoute from "../hooks/useRoute";
 import Header from "../components/Header/Header";
 import "./Home.scss";
-
-export default function Home() {
+const Home = () => {
   const inputValue = document.getElementById("link");
   const urlInput = useRef();
 
   const { logged, onLogout } = useResult();
   const { url, setUrl } = useResult();
   const { requestResult } = useRoute();
+  const [active0, setActive0] = useState(true);
+  const [active1, setActive1] = useState(false);
+  const [active2, setActive2] = useState(false);
+  const [active3, setActive3] = useState(false);
+  const [active4, setActive4] = useState(false);
+  const [active5, setActive5] = useState(false);
+
+  // useEffect(() => {
+  //   const value = document.querySelector(".Home_list");
+  //   console.log(value);
+
+  //   const handleClickEvent = (e) => {
+  //     const value2 = e.target.id;
+  //     console.log(value2);
+  //   };
+  //   value.addEventListener("click", handleClickEvent);
+  // });
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
     setUrl(value);
-  }, []);
+  });
 
   function linkCheck() {
     if (inputValue === null) {
@@ -68,6 +84,63 @@ export default function Home() {
     urlInput.current.focus();
   }
 
+  const onClickGuide = (e) => {
+    const id = e.target.id;
+    switch (id) {
+      case "zero":
+        console.log("zero다요");
+        setActive0(true);
+        setActive1(false);
+        setActive2(false);
+        setActive3(false);
+        setActive4(false);
+        setActive5(false);
+        break;
+      case "first":
+        setActive0(false);
+        setActive1(true);
+        setActive2(false);
+        setActive3(false);
+        setActive4(false);
+        setActive5(false);
+        break;
+      case "second":
+        setActive0(false);
+        setActive1(false);
+        setActive2(true);
+        setActive3(false);
+        setActive4(false);
+        setActive5(false);
+        break;
+      case "third":
+        setActive0(false);
+        setActive1(false);
+        setActive2(false);
+        setActive3(true);
+        setActive4(false);
+        setActive5(false);
+        break;
+      case "fourth":
+        setActive0(false);
+        setActive1(false);
+        setActive2(false);
+        setActive3(false);
+        setActive4(true);
+        setActive5(false);
+        break;
+      case "fifth":
+        setActive0(false);
+        setActive1(false);
+        setActive2(false);
+        setActive3(false);
+        setActive4(false);
+        setActive5(true);
+        break;
+      default:
+        console.log("아무일도 없었다");
+    }
+  };
+
   return (
     <div>
       <Header logged={logged} onLogout={onLogout} />
@@ -95,7 +168,16 @@ export default function Home() {
                 홈페이지 하단부분에
                 <span className="point1"> 가이드라인</span>에 단계별 사용법을
                 기재해 놨습니다. 사용방법으로 빠르게 이동하길 원하신다면{" "}
-                <span className="point2">클릭</span>
+                <span
+                  className="point2"
+                  onClick={() => {
+                    document
+                      .getElementById("guidline")
+                      .scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  클릭
+                </span>
                 해주세요!
               </p>
               <p className="HC1-p3">
@@ -104,49 +186,134 @@ export default function Home() {
               </p>
             </div>
             <div className="Home_introduction_heading_wrap">
-              <h2> 단계별 가이드라인 </h2>
+              <h2 id="guidline"> 단계별 가이드라인 </h2>
             </div>
-            <ul class="Home_list">
-              <li class="Home_list-item">
+            <ul className="Home_list">
+              <li className="Home_list-item">
                 <div>
-                  <p class="Home_list-content">0단계</p>
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active0 ? "is-active" : "")
+                    }
+                    id="zero"
+                    onMouseEnter={onClickGuide}
+                  >
+                    0단계
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active0 ? "sub-active" : "")
+                    }
+                  >
+                    0단계 내용
+                  </p>
                 </div>
               </li>
 
-              <li class="Home_list-item">
-                <div class="Home_list-content-wrap">
-                  <p class="Home_list-content">1단계</p>
-                  <p class="Home_list-sub">1단계 내용</p>
+              <li className="Home_list-item">
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active1 ? "is-active" : "")
+                    }
+                    id="first"
+                    onMouseEnter={onClickGuide}
+                  >
+                    1단계
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active1 ? "sub-active" : "")
+                    }
+                  >
+                    1단계 내용
+                  </p>
                 </div>
               </li>
 
-              <li class="Home_list-item">
-                <div class="Home_list-item-image"></div>
-                <div class="Home_list-content-wrap">
-                  <p class="Home_list-content">2단계</p>
-                  <p class="Home_list-sub">2단계 내용</p>
+              <li className="Home_list-item">
+                <div className="Home_list-item-image"></div>
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active2 ? "is-active" : "")
+                    }
+                    id="second"
+                    onMouseEnter={onClickGuide}
+                  >
+                    2단계
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active2 ? "sub-active" : "")
+                    }
+                  >
+                    2단계 내용
+                  </p>
                 </div>
               </li>
 
-              <li class="Home_list-item">
-                <div class="Home_list-content-wrap">
-                  <p class="Home_list-content">3단계</p>
-                  <p class="Home_list-sub">3단계 내용</p>
+              <li className="Home_list-item">
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active3 ? "is-active" : "")
+                    }
+                    id="third"
+                    onMouseEnter={onClickGuide}
+                  >
+                    3단계
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active3 ? "sub-active" : "")
+                    }
+                  >
+                    3단계 내용
+                  </p>
                 </div>
               </li>
 
-              <li class="Home_list-item">
-                <div class="Home_list-content-wrap">
-                  <p class="Home_list-content">4단계</p>
-                  <p class="Home_list-sub">4단계 내용</p>
+              <li className="Home_list-item">
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active4 ? "is-active" : "")
+                    }
+                    id="fourth"
+                    onMouseEnter={onClickGuide}
+                  >
+                    4단계
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active4 ? "sub-active" : "")
+                    }
+                  >
+                    4단계 내용
+                  </p>
                 </div>
               </li>
 
-              <li class="Home_list-item">
-                <div class="Home_list-item-image"></div>
-                <div class="Home_list-content-wrap">
-                  <p class="Home_list-content">5단계</p>
-                  <p class="Home_list-sub">5단계 내용</p>
+              <li className="Home_list-item">
+                <div className="Home_list-item-image"></div>
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active5 ? "is-active" : "")
+                    }
+                    id="fifth"
+                    onMouseEnter={onClickGuide}
+                  >
+                    5단계
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active5 ? "sub-active" : "")
+                    }
+                  >
+                    5단계 내용
+                  </p>
                 </div>
               </li>
             </ul>
@@ -166,10 +333,19 @@ export default function Home() {
                 <span>결과 보기</span>
               </button>
             </div>
-            <div class="Home_GuidelineContainer">단계별 가이드라인 파트</div>
+            <div className="Home_GuidelineContainer">
+              <div>{active0 ? <p>0단계 내용이다.</p> : ""}</div>
+              <div>{active1 ? <p>1단계 내용이다.</p> : ""}</div>
+              <div>{active2 ? <p>2단계 내용이다.</p> : ""}</div>
+              <div>{active3 ? <p>3단계 내용이다.</p> : ""}</div>
+              <div>{active4 ? <p>4단계 내용이다.</p> : ""}</div>
+              <div>{active5 ? <p>5단계 내용이다.</p> : ""}</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Home;

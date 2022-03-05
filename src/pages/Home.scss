@@ -1,5 +1,6 @@
 body {
   background-color: #282c34;
+  scroll-behavior: smooth;
 
   .HomeContainer {
     display: flex;
@@ -143,8 +144,9 @@ body {
             }
 
             .Home_list-content {
-              font-size: 1.4rem;
+              font-size: 2rem;
               cursor: pointer;
+              transition: all 0.5s;
 
               &:hover {
                 color: hsl(240, 8%, 90%);
@@ -153,8 +155,21 @@ body {
 
             .Home_list-sub {
               margin-top: 0.4rem;
-              font-size: 1.1rem;
+              font-size: 1.5rem;
               opacity: 0.6;
+              transition: all 0.5s;
+            }
+
+            .is-active {
+              color: white;
+              font-size: 3.5rem;
+              font-weight: bold;
+            }
+
+            .sub-active {
+              font-size: 2.2rem;
+              opacity: 0.6;
+              margin-top: 0.4rem;
             }
           }
         }
@@ -247,8 +262,11 @@ body {
         }
 
         .Home_GuidelineContainer {
-          margin: 25rem 0 4rem;
+          margin: 22rem 0 4rem;
           color: white;
+          width: 90%;
+          height: 55%;
+          border: 3px solid white;
         }
       }
     }
