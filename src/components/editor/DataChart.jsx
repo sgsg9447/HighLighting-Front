@@ -917,7 +917,7 @@ const DataChart = (props) => {
 
     const selectedMarkerList = findSelectedMarkers(markers);
     const selectedBandsListSet = selectedMarkerList.map((marker) => addBookMarkBand(marker.startPointer, marker.endPointer));
-    // console.log('markerBandsList', selectedBandsListSet)
+    // console.log('selectedMarkerList', selectedMarkerList)
 
     // 선택 해제시 삭제
     return (() => {
