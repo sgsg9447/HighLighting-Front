@@ -224,14 +224,17 @@ const Home = () => {
                     id="zero"
                     onMouseEnter={onClickGuide}
                   >
-                    0단계
+                    0단계 - 홈페이지
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active0 ? "sub-active" : "")
                     }
                   >
-                    0단계 내용
+                    저희 웹서비스는 위에 간단히 기재한 바와 같이 Youtube
+                    다시보기 영상 링크만으로 영상을 분석하여 편집에 도움이 되는
+                    데이터들을 제공하는 웹서비스 입니다. 사용방법은 매우
+                    간단합니다.
                   </p>
                 </div>
               </li>
@@ -245,14 +248,16 @@ const Home = () => {
                     id="first"
                     onMouseEnter={onClickGuide}
                   >
-                    1단계
+                    1단계 - 편집점 분석
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active1 ? "sub-active" : "")
                     }
                   >
-                    1단계 내용
+                    0단계에서 안내된 바와 같이 url 입력창에 간단한 데이터를
+                    입력하시고 나면 데이터 분석에 어느정도 시간이 소요됩니다.
+                    분석이 끝나면 다음과 같은 결과페이지가 나타나게 됩니다.
                   </p>
                 </div>
               </li>
@@ -267,14 +272,17 @@ const Home = () => {
                     id="second"
                     onMouseEnter={onClickGuide}
                   >
-                    2단계
+                    2단계 - 결과 페이지
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active2 ? "sub-active" : "")
                     }
                   >
-                    2단계 내용
+                    결과 페이지에서 저희가 제공하는 기능은 다양합니다. 차트
+                    데이터의 분석, 원하는 컷부분에 대한 편집, 키워드 검색,
+                    다시보기 영상의 실시간 채팅 플로우, 시간대 별 도네이션 등의
+                    데이터를 확인할 수 있습니다.
                   </p>
                 </div>
               </li>
@@ -288,14 +296,16 @@ const Home = () => {
                     id="third"
                     onMouseEnter={onClickGuide}
                   >
-                    3단계
+                    3단계 - 북마크 기능
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active3 ? "sub-active" : "")
                     }
                   >
-                    3단계 내용
+                    북마크 기능은 본인이 원하는 부분을 기록 ~ 종료함으로써
+                    북마크 형식으로 남길 수 있습니다. 여러 단축키또한 지원하고
+                    있습니다.
                   </p>
                 </div>
               </li>
@@ -309,14 +319,18 @@ const Home = () => {
                     id="fourth"
                     onMouseEnter={onClickGuide}
                   >
-                    4단계
+                    4단계 - 차트 데이터
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active4 ? "sub-active" : "")
                     }
                   >
-                    4단계 내용
+                    차트 데이터는 Y(세로)축은 해당 데이터의 크기, X(가로)축은
+                    영상의 시간 흐름을 나타내고 있습니다. 차트 데이터 또한
+                    북마크처럼 다양한 기능을 제공하고 있습니다. 영상 플로우의
+                    흐름은 차트데이터를 클릭하는 것으로 원하는 부분으로 이동하실
+                    수 있습니다.
                   </p>
                 </div>
               </li>
@@ -331,14 +345,15 @@ const Home = () => {
                     id="fifth"
                     onMouseEnter={onClickGuide}
                   >
-                    5단계
+                    5단계 - 로그인 기능
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active5 ? "sub-active" : "")
                     }
                   >
-                    5단계 내용
+                    로그인 기능을 얼마나 어떻게 구현하느냐에 따라 달라질 것 같은
+                    부분이라 아직은 공란. 현재 쿼리스트링 구현 예정중
                   </p>
                 </div>
               </li>
@@ -348,12 +363,31 @@ const Home = () => {
           <div className="lower_right_container">
             {/* 우하단 내용 컨테이너 */}
             <div className="Home_GuidelineContainer">
-              <div>{active0 ? <p>0단계 내용이다.</p> : ""}</div>
-              <div>{active1 ? <p>1단계 내용이다.</p> : ""}</div>
-              <div>{active2 ? <p>2단계 내용이다.</p> : ""}</div>
-              <div>{active3 ? <p>3단계 내용이다.</p> : ""}</div>
-              <div>{active4 ? <p>4단계 내용이다.</p> : ""}</div>
-              <div>{active5 ? <p>5단계 내용이다.</p> : ""}</div>
+              <div>
+                {active0 ? (
+                  <div>
+                    <h2>HIGHLIGHTING 사용방법</h2>
+                    <img src={require("./image/Step0.png")} />
+                    <p>1.메인페이지 URL창에 유튜브 다시보기 URL을 입력한다.</p>
+                    <p>2.결과보기 클릭!</p>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div>
+                {active1 ? (
+                  <div>
+                    <h2>편집점 분석</h2>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div>{active2 ? <div>2단계 내용이다.</div> : ""}</div>
+              <div>{active3 ? <div>3단계 내용이다.</div> : ""}</div>
+              <div>{active4 ? <div>4단계 내용이다.</div> : ""}</div>
+              <div>{active5 ? <div>5단계 내용이다.</div> : ""}</div>
             </div>
             {/* 우하단 내용 컨테이너 */}
           </div>

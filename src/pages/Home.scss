@@ -37,10 +37,10 @@ body {
           font-weight: bold;
           letter-spacing: 2px;
           padding: 0.2rem 0.7rem;
-          font-size: 6rem;
+          font-size: 5rem;
           border-radius: 4px;
           .HC1-logo {
-            height: 80px;
+            height: 4rem;
           }
         }
         .HC1-p1 {
@@ -87,6 +87,7 @@ body {
       }
 
       .upper_right_container {
+        margin-right: 3rem;
         margin-top: 6rem;
         margin-left: 6rem;
         width: 50%;
@@ -285,22 +286,30 @@ body {
       .lower_right_container {
         margin-top: 6rem;
         margin-left: 6rem;
-        width: 70%;
+        width: 55%;
         justify-content: center;
         text-align: center;
         /* 우하단 컨테이너 */
         .Home_GuidelineContainer {
           margin: 22rem 0 4rem;
-          color: white;
+          color: black;
           width: 90%;
           height: 70%;
           border: 3px solid white;
+          background-color: white;
+          border-radius: 2rem;
+
+          h2 {
+            color: black;
+            font-size: 72px;
+          }
+
+          img {
+            width: 90%;
+          }
         }
         /* 우하단 컨테이너 */
       }
-    }
-
-    .Home_main {
     }
 
     h1 {
