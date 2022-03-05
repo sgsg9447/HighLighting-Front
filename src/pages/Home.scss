@@ -4,31 +4,35 @@ body {
 
   .HomeContainer {
     display: flex;
-    flex-grow: 2;
+    flex-direction: column;
     height: 100%;
-    .Home_main {
+    width: 100%;
+
+    .UpperContainer {
+      width: 100%;
+      height: 40%;
+      display: flex;
+      justify-content: center;
+      flex-grow: 2;
       flex-grow: 2;
       background: linear-gradient(
           to right top,
           hsla(270, 50%, 8%, 0.5),
-          hsla(270, 50%, 8%, 0.6) 20%,
-          hsla(270, 50%, 8%, 0.1)
+          hsla(270, 50%, 8%, 0.6),
+          hsla(270, 50%, 8%, 0.6)
         ),
-        linear-gradient(to right bottom, hsl(270, 50%, 8%), transparent 86%),
-        linear-gradient(to bottom, transparent, hsl(270, 50%, 8%) 86%),
+        linear-gradient(to right bottom, hsl(269, 51%, 8%), transparent 66%),
+        linear-gradient(to bottom, transparent, hsl(270, 50%, 8%) 100%),
         url("./image/background.png") no-repeat;
-      background-size: auto 98rem;
+      background-size: 100% 100%;
       display: flex;
 
-      h1 {
-        margin-bottom: 1rem;
-      }
-
-      .Home_Column1 {
-        padding-top: 4rem;
-        margin-left: 6rem;
-        width: 40%;
-
+      .upper_left_container {
+        margin-left: 4rem;
+        margin-top: 6rem;
+        width: 45%;
+        flex-grow: 2;
+        /* 좌상단 소개파트 */
         .HC1_heading {
           font-weight: bold;
           letter-spacing: 2px;
@@ -79,7 +83,109 @@ body {
             font-weight: bold;
           }
         }
+        /* 좌상단 소개파트 */
+      }
 
+      .upper_right_container {
+        margin-top: 6rem;
+        margin-left: 6rem;
+        width: 50%;
+        justify-content: center;
+        text-align: center;
+        /* 우상단 인풋파트 */
+        .Home_urlInput {
+          h1 {
+            font-size: 96px;
+          }
+          h3 {
+            font-size: 48px;
+            color: white;
+          }
+
+          .InputBar {
+            flex-shrink: 1;
+            transition-property: color, background-color, border-color,
+              text-decoration-color, fill, stroke, opacity, box-shadow,
+              transform, filter, backdrop-filter;
+            transition-duration: 0.2s;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            height: 3rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-size: 1.7rem;
+            line-height: 1.25rem;
+            line-height: 2;
+            border-width: 1px;
+            border: 3px solid #935ef4;
+            --tw-border-opacity: 0;
+            --tw-bg-opacity: 1;
+            background-color: #191023;
+            border-radius: 0.5rem;
+            width: 45rem;
+            height: 5rem;
+
+            &:focus {
+              outline: 3px solid #935ef4;
+              background-color: #191023;
+              color: white;
+            }
+
+            &:-webkit-autofill {
+              -webkit-box-shadow: 0 0 0 1000px #191023 inset;
+              -webkit-text-fill-color: #fff !important;
+            }
+          }
+        }
+        .resultButton {
+          width: 18rem;
+          height: 6rem;
+          background-color: #935ef4;
+          border: none;
+          color: white;
+          font-size: 45px;
+          border-radius: 0.5rem;
+          transition: all 0.5s;
+          text-align: center;
+          cursor: pointer;
+
+          span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+
+            &:after {
+              content: "\00bb";
+              position: absolute;
+              opacity: 0;
+              top: 0;
+              right: -20px;
+              transition: 0.5s;
+            }
+          }
+          &:hover span {
+            padding-right: 40px;
+          }
+
+          &:hover span:after {
+            opacity: 1;
+            right: 0;
+          }
+        }
+        /* 우상단 인풋파트 */
+      }
+    }
+
+    .LowerContainer {
+      width: 100%;
+      display: flex;
+      background-color: hsl(269, 51%, 8%);
+      .lower_left_container {
+        margin-left: 4rem;
+        margin-top: 6rem;
+        width: 45%;
+        flex-grow: 2;
+        /* 좌하단 가이드라인 */
         .Home_introduction_heading_wrap {
           display: flex;
           align-items: center;
@@ -173,102 +279,32 @@ body {
             }
           }
         }
+        /* 좌하단 가이드라인 컴포넌트 */
       }
-      .Home_Column2 {
-        width: 60%;
-        padding-left: 4rem;
-        padding-top: 4rem;
+
+      .lower_right_container {
+        margin-top: 6rem;
+        margin-left: 6rem;
+        width: 70%;
         justify-content: center;
         text-align: center;
-
-        .Home_urlInput {
-          h1 {
-            font-size: 96px;
-          }
-          h3 {
-            font-size: 48px;
-            color: white;
-          }
-
-          .InputBar {
-            flex-shrink: 1;
-            transition-property: color, background-color, border-color,
-              text-decoration-color, fill, stroke, opacity, box-shadow,
-              transform, filter, backdrop-filter;
-            transition-duration: 0.2s;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            height: 3rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            font-size: 1.7rem;
-            line-height: 1.25rem;
-            line-height: 2;
-            border-width: 1px;
-            border: 3px solid #935ef4;
-            --tw-border-opacity: 0;
-            --tw-bg-opacity: 1;
-            background-color: #191023;
-            border-radius: 0.5rem;
-            width: 45rem;
-            height: 5rem;
-
-            &:focus {
-              outline: 3px solid #935ef4;
-              background-color: #191023;
-              color: white;
-            }
-
-            &:-webkit-autofill {
-              -webkit-box-shadow: 0 0 0 1000px #191023 inset;
-              -webkit-text-fill-color: #fff !important;
-            }
-          }
-        }
-        .resultButton {
-          width: 18rem;
-          height: 6rem;
-          background-color: #935ef4;
-          border: none;
-          color: white;
-          font-size: 45px;
-          border-radius: 0.5rem;
-          transition: all 0.5s;
-          text-align: center;
-          cursor: pointer;
-
-          span {
-            cursor: pointer;
-            display: inline-block;
-            position: relative;
-            transition: 0.5s;
-
-            &:after {
-              content: "\00bb";
-              position: absolute;
-              opacity: 0;
-              top: 0;
-              right: -20px;
-              transition: 0.5s;
-            }
-          }
-          &:hover span {
-            padding-right: 40px;
-          }
-
-          &:hover span:after {
-            opacity: 1;
-            right: 0;
-          }
-        }
-
+        /* 우하단 컨테이너 */
         .Home_GuidelineContainer {
           margin: 22rem 0 4rem;
           color: white;
           width: 90%;
-          height: 55%;
+          height: 70%;
           border: 3px solid white;
         }
+        /* 우하단 컨테이너 */
       }
+    }
+
+    .Home_main {
+    }
+
+    h1 {
+      margin-bottom: 1rem;
     }
   }
 }

@@ -145,8 +145,9 @@ const Home = () => {
     <div>
       <Header logged={logged} onLogout={onLogout} />
       <div className="HomeContainer">
-        <div className="Home_main">
-          <div className="Home_Column1">
+        <div className="UpperContainer">
+          <div className="upper_left_container">
+            {/* 좌상단 소개 페이지 */}
             <div>
               <h1 className="HC1_heading">
                 <img className="HC1-logo" src={require("./image/icon.png")} />
@@ -185,6 +186,31 @@ const Home = () => {
                 <span className="point1">Team HIGHLIGHTING</span>
               </p>
             </div>
+            {/* 좌상단 소개 페이지 */}
+          </div>
+          <div className="upper_right_container">
+            {/* 우상단 URL 입력창 */}
+            <div className="Home_urlInput">
+              <h1>URL 입력창</h1>
+              <input
+                className="InputBar"
+                ref={urlInput}
+                placeholder="다시보기 영상 URL을 입력해주세요"
+                onChange={onChangeUrl}
+                id="link"
+              />
+              <h3>URL : {url}</h3>
+              <button className="resultButton" onClick={linkCheck}>
+                <span>결과 보기</span>
+              </button>
+            </div>
+            {/* 우상단 URL 입력창 */}
+          </div>
+        </div>
+
+        <div className="LowerContainer">
+          <div className="lower_left_container">
+            {/* 좌하단 가이드라인 */}
             <div className="Home_introduction_heading_wrap">
               <h2 id="guidline"> 단계별 가이드라인 </h2>
             </div>
@@ -317,22 +343,10 @@ const Home = () => {
                 </div>
               </li>
             </ul>
+            {/* 좌하단 가이드라인 */}
           </div>
-          <div className="Home_Column2">
-            <div className="Home_urlInput">
-              <h1>URL 입력창</h1>
-              <input
-                className="InputBar"
-                ref={urlInput}
-                placeholder="다시보기 영상 URL을 입력해주세요"
-                onChange={onChangeUrl}
-                id="link"
-              />
-              <h3>URL : {url}</h3>
-              <button className="resultButton" onClick={linkCheck}>
-                <span>결과 보기</span>
-              </button>
-            </div>
+          <div className="lower_right_container">
+            {/* 우하단 내용 컨테이너 */}
             <div className="Home_GuidelineContainer">
               <div>{active0 ? <p>0단계 내용이다.</p> : ""}</div>
               <div>{active1 ? <p>1단계 내용이다.</p> : ""}</div>
@@ -341,6 +355,7 @@ const Home = () => {
               <div>{active4 ? <p>4단계 내용이다.</p> : ""}</div>
               <div>{active5 ? <p>5단계 내용이다.</p> : ""}</div>
             </div>
+            {/* 우하단 내용 컨테이너 */}
           </div>
         </div>
       </div>
