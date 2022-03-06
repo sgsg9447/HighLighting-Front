@@ -139,7 +139,7 @@ function BookMarker({ duration, bookmarker }) {
         const end = format(cutTimeList[i].end);
         const args = ["-ss", start, "-to", end, "-i", "input.mp4", "-c", "copy", "outfile.mp4"];
         await ffmpeg.run(...args);
-        setMessage(`Complete Export - ${i}`);
+        setMessage(`Complete ${i+1}개 파일을 받았습니다.`);
         console.log('outName', outName)
         const data = ffmpeg.FS("readFile", "outfile.mp4");
         URL.revokeObjectURL(downloadLink);
@@ -165,7 +165,8 @@ function BookMarker({ duration, bookmarker }) {
         // 인덱스 +1
         i++
       }
-    
+      ffmpeg.FS("unlink", 'input.mp4')
+      ffmpeg.FS("unlink", 'outfile.mp4')
     } else {
       setMessage("Can not Export. need file check. 😪");
     }
