@@ -9,6 +9,8 @@
     height: 90%;
     border: 2px solid #653bfc;
     margin: 0.5rem;
+    display: flex;
+    overflow-x: scroll;
   }
 }
 
@@ -34,3 +36,23 @@
 .right {
   margin-left: auto;
 }
+
+// :root {
+//   --swiper-navigation-color: #935ef4 !important;
+//   --swiper-theme-color: #935ef4 !important;
+// }
+
+// .swiper-button-next,
+// .swiper-button-prev {
+//   position: absolute;
+//   top: 50%;
+//   width: calc(var(--swiper-navigation-size) / 44 * 27);
+//   height: var(--swiper-navigation-size);
+//   margin-top: calc(0px - (var(--swiper-navigation-size) / 2));
+//   z-index: 10;
+//   cursor: pointer;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   line-height: 10;
+// }

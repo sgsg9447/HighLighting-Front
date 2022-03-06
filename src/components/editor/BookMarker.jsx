@@ -8,20 +8,8 @@ import axios from "axios";
 
 import "./BookMarker.scss";
 import useResult from "../../hooks/useResult";
-
-
-/* 카드형식 */
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
-import Checkbox from "@mui/material/Checkbox";
-import Stack from "@mui/material/Stack";
-
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+// import Cardbox from "./Cardbox";
+import "./cardbox.scss";
 
 const IS_CUTTING_FROM_BACK = false; // 내보내기 버튼은 백(true) 또는 프론트(false)에서 가능
 function BookMarker({ duration, bookmarker }) {
@@ -40,7 +28,6 @@ function BookMarker({ duration, bookmarker }) {
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
   const { markers, setMarkers, setRelay } = useResult();
-
 
   const fileMp3Html = useRef(null);
   const ffmpeg = useContext(FFmpegContext);
@@ -79,10 +66,14 @@ function BookMarker({ duration, bookmarker }) {
     replayRef.current.saveMarker = handleClick;
   }, [markers]);
 
-
   const getFile = (file) => {
     if (file.current && file.current.files && file.current.files.length !== 0) {
-      console.log('file.current', file.current, 'file.current.files', file.current.files)
+      console.log(
+        "file.current",
+        file.current,
+        "file.current.files",
+        file.current.files
+      );
       return file.current.files[0];
     } else {
       return null;
@@ -90,20 +81,30 @@ function BookMarker({ duration, bookmarker }) {
   };
 
   const getMarkerTime = (markerList) => {
-    const selectedMarkers = [...markers].filter((marker) => marker.completed === true);
-    const cutTimeList = selectedMarkers?.map((marker) => (
-      {start: marker.startPointer, end: marker.endPointer}
-    ));
-    console.log('markers', markerList, 'selectedMarkers', selectedMarkers, 'getMarkerTime', cutTimeList)
+    const selectedMarkers = [...markers].filter(
+      (marker) => marker.completed === true
+    );
+    const cutTimeList = selectedMarkers?.map((marker) => ({
+      start: marker.startPointer,
+      end: marker.endPointer,
+    }));
+    console.log(
+      "markers",
+      markerList,
+      "selectedMarkers",
+      selectedMarkers,
+      "getMarkerTime",
+      cutTimeList
+    );
     return cutTimeList;
-  }
+  };
 
   const inputToOutName = (inputName, index) => {
     if (inputName) {
       const [name, ext] = inputName.split(".");
       return name + "-" + (index + 1) + "." + ext;
     }
-  }
+  };
 
   const openModal = () => {
     document.body.style.overflow = "hidden";
@@ -127,46 +128,55 @@ function BookMarker({ duration, bookmarker }) {
         new Uint8Array(await mp4.arrayBuffer())
       );
       setMessage("Start Export");
-      console.log('markers in mp4 in async', markers);
+      console.log("markers in mp4 in async", markers);
       const cutTimeList = await getMarkerTime(markers);
       let i = 0;
       // 북마크 개수만큼 자르자!
       while (i < cutTimeList.length) {
-        console.log('while', 'i', i, 'cutTimeList', cutTimeList);
+        console.log("while", "i", i, "cutTimeList", cutTimeList);
         //   ffmpeg -ss 00:00:00 -to 01:00:00  -i input.mp4 -c copy out.mp4
-        const outName = inputToOutName(mp4.name, i)
+        const outName = inputToOutName(mp4.name, i);
         const start = format(cutTimeList[i].start);
         const end = format(cutTimeList[i].end);
-        const args = ["-ss", start, "-to", end, "-i", "input.mp4", "-c", "copy", "outfile.mp4"];
+        const args = [
+          "-ss",
+          start,
+          "-to",
+          end,
+          "-i",
+          "input.mp4",
+          "-c",
+          "copy",
+          "outfile.mp4",
+        ];
         await ffmpeg.run(...args);
-        setMessage(`Complete ${i+1}개 파일을 받았습니다.`);
-        console.log('outName', outName)
+        setMessage(`Complete ${i + 1}개 파일을 받았습니다.`);
+        console.log("outName", outName);
         const data = ffmpeg.FS("readFile", "outfile.mp4");
         URL.revokeObjectURL(downloadLink);
         // setOutName(outName);
-        const tmpDownloadlink = URL.createObjectURL(new Blob([data.buffer], { type: "video/mp4" }))
-        setDownloadLink(tmpDownloadlink);
-        const link = document.createElement('a');
-        link.href = tmpDownloadlink;
-        link.setAttribute(
-          'download',
-          outName,
+        const tmpDownloadlink = URL.createObjectURL(
+          new Blob([data.buffer], { type: "video/mp4" })
         );
-    
+        setDownloadLink(tmpDownloadlink);
+        const link = document.createElement("a");
+        link.href = tmpDownloadlink;
+        link.setAttribute("download", outName);
+
         // Append to html link element page
         document.body.appendChild(link);
-    
+
         // Start download
         link.click();
-    
+
         // Clean up and remove the link
         link.parentNode.removeChild(link);
 
         // 인덱스 +1
-        i++
+        i++;
       }
-      ffmpeg.FS("unlink", 'input.mp4')
-      ffmpeg.FS("unlink", 'outfile.mp4')
+      ffmpeg.FS("unlink", "input.mp4");
+      ffmpeg.FS("unlink", "outfile.mp4");
     } else {
       setMessage("Can not Export. need file check. 😪");
     }
@@ -386,93 +396,97 @@ function BookMarker({ duration, bookmarker }) {
       });
   }
 
+  // function thumbnailCal(e) {
+  //   e.preventDefault();
+  //   console.log("The link was clicked.");
+  // }
+
   return (
-    <div className="BookMarkerContainer">
-      <h2>컷 보관함</h2>
-      <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
-      <div className="hello">
-        {markers.map((marker) => (
-          <div key={marker.id}>
-            <Card sx={({ maxWidth: 120 }, { margin: 0.2 })}>
-              <CardMedia
-                onClick={() => {
-                  console.log("hi");
-                }}
-                component="img"
-                height="100"
-                image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRx3jIbMYkLPXe8L30kclAJXuyS6HEIwELRA&usqp=CAU"
-                alt="thumbnail"
-              />
-              <CardContent>
-                {/* <Typography
-                  gutterBottom
-                  variant="h10"
-                  component="div"
-                ></Typography>
-                 */}
-                <Button color="secondary" onClick={() => playVideo(marker.id)}>
-                  {format(marker.startPointer)}~{format(marker.endPointer)}
-                </Button>
-                <Typography variant="body2" color="text.secondary">
-                  {" "}
-                </Typography>
-
-                {addMarker === marker.id ? (
-                  <TextareaAutosize
-                    maxRows={2}
-                    aria-label="maximum height"
-                    style={{ width: 100 }}
-                    onKeyPress={(e) => handleKeyPress(e, marker.id)}
-                    onChange={(e) => setEditingText(e.target.value)}
-                    value={editingText}
-                  />
-                ) : (
-                  <div>{marker.text}</div>
-                )}
-              </CardContent>
-
-              <CardActions>
-                <Stack spacing={-3} direction="row">
-                  <Checkbox
-                    color="secondary"
-                    {...label}
-                    onChange={() => toggleComplete(marker.id)}
-                    checked={marker.completed}
-                  />
-                  {/* <input
-              type="checkbox"
-              onChange={() => toggleComplete(marker.id)}
-              checked={marker.completed}
-            /> */}
-                  {addMarker === marker.id ? (
-                    <Button
-                      color="secondary"
-                      onClick={() => addMemoEdit(marker.id)}
-                    >
-                      저장
-                    </Button>
-                  ) : (
-                    <Button
-                      color="secondary"
-                      size="small"
-                      onClick={() => setAddMarker(marker.id)}
-                    >
-                      메모
-                    </Button>
-                  )}
-
-                  <Button
-                    color="secondary"
-                    size="small"
-                    onClick={() => deleteMarker(marker.id)}
+    <>
+      <div className="BookMarkerContainer">
+        <h2>컷 보관함</h2>
+        <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
+        <div className="hello">
+          <div className="card-container">
+            {markers.map((marker) => (
+              <div key={marker.id}>
+                <div className="card">
+                  <div
+                    className="card-header"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      playVideo(marker.id);
+                    }}
                   >
-                    삭제
-                  </Button>
-                </Stack>
-              </CardActions>
-            </Card>
+                    <div
+                      style={{
+                        background: "url(./bts.jpeg)",
+                        width: "177px",
+                        height: "100px",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: `  ${
+                          -177 *
+                            Math.floor(
+                              Math.floor(marker.startPointer % 60) / 10
+                            ) -
+                          1
+                        }px  ${-100 * Math.floor(marker.startPointer / 60)}px`,
+                      }}
+                    />
+                  </div>
+                  <div className="card-body">
+                    {/* <div className="user">
+                      <img
+                        src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo"
+                        alt="user"
+                      />
+                      <div className="user-info">
+                        <h5>July Dec</h5>
+                      </div>
+                    </div> */}
+                    {/* <h4>Why is the Tesla Cybertruck designed the way it is?</h4> */}
+                    {/* <p></p> */}
+                    {addMarker === marker.id ? (
+                      <input
+                        type="text"
+                        onKeyPress={(e) => handleKeyPress(e, marker.id)}
+                        onChange={(e) => setEditingText(e.target.value)}
+                        value={editingText}
+                      />
+                    ) : (
+                      <div>{marker.text}</div>
+                    )}
+                    <div className="botoom">
+                      <input
+                        type="checkbox"
+                        onChange={() => toggleComplete(marker.id)}
+                        checked={marker.completed}
+                      />
+                      <h3>
+                        {format(marker.startPointer)}~
+                        {format(marker.endPointer)}
+                      </h3>
+
+                      {addMarker === marker.id ? (
+                        <button onClick={() => addMemoEdit(marker.id)}>
+                          저장
+                        </button>
+                      ) : (
+                        <button onClick={() => setAddMarker(marker.id)}>
+                          메모
+                        </button>
+                      )}
+                      <button onClick={() => deleteMarker(marker.id)}>
+                        삭제
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+          ))
+        </div>
       </div>
       <div className="parent">
         <button className="btn__ChatSuper" onClick={handleClick}>
@@ -482,7 +496,10 @@ function BookMarker({ duration, bookmarker }) {
           저장하기
         </button>
 
-        <button className="btn__ChatSuper" onClick={ IS_CUTTING_FROM_BACK ? goToDownload : openModal}>
+        <button
+          className="btn__ChatSuper"
+          onClick={IS_CUTTING_FROM_BACK ? goToDownload : openModal}
+        >
           내보내기
         </button>
         {modalOpen && (
@@ -503,7 +520,7 @@ function BookMarker({ duration, bookmarker }) {
           </Modal>
         )}
       </div>
-    </div>
+    </>
   );
 }
 
