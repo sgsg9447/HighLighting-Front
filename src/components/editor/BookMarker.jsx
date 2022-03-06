@@ -264,6 +264,11 @@ function BookMarker({ duration, bookmarker }) {
       });
   }
 
+  // function thumbnailCal(e) {
+  //   e.preventDefault();
+  //   console.log("The link was clicked.");
+  // }
+
   return (
     <>
       <div className="BookMarkerContainer">
@@ -274,14 +279,31 @@ function BookMarker({ duration, bookmarker }) {
             {markers.map((marker) => (
               <div key={marker.id}>
                 <div className="card">
-                  <div className="card-header">
-                    <img
-                      src="https://c0.wallpaperflare.com/preview/483/210/436/car-green-4x4-jeep.jpg"
-                      alt="rover"
+                  <div
+                    className="card-header"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      playVideo(marker.id);
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: "url(./bts.jpeg)",
+                        width: "177px",
+                        height: "100px",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: `  ${
+                          -177 *
+                            Math.floor(
+                              Math.floor(marker.startPointer % 60) / 10
+                            ) -
+                          1
+                        }px  ${-100 * Math.floor(marker.startPointer / 60)}px`,
+                      }}
                     />
                   </div>
                   <div className="card-body">
-                    <div className="user">
+                    {/* <div className="user">
                       <img
                         src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo"
                         alt="user"
@@ -289,7 +311,7 @@ function BookMarker({ duration, bookmarker }) {
                       <div className="user-info">
                         <h5>July Dec</h5>
                       </div>
-                    </div>
+                    </div> */}
                     {/* <h4>Why is the Tesla Cybertruck designed the way it is?</h4> */}
                     {/* <p></p> */}
                     {addMarker === marker.id ? (
@@ -308,10 +330,10 @@ function BookMarker({ duration, bookmarker }) {
                         onChange={() => toggleComplete(marker.id)}
                         checked={marker.completed}
                       />
-                      <button onClick={() => playVideo(marker.id)}>
+                      <h3>
                         {format(marker.startPointer)}~
                         {format(marker.endPointer)}
-                      </button>
+                      </h3>
 
                       {addMarker === marker.id ? (
                         <button onClick={() => addMemoEdit(marker.id)}>
