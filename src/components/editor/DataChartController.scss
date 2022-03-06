@@ -3,20 +3,33 @@
   width: 20%;
   max-width: 20%;
 }
-
+.header {
+  text-align: center;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+}
+.content {
+  padding: 0.5rem;
+}
 .container__chat {
+  width: 100%;
+  background-color: #935ef4;
+  border-radius: 1rem;
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
 }
 
 .container__video {
+  background-color: #935ef4;
+  border-radius: 1rem;
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
 }
 
 .container__audio {
+  background-color: #935ef4;
+  border-radius: 1rem;
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
