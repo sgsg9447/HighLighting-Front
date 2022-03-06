@@ -32,9 +32,9 @@ let REPLAY_ONLE_ONCE = true;
 // STEP_X: X좌표 간격(1밀리초)
 const STEP_X_CHAT_DISTRIBUTION = 30 * 1000; // 30초
 const STEP_X_VIDEO = 1000; // 1초
-const STEP_X_AUDIO = 500;  // 0.5초
-const STEP_X_CHAT_SUPER = 1000;  // 1초
-const STEP_X_CHAT_KEYWORDS = 60 * 1000;   // 1분
+const STEP_X_AUDIO = 500; // 0.5초
+const STEP_X_CHAT_SUPER = 1000; // 1초
+const STEP_X_CHAT_KEYWORDS = 60 * 1000; // 1분
 
 // 차트 제목; 데이터리스트 인덱스 0,1,2,3,4
 const TITLE0 = "Chat Flow";
@@ -47,45 +47,83 @@ const TITLE4 = "Keyword Flow";
 const AXIS_X_WHEEL_ZOOM = true;
 
 // 차트 그래프 컬러 임의 조합 NUMBER
-const GRAPH_COLOR_NUMBER = 999
+const GRAPH_COLOR_NUMBER = 999;
 
 // 차트 플레이 바의 컬러 조합
-const YELLOW = "#ffcc00"
-const RED = "#F00"
-const BLUE = "0075ff"
-const playBarColor = { basic: YELLOW, hover: RED }
-const jumpBarColor = { basic: YELLOW, hover: BLUE }
-
+const YELLOW = "#ffcc00";
+const RED = "#F00";
+const BLUE = "0075ff";
+const playBarColor = { basic: YELLOW, hover: RED };
+const jumpBarColor = { basic: YELLOW, hover: BLUE };
 
 /* 데이터 차트 컴포넌트 시작 */
 const DataChart = (props) => {
   const { dataList, id, url, duration } = props;
-  const { pointer, callSeekTo, setPlayed, setIsplaying, seeking, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
-  const { relay, setRelay, markers, setMarkers, chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList } = useResult();
+  const {
+    pointer,
+    callSeekTo,
+    setPlayed,
+    setIsplaying,
+    seeking,
+    setSeeking,
+    changePointer,
+    setReplayRef,
+    setDataChangeRef,
+  } = React.useContext(EditorTimePointerContext);
+  const {
+    relay,
+    setRelay,
+    markers,
+    setMarkers,
+    chatKeywords,
+    isChatSuper,
+    isChatKeywords,
+    isKeywordsDownload,
+    receivedDataSetList,
+    setReceivedDataSetList,
+  } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
   const playBarListRef = useRef(undefined);
   const chartListRef = useRef(undefined);
   const seriesListRef = useRef(undefined);
-  const dragStartRef = useRef({ isDrag: false, xValue: Number.MAX_SAFE_INTEGER });
+  const dragStartRef = useRef({
+    isDrag: false,
+    xValue: Number.MAX_SAFE_INTEGER,
+  });
   const clickToJumpRef = useRef({ isJump: false, jumpTime: undefined });
   const replayRef = useRef({
-    isReplay: false, startTime: undefined, endTime: undefined, duration: undefined,
+    isReplay: false,
+    startTime: undefined,
+    endTime: undefined,
+    duration: undefined,
     replay: replayBand,
     saveMarker: undefined,
-    playingId: undefined, isPlayOnce: REPLAY_ONLE_ONCE,
+    playingId: undefined,
+    isPlayOnce: REPLAY_ONLE_ONCE,
     subKey: { isShiftKey: false, isCtrlKey: false },
     wordKey: { isS: false },
     isTyping: undefined,
   });
-  const dataDataRef = useRef({ isChange: false, dashboard: undefined, chartList: undefined, seriesList: undefined, change: changeChartData });
+  const dataDataRef = useRef({
+    isChange: false,
+    dashboard: undefined,
+    chartList: undefined,
+    seriesList: undefined,
+    change: changeChartData,
+  });
   const onBarChangeRef = useRef(false);
   const dragBandList = useRef([]);
   const whichChartRef = useRef(undefined);
   const fitActiveRef = useRef(false);
   const yMaxRef = useRef([]);
-  const markerInfoRef = useRef({ interruption: false, playingId: undefined, playingIndex: undefined, selectedMarkerList: [] })
-  
+  const markerInfoRef = useRef({
+    interruption: false,
+    playingId: undefined,
+    playingIndex: undefined,
+    selectedMarkerList: [],
+  });
+
   const imgTipRef = useRef();
   const [tip, setTip] = useState(false);
 
@@ -128,15 +166,15 @@ const DataChart = (props) => {
   useEffect(() => {
     // if (!dataDataRef) return;
     setDataChangeRef(dataDataRef);
-  }, [])
+  }, []);
 
   /* 키워드 데이터 도착할 떄, 데이터리스트에 추가 */
   useEffect(() => {
     if (chatKeywords) {
-      dataList[4] = chatKeywords
+      dataList[4] = chatKeywords;
       // console.log('chatKeyword into dataList')
     }
-  }, [isKeywordsDownload, chatKeywords])
+  }, [isKeywordsDownload, chatKeywords]);
 
   /* 메인 차트 그리기 */
   useEffect(() => {
@@ -169,7 +207,13 @@ const DataChart = (props) => {
     const axixXList = new Array(CHANNELS);
 
     // 차트 만드는 함수
-    function makeChart(i, title = undefined, padding = 30, xThickness = 30, yThickness = 80) {
+    function makeChart(
+      i,
+      title = undefined,
+      padding = 30,
+      xThickness = 30,
+      yThickness = 80
+    ) {
       let name = title;
       const chart = dashboard
         .createChartXY({
@@ -191,7 +235,10 @@ const DataChart = (props) => {
         .getDefaultAxisX()
         .setThickness({ min: xThickness })
         .setTickStrategy(AxisTickStrategies.Time);
-      const axisY = chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: yThickness });
+      const axisY = chart
+        .getDefaultAxisY()
+        .setTitle(`${name}`)
+        .setThickness({ min: yThickness });
 
       // 차트마다 축리스트에 생성된 축 담기
       axixXList[i] = axisX;
@@ -210,22 +257,18 @@ const DataChart = (props) => {
         })
         .setMouseInteractions(false)
         .setBackground((background) => background.setStrokeStyle(emptyLine));
-      chart
-        .getDefaultAxisX()
-        .onScaleChange((start, end) =>
-          uiLayout.setPosition({
-            x: start,
-            y: chart.getDefaultAxisY().getInterval().end,
-          })
-        );
-      chart
-        .getDefaultAxisY()
-        .onScaleChange((start, end) =>
-          uiLayout.setPosition({
-            x: chart.getDefaultAxisX().getInterval().start,
-            y: end,
-          })
-        );
+      chart.getDefaultAxisX().onScaleChange((start, end) =>
+        uiLayout.setPosition({
+          x: start,
+          y: chart.getDefaultAxisY().getInterval().end,
+        })
+      );
+      chart.getDefaultAxisY().onScaleChange((start, end) =>
+        uiLayout.setPosition({
+          x: chart.getDefaultAxisX().getInterval().start,
+          y: end,
+        })
+      );
 
       return chart;
     }
@@ -292,47 +335,47 @@ const DataChart = (props) => {
     dataDataRef.current.seriesList = seriesList;
   }, [url, id, chatKeywords]);
 
-
   /* 데이터 받아서 차트 렌더링 */
   useEffect(() => {
     const chartList = chartListRef.current;
     const seriesList = seriesListRef.current;
 
-    Promise.all(dataList.map((data, i) => {
-      const STEP_X = whichStepX(i);
+    Promise.all(
+      dataList.map((data, i) => {
+        const STEP_X = whichStepX(i);
 
-      const yMin = data.reduce(
-        (min, cur) => Math.min(min, cur.y),
-        Number.MAX_SAFE_INTEGER
-      );
-      const yMax = data.reduce(
-        (max, cur) => Math.max(max, cur.y),
-        -Number.MAX_SAFE_INTEGER
-      );
+        const yMin = data.reduce(
+          (min, cur) => Math.min(min, cur.y),
+          Number.MAX_SAFE_INTEGER
+        );
+        const yMax = data.reduce(
+          (max, cur) => Math.max(max, cur.y),
+          -Number.MAX_SAFE_INTEGER
+        );
 
-      yMaxRef.current[i] = yMax;
+        yMaxRef.current[i] = yMax;
 
-      // 1번 차트 데이터들은 y 고유값으로 유지
-      if (i === 0 || i === 3 || i === 4) {
+        // 1번 차트 데이터들은 y 고유값으로 유지
+        if (i === 0 || i === 3 || i === 4) {
+          return data.map((xy) => ({
+            x: xy.x * STEP_X,
+            y: xy.y,
+          }));
+        }
+
+        // Map generated XY trace data set into a more realistic trading data set.
+        const baseLine = 50; // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그리도록 설정함.
+        // const baseLine = 10 + Math.random() * 2000;
+        const variationAmplitude = baseLine;
+        const yIntervalHalf = (yMax - yMin) / 2;
+        const yTraceBaseline = yMin + yIntervalHalf;
         return data.map((xy) => ({
           x: xy.x * STEP_X,
-          y: xy.y
-        }))
-      }
-
-      // Map generated XY trace data set into a more realistic trading data set.
-      const baseLine = 50;  // 최소값을 0, 최대값을 100으로 놓았을 때를 그래프로 그리도록 설정함.
-      // const baseLine = 10 + Math.random() * 2000;
-      const variationAmplitude = baseLine;
-      const yIntervalHalf = (yMax - yMin) / 2;
-      const yTraceBaseline = yMin + yIntervalHalf;
-      return data.map((xy) => ({
-        x: xy.x * STEP_X,
-        y:
-          baseLine +
-          ((xy.y - yTraceBaseline) / yIntervalHalf) * variationAmplitude,
-      }))
-    })
+          y:
+            baseLine +
+            ((xy.y - yTraceBaseline) / yIntervalHalf) * variationAmplitude,
+        }));
+      })
     ).then((receivedDataSet) => {
       if (receivedDataSet && receivedDataSet[0]) {
         seriesList.forEach((series, i) => {
@@ -399,7 +442,7 @@ const DataChart = (props) => {
                 band
                   .restore()
                   .setValueStart(xAxisLocationStart)
-                  .setValueEnd(xAxisLocationNow)
+                  .setValueEnd(xAxisLocationNow);
                 // .onValueChange((band, start, end)=>console.log('band is changing', band, start, end));
                 // 드래그로 확대되어 바뀐 클릭 시작 시간 값과 클릭 끝 값 3차트에서 확인
                 // console.log('start', xAxisLocationStart, 'end', xAxisLocationNow)
@@ -460,15 +503,17 @@ const DataChart = (props) => {
 
                 console.log(
                   "R->L mouse drag",
-                  "startTime", startTime,
-                  "endTime", endTime,
-                  "yMax", yMax,
+                  "startTime",
+                  startTime,
+                  "endTime",
+                  endTime,
+                  "yMax",
+                  yMax
                 );
               });
               // console.log("mouse drag", "xStart", xStart, "xEnd", xEnd);
               xTicksStart.forEach((xTick) => xTick.dispose());
               xTicksEnd.forEach((xTick) => xTick.dispose());
-
             }
             // 위와 반대방향으로 드래그 (현재 L->R)
             else {
@@ -499,10 +544,10 @@ const DataChart = (props) => {
                 replayRef.current.startTime = startTime;
                 replayRef.current.endTime = endTime;
                 // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
-                callSeekTo(startTimeRatio)
+                callSeekTo(startTimeRatio);
                 setPlayed(parseFloat(startTimeRatio));
                 changePointer(startTime);
-                setSeeking(false)
+                setSeeking(false);
 
                 // 북마크 재생중 벗어나면 markers의 isPlaying 체크, relay 해제
                 markerInfoRef.current.interruption = true;
@@ -519,18 +564,20 @@ const DataChart = (props) => {
         );
 
         // 차트 전체 보기 전환, x축 더블 클릭
-        chart.getDefaultAxisX().onAxisInteractionAreaMouseDoubleClick((_, event) => {
-          if (event.button !== 0) return;
+        chart
+          .getDefaultAxisX()
+          .onAxisInteractionAreaMouseDoubleClick((_, event) => {
+            if (event.button !== 0) return;
 
-          fitActiveRef.current = true;
-          chartList.forEach((nChart) => {
-            nChart.getDefaultAxisX().fit(false);
-            nChart.getDefaultAxisY().fit(false);
+            fitActiveRef.current = true;
+            chartList.forEach((nChart) => {
+              nChart.getDefaultAxisX().fit(false);
+              nChart.getDefaultAxisY().fit(false);
+            });
+            fitActiveRef.current = false;
+            // setXTicksStart(xTicksStart.map((xTick) => xTick.dispose()))
+            // setXTicksEnd(xTicksEnd.map((xTick) => xTick.dispose()))
           });
-          fitActiveRef.current = false;
-          // setXTicksStart(xTicksStart.map((xTick) => xTick.dispose()))
-          // setXTicksEnd(xTicksEnd.map((xTick) => xTick.dispose()))
-        });
 
         // 차트 x값 인식 onSeriesBackgroundMouseClick: 클릭
         // chart.setMouseInteractionsWhileZooming(true).MouseClickEventType = 2;
@@ -539,12 +586,12 @@ const DataChart = (props) => {
 
           // 마우스 드래그할 때는 작동되지 않도록 lock-unlock
           if (dragStartRef.current.isDrag) {
-            dragStartRef.current.isDrag = false
+            dragStartRef.current.isDrag = false;
             return;
           }
 
           // 클릭 점핑, seeking 준비: clickRef 또는 pointer 둘 다 설정해서 먼저 변하는 값 빠르게 갱신
-          clickToJumpRef.current.isJump = true
+          clickToJumpRef.current.isJump = true;
           // console.log(clickRef.current)
           // console.log('isDrag?', dragStartRef.current)
 
@@ -558,15 +605,15 @@ const DataChart = (props) => {
             { x: chart.getDefaultAxisX(), y: chart.getDefaultAxisY() }
           ).x;
 
-          const playTime = Math.round(mouseLocationAxisX / 1000)
+          const playTime = Math.round(mouseLocationAxisX / 1000);
           const playTimeRatio = mouseLocationAxisX / 1000 / duration;
           clickToJumpRef.current.jumpTime = playTime;
           // console.log('callSeekTo', playerRef, 'playTimeRatio', playTimeRatio, 'playTime', playTime)
           setSeeking(true);
-          callSeekTo(playTimeRatio)
+          callSeekTo(playTimeRatio);
           setPlayed(parseFloat(playTimeRatio));
           changePointer(playTime);
-          setSeeking(false)
+          setSeeking(false);
 
           // 구간 반복 있다면 제거
           replayRef.current.isReplay = false;
@@ -632,7 +679,7 @@ const DataChart = (props) => {
         resultTableRows[0].setText(
           chart.getDefaultAxisX().formatValue(mouseLocationAxisX)
         );
-        const playTime = Math.round(mouseLocationAxisX / 1000) // 재생 1초 단위로 캐치
+        const playTime = Math.round(mouseLocationAxisX / 1000); // 재생 1초 단위로 캐치
         // const formatValue = chart.getDefaultAxisX().formatValue(mouseLocationAxisX) // hh:mm:ss 시간 단위
         // console.log('playTime', playTime, 'formatValue', formatValue);
 
@@ -687,12 +734,11 @@ const DataChart = (props) => {
       });
       resultTable.dispose();
       dashboard.dispose();
-      chartListRef.current = undefined
-      seriesListRef.current = undefined
+      chartListRef.current = undefined;
+      seriesListRef.current = undefined;
       // receivedDataSetListRef.current = undefined
     };
   }, [url, chatKeywords]);
-
 
   // 차트 전환하는 함수(몇 번 차트(charNum)를 몇 번 데이터 인덱스(toIndex)로 교체하겠다.)
   function changeChartData(chartNum, toIndex) {
@@ -707,11 +753,10 @@ const DataChart = (props) => {
 
     if (toIndex === 0 || toIndex === 3 || toIndex === 4) {
       // 차트 0번 y축 한계를 각 고유값으로 셋팅한다.
-      chart.getDefaultAxisY().setInterval(0, yMax, false, true)
-    }
-    else {
+      chart.getDefaultAxisY().setInterval(0, yMax, false, true);
+    } else {
       // 그 외에는 상대지수 100으로 셋팅한다.
-      chart.getDefaultAxisY().setInterval(0, 100, false, true)
+      chart.getDefaultAxisY().setInterval(0, 100, false, true);
     }
     // 바뀌도록 차트를 돌며 갱신한다.
     fitActiveRef.current = true;
@@ -721,7 +766,7 @@ const DataChart = (props) => {
     });
     fitActiveRef.current = false;
 
-    const name = whichChartRef.current(toIndex)
+    const name = whichChartRef.current(toIndex);
     chart.getDefaultAxisY().setTitle(`${name}`).setThickness({ min: 80 });
 
     seriesList[chartNum] = chart
@@ -731,11 +776,12 @@ const DataChart = (props) => {
         },
         automaticColorIndex: toIndex * GRAPH_COLOR_NUMBER,
       })
-      .setName('Super Chat')
+      .setName("Super Chat")
       .setCursorInterpolationEnabled(false)
-      .clear().add(receivedDataSetList[toIndex]);
+      .clear()
+      .add(receivedDataSetList[toIndex]);
 
-    return seriesList[0]
+    return seriesList[0];
   }
 
   /* 슈퍼챗으로 데이터 차트 전환하는 렌더링 */
@@ -748,16 +794,13 @@ const DataChart = (props) => {
     let series;
     if (!isChatSuper) {
       series = changeChartData(0, 3);
-    }
-    else {
-      if (!isChatKeywords)
-        series = changeChartData(0, 4);
-      else
-        series = changeChartData(0, 0);
+    } else {
+      if (!isChatKeywords) series = changeChartData(0, 4);
+      else series = changeChartData(0, 0);
     }
     return () => {
-      series.dispose()
-    }
+      series.dispose();
+    };
   }, [isChatSuper]);
 
   /* 특정 키워드 검색으로 데이터 차트 전환하는 렌더링 */
@@ -769,33 +812,35 @@ const DataChart = (props) => {
     // keywords 데이터는 데이터리스트 인덱스 4, isChatKeywords false일 떄 전환
     if (!isChatKeywords) {
       series = changeChartData(0, 4);
-    }
-    else {
-      if (!isChatSuper)
-        series = changeChartData(0, 3);
-      else
-        series = changeChartData(0, 0);
+    } else {
+      if (!isChatSuper) series = changeChartData(0, 3);
+      else series = changeChartData(0, 0);
     }
 
     return () => {
-      series.dispose()
-    }
+      series.dispose();
+    };
   }, [isChatKeywords, isKeywordsDownload, receivedDataSetList]);
 
-
   // 구간 반복 재생 함수(pointer, 시작 시간, 종료 시간, 옵션: markers)
-  function replayBand(pointer, startTime, endTime, playingId = undefined, markerList = undefined) {
-    console.log('replayBand', startTime, endTime, playingId, markerList)
+  function replayBand(
+    pointer,
+    startTime,
+    endTime,
+    playingId = undefined,
+    markerList = undefined
+  ) {
+    console.log("replayBand", startTime, endTime, playingId, markerList);
     if (pointer === endTime + 1) {
       // id, markers 안 받았으면 start로 돌아가기
       if (!playingId || !markerList) {
-        const playTime = startTime
-        const playTimeRatio = playTime / duration
-        setSeeking(true)
-        callSeekTo(playTimeRatio)
+        const playTime = startTime;
+        const playTimeRatio = playTime / duration;
+        setSeeking(true);
+        callSeekTo(playTimeRatio);
         setPlayed(parseFloat(playTimeRatio));
         changePointer(playTime);
-        setSeeking(false)
+        setSeeking(false);
       }
 
       // id, markers를 받았다면, 다음 marker 탐색이동
@@ -810,7 +855,9 @@ const DataChart = (props) => {
         // 재생할 다음 북마크 찾기
         const nowPlayingId = playingId;
         // const nowIndex = markerInfoRef.current.playingIndex;
-        const nowIndex = selectedMarkers.findIndex((marker, i) => marker.id === nowPlayingId);
+        const nowIndex = selectedMarkers.findIndex(
+          (marker, i) => marker.id === nowPlayingId
+        );
         const totalIndex = selectedMarkers.length - 1;
         let nextMarker, firstMarker, playTime;
 
@@ -846,13 +893,24 @@ const DataChart = (props) => {
           }
         }
         // 공통: 재생 지점으로 이동, 1회만 재생이었어도 중지상태로 시작지점으로 이동
-        console.log('nowPlayingId', nowPlayingId, 'nowIndex', nowIndex, 'totalIndex', totalIndex, 'nextMarker', nextMarker, 'firstMarker', firstMarker);
-        const playTimeRatio = playTime / duration
-        setSeeking(true)
-        callSeekTo(playTimeRatio)
+        console.log(
+          "nowPlayingId",
+          nowPlayingId,
+          "nowIndex",
+          nowIndex,
+          "totalIndex",
+          totalIndex,
+          "nextMarker",
+          nextMarker,
+          "firstMarker",
+          firstMarker
+        );
+        const playTimeRatio = playTime / duration;
+        setSeeking(true);
+        callSeekTo(playTimeRatio);
         setPlayed(parseFloat(playTimeRatio));
         changePointer(playTime);
-        setSeeking(false)
+        setSeeking(false);
       }
     }
   }
@@ -860,10 +918,12 @@ const DataChart = (props) => {
   // 선택된 북마크 선별해서 리스트로 반환하는 함수
   function findSelectedMarkers(markers) {
     // console.log('markers', markers)
-    const selectedMarkerList = markers.filter((marker) => marker.completed === true);
+    const selectedMarkerList = markers.filter(
+      (marker) => marker.completed === true
+    );
     markerInfoRef.current.selectedMarkerList = selectedMarkerList;
     // console.log('selectedMarkerList', selectedMarkerList)
-    return selectedMarkerList
+    return selectedMarkerList;
   }
 
   /* 구간 반복 기능: isReplay true이면 L->R 드래그 되었거나, 북마크를 선택해서 재생했다는 뜻 */
@@ -873,14 +933,24 @@ const DataChart = (props) => {
     // console.log('relay', relay, 'replay', replayRef.current.isReplay, replayRef.current.startTime, pointer, replayRef.current.endTime)
     // 일반 구간 반복
     if (!relay) {
-      replayBand(pointer, replayRef.current.startTime, replayRef.current.endTime)
+      replayBand(
+        pointer,
+        replayRef.current.startTime,
+        replayRef.current.endTime
+      );
     }
 
     // 북마크 릴레이 반복
     else {
-      replayBand(pointer, replayRef.current.startTime, replayRef.current.endTime, replayRef.current.playingId, markers)
+      replayBand(
+        pointer,
+        replayRef.current.startTime,
+        replayRef.current.endTime,
+        replayRef.current.playingId,
+        markers
+      );
     }
-  }, [pointer])
+  }, [pointer]);
 
   /* 드래그 되었거나 점프했다면 북마크 재생 중 표시 초기화 */
   useEffect(() => {
@@ -890,13 +960,15 @@ const DataChart = (props) => {
     if (!seeking) {
       let playCnt = 0;
       const updateMarkers = [...markers].map((marker, index) => {
-        if (marker.startPointer <= pointer && pointer <= marker.endPointer + 1) {
+        if (
+          marker.startPointer <= pointer &&
+          pointer <= marker.endPointer + 1
+        ) {
           marker.isPlaying = true;
           playCnt += 1;
           markerInfoRef.current.playingId = marker.id;
           markerInfoRef.current.playingIndex = index;
-        }
-        else {
+        } else {
           marker.isPlaying = false;
         }
         return marker;
@@ -909,9 +981,7 @@ const DataChart = (props) => {
       }
       // markerInfoRef.current.interruption = false;
     }
-
-  }, [pointer])
-
+  }, [pointer]);
 
   /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
   useEffect(() => {
@@ -928,20 +998,24 @@ const DataChart = (props) => {
         band
           .restore()
           .setValueStart(startTime * 1000)
-          .setValueEnd(endTime * 1000)
+          .setValueEnd(endTime * 1000);
       });
       return newBandList;
-    };
+    }
 
     const selectedMarkerList = findSelectedMarkers(markers);
-    const selectedBandsListSet = selectedMarkerList.map((marker) => addBookMarkBand(marker.startPointer, marker.endPointer));
+    const selectedBandsListSet = selectedMarkerList.map((marker) =>
+      addBookMarkBand(marker.startPointer, marker.endPointer)
+    );
     // console.log('selectedMarkerList', selectedMarkerList)
 
     // 선택 해제시 삭제
-    return (() => {
-      selectedBandsListSet.forEach(markerBandList => (markerBandList.forEach(band => band.dispose())));
-    });
-  }, [markers])
+    return () => {
+      selectedBandsListSet.forEach((markerBandList) =>
+        markerBandList.forEach((band) => band.dispose())
+      );
+    };
+  }, [markers]);
 
   /* 마우스 커서 옆에 재생 프리뷰 이미지 툴팁 위치*/
   const handleMouseMoveInChart = (e) => {
@@ -953,7 +1027,7 @@ const DataChart = (props) => {
     imgTipRef.current.style.left = positionLeft - LEFT_MARGIN + "px";
     imgTipRef.current.style.top = positionTop + TOP_MARGIN + "px";
     // console.log('left, top', imgTipRef.current.style.left, imgTipRef.current.style.top);
-  }
+  };
 
   /* 차트 플레이 바 나타내기 */
   useEffect(() => {
@@ -988,20 +1062,23 @@ const DataChart = (props) => {
               }),
             })
           )
-          .setHighlightOnHover(true))
+          .setHighlightOnHover(true)
+      );
 
       // 사용자가 재생 포인트 임의지정했다면 상태 해제
-      clickToJumpRef.current.isJump = false
-      return playBarList
+      clickToJumpRef.current.isJump = false;
+      return playBarList;
     }
 
-    let playBarList
+    let playBarList;
     if (!onBarChangeRef.current) {
       if (clickToJumpRef.current.isJump) {
-        playBarList = makePlayBarList(clickToJumpRef.current.jumpTime * 1000, jumpBarColor)
-      }
-      else {
-        playBarList = makePlayBarList(TIMELINE * 1000, playBarColor)
+        playBarList = makePlayBarList(
+          clickToJumpRef.current.jumpTime * 1000,
+          jumpBarColor
+        );
+      } else {
+        playBarList = makePlayBarList(TIMELINE * 1000, playBarColor);
       }
     }
     // timeRef에 새로운 막대리스트 넣기
@@ -1009,11 +1086,10 @@ const DataChart = (props) => {
     playBarListRef.current.forEach((playBar) => playBar.restore());
     // playBarListRef.current.forEach((playBar) => playBar.restore().onValueChange((handlePlayBarChange)));
 
-
     // 이전 막대는 삭제
     return () => {
       playBarListRef.current.forEach((playBar) => playBar.dispose());
-      playBarListRef.current.forEach((playBar) => playBar = undefined);
+      playBarListRef.current.forEach((playBar) => (playBar = undefined));
     };
   }, [id, url, TIMELINE]);
 
@@ -1028,17 +1104,30 @@ const DataChart = (props) => {
   //   })
   // }, [pointer])
 
-
   return (
     <>
-      <div id={id} className="TrippleChart" style={{ zIndex: 19 }} onMouseMove={handleMouseMoveInChart}></div>
-      <div id="result" ref={imgTipRef} style={{
-        display: (tip ? 'block' : 'none'), position: "absolute", background: "url(./bts.jpg)",
-        width: "177px", height: "100px", backgroundRepeat: "no-repeat",
-        backgroundPosition: 
-          `${-177 * Math.floor(Math.floor(tip % 60) / 10) - 1}px  ${-100 * Math.floor(tip / 60)}px`,
-        zIndex: '20'
-      }}></div>
+      <div
+        id={id}
+        className="TrippleChart"
+        style={{ zIndex: 19 }}
+        onMouseMove={handleMouseMoveInChart}
+      ></div>
+      <div
+        id="result"
+        ref={imgTipRef}
+        style={{
+          display: tip ? "block" : "none",
+          position: "absolute",
+          background: "url(./bts.jpg)",
+          width: "177px",
+          height: "100px",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: `${
+            -177 * Math.floor(Math.floor(tip % 60) / 10) - 1
+          }px  ${-100 * Math.floor(tip / 60)}px`,
+          zIndex: "20",
+        }}
+      ></div>
     </>
   );
 };
