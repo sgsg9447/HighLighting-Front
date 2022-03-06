@@ -15,6 +15,7 @@ import {
   SolidLine,
   SolidFill,
   ColorHEX,
+  customComplexTheme,
 } from "@arction/lcjs";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
@@ -61,7 +62,7 @@ const jumpBarColor = { basic: YELLOW, hover: BLUE }
 const DataChart = (props) => {
   const { dataList, id, url, duration } = props;
   const { pointer, callSeekTo, setPlayed, setIsplaying, seeking, setSeeking, changePointer, setReplayRef, setDataChangeRef } = React.useContext(EditorTimePointerContext);
-  const { relay, setRelay, markers, setMarkers, chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList } = useResult();
+  const { relay, setRelay, markers, setMarkers, chatKeywords, isChatSuper, isChatKeywords, isKeywordsDownload, receivedDataSetList, setReceivedDataSetList, server_addr } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
   const playBarListRef = useRef(undefined);
@@ -150,6 +151,12 @@ const DataChart = (props) => {
       },
     });
 
+        // .setStrokeStyle(new SolidLine({
+        //   thickness: 1,
+        //   fillStyle: new SolidFill({ color: ColorHEX('#653bfc') })
+        // }))
+    // const myTheme = customComplexTheme(Themes.light, {chart: {fill: {color: ColorHex('#FF7')}}})
+    // const myTheme = customTheme(Themes.dark, { dashboardBackGroundFillStyle: new SolidFill({color: ColorHEX('#f121')}) } )
     // 대쉬보드 생성
     const dashboard = lcjs
       .Dashboard({
@@ -157,7 +164,7 @@ const DataChart = (props) => {
         numberOfColumns: 1,
         numberOfRows: CHANNELS,
         disableAnimations: true,
-        theme: Themes.darkMagenta,
+        // theme: myTheme,
       })
       .setHeight(500, 1000);
 
@@ -171,10 +178,16 @@ const DataChart = (props) => {
     // 차트 만드는 함수
     function makeChart(i, title = undefined, padding = 30, xThickness = 30, yThickness = 80) {
       let name = title;
+      // 차트 배경 색 임의 지정
+      const myTheme = customComplexTheme(Themes.darkMagenta, {chart: {
+        backGroundFill: {color: ColorHEX('#272c34'), fillType: "solid"},
+        panelFill: {color: ColorHEX('#272c34'), fillType: "solid"}
+      }})
       const chart = dashboard
         .createChartXY({
           columnIndex: 0,
           rowIndex: i,
+          theme: myTheme,
         })
         .setPadding({ right: padding });
 
@@ -279,7 +292,11 @@ const DataChart = (props) => {
         })
         // 차트 y축 타이틀
         .setName(`${name}`)
-        .setCursorInterpolationEnabled(false);
+        .setCursorInterpolationEnabled(false)
+        // .setStrokeStyle(new SolidLine({
+        //   thickness: 1,
+        //   fillStyle: new SolidFill({ color: ColorHEX('#653bfc') })
+        // }))
       return series;
     });
 
@@ -1032,13 +1049,13 @@ const DataChart = (props) => {
   return (
     <>
       <div id={id} className="TrippleChart" style={{ zIndex: 19 }} onMouseMove={handleMouseMoveInChart}></div>
-      <div id="result" ref={imgTipRef} style={{
-        display: (tip ? 'block' : 'none'), position: "absolute", background: "url(./bts.jpg)",
-        width: "177px", height: "100px", backgroundRepeat: "no-repeat",
+      {url ? <div id="result" ref={imgTipRef} style={{
+        display: (tip ? 'block' : 'none'), position: "absolute", background: `url(${server_addr}/${url?.split("=")[1]}.jpg)`,
+        width: "176px", height: "100px", backgroundRepeat: "no-repeat",
         backgroundPosition: 
           `${-177 * Math.floor(Math.floor(tip % 60) / 10) - 1}px  ${-100 * Math.floor(tip / 60)}px`,
         zIndex: '20'
-      }}></div>
+      }}></div> : null}
     </>
   );
 };
