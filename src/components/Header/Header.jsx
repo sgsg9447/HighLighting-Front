@@ -65,17 +65,6 @@ export default function Header() {
     setSignIn(true);
   };
 
-  const handleLogout = () => {
-    const result = window.confirm(
-      "로그아웃 하시면 홈페이지로 이동됩니다. 로그아웃 하시겠습니까?"
-    );
-    if (result) {
-      alert("로그아웃 되었습니다.");
-      onLogout();
-    } else {
-    }
-  };
-
   return (
     <div className="navbar">
       <ul className="menu">
@@ -88,7 +77,7 @@ export default function Header() {
               <FiUser />
               마이 페이지
             </li>
-            <li onClick={handleLogout}>
+            <li onClick={onLogout}>
               <FiLogOut /> 로그아웃
             </li>
           </div>

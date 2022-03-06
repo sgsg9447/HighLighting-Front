@@ -3,7 +3,7 @@ import GoogleLogin from "react-google-login";
 import KakaoLogin from "react-kakao-login";
 import "./LoginPage.scss";
 import useResult from "../../../hooks/useResult";
-import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const googleClientId =
   "901844463722-nmmshl1dpm1ejgpenpm78q8andq510hm.apps.googleusercontent.com";
@@ -11,13 +11,11 @@ const KakaoJsKey = "22cbe8edb7c41751940fa343ed0d9287";
 
 const LoginPage = (props) => {
   const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
+  const [pwd, setPwd] = useState("");
   const [name, setName] = useState("");
   const [provider, setProvider] = useState("");
   const { onLogin } = useResult();
-
-  // const { server_addr } = useResult();
-  const server_addr = "http://192.249.28.16:5000";
+  const history = useHistory();
 
   const loginHandler = (e) => {
     if (e.target.id === "ID") {
@@ -25,28 +23,13 @@ const LoginPage = (props) => {
       console.log(id);
     }
     if (e.target.id === "PASSWORD") {
-      setPassword(e.target.value);
-      console.log(password);
+      setPwd(e.target.value);
+      console.log(pwd);
     }
   };
 
-  const loginRequset = () => {
-    console.log("id :", id, "pwd :", password);
-    axios
-      .post(server_addr + "/logIn", {
-        id: id,
-        password: password,
-      })
-      .then((res) => {
-        console.log("로그인 리퀘스트");
-        console.log(res.data);
-        loginSuccess();
-      })
-      .catch((err) => {
-        console.log("로그인 리퀘스트 에러");
-        console.log(err);
-        alert("로그인에 실패하였습니다.");
-      });
+  const login = () => {
+    console.log("id :", id, "pwd :", pwd);
   };
 
   // Google Login 요청 성공했을 시
@@ -68,12 +51,11 @@ const LoginPage = (props) => {
   };
 
   const loginSuccess = () => {
-    alert("로그인에 성공하였습니다.");
     console.log(props);
     props.setModalOpen(false);
     props.setLogIn(false);
-    document.body.style.overflow = "unset";
     onLogin();
+    history.push("/");
   };
 
   // 요청 실패했을 시
@@ -128,7 +110,7 @@ const LoginPage = (props) => {
       <div className="loginMid">
         <label className="autoLogin" htmlFor="hint"></label>
       </div>
-      <button className="loginBtn" onClick={loginRequset}>
+      <button className="loginBtn" onClick={login}>
         {" "}
         로그인{" "}
       </button>
