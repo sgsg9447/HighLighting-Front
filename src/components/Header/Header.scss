@@ -13,7 +13,7 @@
 
     li {
       height: 100%;
-      font-size: 20px;
+      font-size: 30px;
       position: relative;
       display: flex;
       align-items: center;
@@ -41,8 +41,8 @@
         height: 0%;
         top: 0;
         left: 0;
-        border-top: 2px solid transparent;
-        border-left: 2px solid transparent;
+        border-top: 3px solid transparent;
+        border-left: 3px solid transparent;
       }
 
       &:before {
@@ -50,14 +50,14 @@
         height: 0%;
         right: 0;
         bottom: 0;
-        border-bottom: 2px solid transparent;
-        border-right: 2px solid transparent;
+        border-bottom: 3px solid transparent;
+        border-right: 3px solid transparent;
       }
 
       &:hover::before,
       &:hover::after {
-        width: 35%;
-        height: 35%;
+        width: 50%;
+        height: 50%;
         border-color: #935ef4;
       }
     }
