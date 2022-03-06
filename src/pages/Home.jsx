@@ -107,11 +107,14 @@ const Home = () => {
         activeFifth();
         break;
       default:
-        console.log("아무일도 없었다");
     }
   };
 
+  const viewChange = () => {
+    document.getElementById("guidline").scrollIntoView({ behavior: "smooth" });
+  };
   const activeZero = () => {
+    viewChange();
     setActive0(true);
     setActive1(false);
     setActive2(false);
@@ -121,6 +124,7 @@ const Home = () => {
   };
 
   const activeFirst = () => {
+    viewChange();
     setActive0(false);
     setActive1(true);
     setActive2(false);
@@ -148,6 +152,7 @@ const Home = () => {
   };
 
   const activeFourth = () => {
+    viewChange();
     setActive0(false);
     setActive1(false);
     setActive2(false);
@@ -157,6 +162,7 @@ const Home = () => {
   };
 
   const activeFifth = () => {
+    viewChange();
     setActive0(false);
     setActive1(false);
     setActive2(false);
@@ -173,7 +179,7 @@ const Home = () => {
           <div className="upper_left_container">
             {/* 좌상단 소개 페이지 */}
             <div>
-              <h1 className="HC1_heading">
+              <h1 className="HC1_heading anim">
                 <img className="HC1-logo" src={require("./image/icon.png")} />
                 HIGHLIGHTING
               </h1>
@@ -183,29 +189,22 @@ const Home = () => {
                 url만을 통해 해당 영상을 분석하여 편집점을 찾는데 도움이 되는
                 데이터와 서비스들을 제공합니다.
               </p>
-              <p className="HC1-p1">
+              <p className="HC1-p2">
                 긴 시간이 걸리는 영상 원본의 편집접 찾기를 저희 웹서비스{" "}
                 <span className="point1">하이라이팅</span>이 제공하는 데이터와
                 서비스를 통해 빠른시간에 처리해보세요!{" "}
               </p>
-              <p className="HC1-p2">
+              <p className="HC1-p3">
                 {" "}
                 홈페이지 하단부분에
                 <span className="point1"> 가이드라인</span>에 단계별 사용법을
                 기재해 놨습니다. 사용방법으로 빠르게 이동하길 원하신다면{" "}
-                <span
-                  className="point2"
-                  onClick={() => {
-                    document
-                      .getElementById("guidline")
-                      .scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
+                <span className="point2" onClick={viewChange}>
                   클릭
                 </span>
                 해주세요!
               </p>
-              <p className="HC1-p3">
+              <p className="HC1-p4">
                 Creating and Providing Services :{" "}
                 <span className="point1">Team HIGHLIGHTING</span>
               </p>
@@ -397,9 +396,10 @@ const Home = () => {
                   <h2>HIGHLIGHTING 사용방법</h2>
                   <div className="guide_content_box">
                     <img src={require("./image/Step0.png")} />
-                    <p>1.메인페이지 URL창에 유튜브 다시보기 URL을 입력한다.</p>
-                    <p>2.결과보기 클릭!</p>
-                    <img src={require("./image/Step0.png")} />
+                    <p className="guide_content_p1">
+                      1.메인페이지 URL창에 유튜브 다시보기 URL을 입력한다.
+                    </p>
+                    <p className="guide_content_p2">2.결과보기 클릭!</p>
                   </div>
                   <div className="guide_button_box">
                     <GiPlayButton
@@ -418,7 +418,9 @@ const Home = () => {
               {active1 ? (
                 <div className="GuideLine_content">
                   <h2>편집점 분석</h2>
-                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_content_box">
+                    <p className="guide_content_p1">내용 박스</p>
+                  </div>
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
@@ -436,7 +438,9 @@ const Home = () => {
               {active2 ? (
                 <div className="GuideLine_content">
                   <h2>결과 페이지</h2>
-                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_content_box">
+                    <p className="guide_content_p1">내용 박스</p>
+                  </div>
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
@@ -454,7 +458,9 @@ const Home = () => {
               {active3 ? (
                 <div className="GuideLine_content">
                   <h2>북마크 기능</h2>
-                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_content_box">
+                    <p className="guide_content_p1">내용 박스</p>
+                  </div>
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
@@ -472,7 +478,9 @@ const Home = () => {
               {active4 ? (
                 <div className="GuideLine_content">
                   <h2>차트 데이터</h2>
-                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_content_box">
+                    <p className="guide_content_p1">내용 박스</p>
+                  </div>
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
@@ -490,7 +498,9 @@ const Home = () => {
               {active5 ? (
                 <div className="GuideLine_content">
                   <h2>로그인 기능</h2>
-                  <div className="guide_content_box">내용 박스</div>
+                  <div className="guide_content_box">
+                    <p className="guide_content_p1">내용 박스</p>
+                  </div>
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"

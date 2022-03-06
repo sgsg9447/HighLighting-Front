@@ -32,6 +32,7 @@ body {
         margin-top: 6rem;
         width: 45%;
         flex-grow: 2;
+
         /* 좌상단 소개파트 */
         .HC1_heading {
           font-weight: bold;
@@ -39,6 +40,12 @@ body {
           padding: 0.2rem 0.7rem;
           font-size: 5rem;
           border-radius: 4px;
+          animation: fadein 2s;
+          -webkit-animation: fadein 2s;
+          animation-delay: 0.1s;
+          animation-fill-mode: forwards;
+          opacity: 0;
+
           .HC1-logo {
             height: 4rem;
           }
@@ -47,6 +54,11 @@ body {
           font-size: 24px;
           width: 90%;
           color: rgb(163, 163, 163);
+          animation: fadein 2s;
+          -webkit-animation: fadein 2s;
+          animation-delay: 0.2s;
+          animation-fill-mode: forwards;
+          opacity: 0;
 
           .point1 {
             color: white;
@@ -54,10 +66,33 @@ body {
             font-weight: bold;
           }
         }
+
         .HC1-p2 {
           font-size: 24px;
           width: 90%;
           color: rgb(163, 163, 163);
+          animation: fadein 2s;
+          -webkit-animation: fadein 2s;
+          animation-delay: 0.3s;
+          animation-fill-mode: forwards;
+          opacity: 0;
+
+          .point1 {
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+          }
+        }
+
+        .HC1-p3 {
+          font-size: 24px;
+          width: 90%;
+          color: rgb(163, 163, 163);
+          animation: fadein 2s;
+          -webkit-animation: fadein 2s;
+          animation-delay: 0.4s;
+          animation-fill-mode: forwards;
+          opacity: 0;
 
           .point1 {
             color: rgb(196, 95, 255);
@@ -73,10 +108,14 @@ body {
             text-decoration: underline;
           }
         }
-        .HC1-p3 {
+
+        .HC1-p4 {
           font-size: 20px;
           width: 90%;
           color: rgb(119, 119, 119);
+          animation: fadein 2s;
+          -webkit-animation: fadein 2s;
+          animation-delay: 0.5s;
 
           .point1 {
             color: white;
@@ -93,14 +132,31 @@ body {
         width: 50%;
         justify-content: center;
         text-align: center;
+        animation: fadein 2s;
+        -webkit-animation: fadein 2s;
+        animation-delay: 0.1s;
+        animation-fill-mode: forwards;
+        opacity: 0;
+
         /* 우상단 인풋파트 */
         .Home_urlInput {
           h1 {
             font-size: 96px;
+            animation: fadein 2s;
+            -webkit-animation: fadein 2s;
+            animation-delay: 0.2s;
+            animation-fill-mode: forwards;
+            opacity: 0;
           }
+
           h3 {
             font-size: 48px;
             color: white;
+            animation: fadein 2s;
+            -webkit-animation: fadein 2s;
+            animation-delay: 0.4s;
+            animation-fill-mode: forwards;
+            opacity: 0;
           }
 
           .InputBar {
@@ -124,6 +180,11 @@ body {
             border-radius: 0.5rem;
             width: 45rem;
             height: 5rem;
+            animation: fadein 2s;
+            -webkit-animation: fadein 2s;
+            animation-delay: 0.3s;
+            animation-fill-mode: forwards;
+            opacity: 0;
 
             &:focus {
               outline: 3px solid #935ef4;
@@ -148,6 +209,11 @@ body {
           transition: all 0.2s;
           text-align: center;
           cursor: pointer;
+          animation: fadein 2s;
+          -webkit-animation: fadein 2s;
+          animation-delay: 0.5s;
+          animation-fill-mode: forwards;
+          opacity: 0;
 
           span {
             cursor: pointer;
@@ -323,10 +389,34 @@ body {
             h2 {
               color: rgb(0, 0, 0);
               font-size: 48px;
+              animation: fadein 2s;
+              -webkit-animation: fadein 2s;
+              animation-delay: 0.2s;
+              animation-fill-mode: forwards;
+              opacity: 0;
             }
 
             img {
               width: 90%;
+              animation: fadein 2s;
+              -webkit-animation: fadein 2s;
+              animation-delay: 0.3s;
+              animation-fill-mode: forwards;
+              opacity: 0;
+            }
+            .guide_content_p1 {
+              animation: fadein 2s;
+              -webkit-animation: fadein 2s;
+              animation-delay: 0.4s;
+              animation-fill-mode: forwards;
+              opacity: 0;
+            }
+            .guide_content_p2 {
+              animation: fadein 2s;
+              -webkit-animation: fadein 2s;
+              animation-delay: 0.5s;
+              animation-fill-mode: forwards;
+              opacity: 0;
             }
 
             .guide_content_box {
@@ -338,6 +428,7 @@ body {
               height: 10%;
               display: flex;
               justify-content: space-between;
+              transition: all 0.3s;
 
               .previousButton {
                 margin-left: 2rem;
@@ -390,4 +481,27 @@ h1 {
   background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@-webkit-keyframes fadein {
+  /* Safari and Chrome */
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
