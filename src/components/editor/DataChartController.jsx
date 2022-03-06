@@ -7,7 +7,6 @@ function DataChartController({ url, duration }) {
 
   const { isChatKeywords } = useResult();
 
-
   return (
     <>
       <div className="container__chat">
