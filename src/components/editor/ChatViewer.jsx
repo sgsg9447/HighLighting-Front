@@ -261,10 +261,10 @@ function ChatViewer({ url, duration }) {
           onClick={handleIsChatSuper}
           value={isChatSuper}
         >
-          {isChatSuper ? "후원 그래프" : "슈퍼챗 OFF"}
+          {isChatSuper ? "슈퍼챗" : "슈퍼챗 OFF"}
         </button>
         <button className="btn__ChatKeyWord" onClick={handleIsChatKeywords}>
-          {isChatKeywords ? "키워드 검색" : "키워드 검색"}
+          {isChatKeywords ? "키워드" : "키워드 검색"}
         </button>
         {isChatKeywords ? null : (
           <form onSubmit={onSubmitForm}>
