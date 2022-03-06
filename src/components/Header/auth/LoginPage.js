@@ -127,7 +127,6 @@ const LoginPage = (props) => {
       <br />
       <div id="kakaotalk">
         <KakaoLogin
-          class="kakads"
           style={KakaoButton}
           jsKey={KakaoJsKey}
           buttonText="Kakao"

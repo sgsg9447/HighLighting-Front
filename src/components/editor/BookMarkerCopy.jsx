@@ -23,6 +23,8 @@ function BookMarker({ duration, bookmarker }) {
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
   const { markers, setMarkers, setRelay } = useResult();
+
+
   // localstorage;
   useEffect(() => {
     const temp = localStorage.getItem("markers");
@@ -309,7 +311,6 @@ function BookMarker({ duration, bookmarker }) {
         <br></br>
         {/* <button onClick={goToGetDB}>DB로 get 보내기</button> */}
         <button onClick={goToPostDB}>post 보내기</button>
-
         <button onClick={goToDownload}>다운로드</button>
       </>
     </div>

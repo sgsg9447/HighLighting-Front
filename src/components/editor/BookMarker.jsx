@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
+import FFmpegContext from "../../contexts/FFmpegContext";
 import { format } from "./in_VideoPlayer/Duration";
+import Modal from "../Header/Modal";
 import axios from "axios";
 
 import "./BookMarker.scss";
@@ -9,6 +11,7 @@ import useResult from "../../hooks/useResult";
 // import Cardbox from "./Cardbox";
 import "./cardbox.scss";
 
+const IS_CUTTING_FROM_BACK = false; // 내보내기 버튼은 백(true) 또는 프론트(false)에서 가능
 function BookMarker({ duration, bookmarker }) {
   const {
     pointer,
@@ -25,6 +28,19 @@ function BookMarker({ duration, bookmarker }) {
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
   const { markers, setMarkers, setRelay } = useResult();
+
+  const fileMp3Html = useRef(null);
+  const ffmpeg = useContext(FFmpegContext);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [message, setMessage] = useState("Click Start to Export");
+  const [downloadLink, setDownloadLink] = useState("");
+  // const [outName, setOutName] = useState("");
+
+  // const ffmpeg = createFFmpeg({
+  //   corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
+  //   log: true,
+  // })
+
   // localstorage;
   useEffect(() => {
     const temp = localStorage.getItem("markers");
@@ -49,6 +65,122 @@ function BookMarker({ duration, bookmarker }) {
     if (!replayRef) return;
     replayRef.current.saveMarker = handleClick;
   }, [markers]);
+
+  const getFile = (file) => {
+    if (file.current && file.current.files && file.current.files.length !== 0) {
+      console.log(
+        "file.current",
+        file.current,
+        "file.current.files",
+        file.current.files
+      );
+      return file.current.files[0];
+    } else {
+      return null;
+    }
+  };
+
+  const getMarkerTime = (markerList) => {
+    const selectedMarkers = [...markers].filter(
+      (marker) => marker.completed === true
+    );
+    const cutTimeList = selectedMarkers?.map((marker) => ({
+      start: marker.startPointer,
+      end: marker.endPointer,
+    }));
+    console.log(
+      "markers",
+      markerList,
+      "selectedMarkers",
+      selectedMarkers,
+      "getMarkerTime",
+      cutTimeList
+    );
+    return cutTimeList;
+  };
+
+  const inputToOutName = (inputName, index) => {
+    if (inputName) {
+      const [name, ext] = inputName.split(".");
+      return name + "-" + (index + 1) + "." + ext;
+    }
+  };
+
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    document.body.style.overflow = "unset";
+    setModalOpen(false);
+  };
+
+  const doExport = async () => {
+    setMessage("Loading ffmpeg-core.js");
+    if (!ffmpeg.isLoaded()) {
+      await ffmpeg.load();
+    }
+    const mp4 = getFile(fileMp3Html);
+    if (mp4) {
+      ffmpeg.FS(
+        "writeFile",
+        "input.mp4",
+        new Uint8Array(await mp4.arrayBuffer())
+      );
+      setMessage("Start Export");
+      console.log("markers in mp4 in async", markers);
+      const cutTimeList = await getMarkerTime(markers);
+      let i = 0;
+      // 북마크 개수만큼 자르자!
+      while (i < cutTimeList.length) {
+        console.log("while", "i", i, "cutTimeList", cutTimeList);
+        //   ffmpeg -ss 00:00:00 -to 01:00:00  -i input.mp4 -c copy out.mp4
+        const outName = inputToOutName(mp4.name, i);
+        const start = format(cutTimeList[i].start);
+        const end = format(cutTimeList[i].end);
+        const args = [
+          "-ss",
+          start,
+          "-to",
+          end,
+          "-i",
+          "input.mp4",
+          "-c",
+          "copy",
+          "outfile.mp4",
+        ];
+        await ffmpeg.run(...args);
+        setMessage(`Complete ${i + 1}개 파일을 받았습니다.`);
+        console.log("outName", outName);
+        const data = ffmpeg.FS("readFile", "outfile.mp4");
+        URL.revokeObjectURL(downloadLink);
+        // setOutName(outName);
+        const tmpDownloadlink = URL.createObjectURL(
+          new Blob([data.buffer], { type: "video/mp4" })
+        );
+        setDownloadLink(tmpDownloadlink);
+        const link = document.createElement("a");
+        link.href = tmpDownloadlink;
+        link.setAttribute("download", outName);
+
+        // Append to html link element page
+        document.body.appendChild(link);
+
+        // Start download
+        link.click();
+
+        // Clean up and remove the link
+        link.parentNode.removeChild(link);
+
+        // 인덱스 +1
+        i++;
+      }
+      ffmpeg.FS("unlink", "input.mp4");
+      ffmpeg.FS("unlink", "outfile.mp4");
+    } else {
+      setMessage("Can not Export. need file check. 😪");
+    }
+  };
 
   function handleClick(e) {
     if (e) {
@@ -353,19 +485,40 @@ function BookMarker({ duration, bookmarker }) {
               </div>
             ))}
           </div>
+          ))
         </div>
+      </div>
+      <div className="parent">
+        <button className="btn__ChatSuper" onClick={handleClick}>
+          컷 만들기
+        </button>
+        <button className="btn__ChatKeyWord right" onClick={goToPostDB}>
+          저장하기
+        </button>
 
-        <div className="parent">
-          <button className="btn__ChatSuper" onClick={handleClick}>
-            컷 만들기
-          </button>
-          <button className="btn__ChatKeyWord right" onClick={goToPostDB}>
-            저장하기
-          </button>
-          <button className="btn__ChatSuper" onClick={goToDownload}>
-            내보내기
-          </button>
-        </div>
+        <button
+          className="btn__ChatSuper"
+          onClick={IS_CUTTING_FROM_BACK ? goToDownload : openModal}
+        >
+          내보내기
+        </button>
+        {modalOpen && (
+          <Modal
+            // ref={modalEl}
+            open={modalOpen}
+            close={closeModal}
+            Header="내보내기"
+          >
+            <p>{message}</p>
+            <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
+            <button onClick={doExport}>Start</button>
+            {/* {downloadLink.length !== 0 && (
+              <button type="button" href={downloadLink} download={outName} onClick={window.location.href = downloadLink}>
+                download
+              </button>
+            )} */}
+          </Modal>
+        )}
       </div>
     </>
   );
