@@ -3,7 +3,7 @@ import GoogleLogin from "react-google-login";
 import KakaoLogin from "react-kakao-login";
 import "./SigninPage.scss";
 import useResult from "../../../hooks/useResult";
-import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const googleClientId =
   "901844463722-nmmshl1dpm1ejgpenpm78q8andq510hm.apps.googleusercontent.com";
@@ -11,14 +11,13 @@ const KakaoJsKey = "22cbe8edb7c41751940fa343ed0d9287";
 
 const SigninPage = (props) => {
   const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordChk, setPasswordChk] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [pwdChk, setPwdChk] = useState("");
   const [name, setName] = useState("");
   const [provider, setProvider] = useState("");
   const { onLogin } = useResult();
+  const history = useHistory();
 
-  // const { server_addr } = useResult();
-  const server_addr = "http://192.249.28.16:5000";
   // 통상 회원가입 핸들러.
   const SigninHandler = (e) => {
     if (e.target.id === "ID") {
@@ -26,57 +25,23 @@ const SigninPage = (props) => {
       console.log(id);
     }
     if (e.target.id === "PASSWORD") {
-      setPassword(e.target.value);
-      console.log(password);
+      setPwd(e.target.value);
+      console.log(pwd);
     }
     if (e.target.id === "PASSWORDCHECK") {
-      setPasswordChk(e.target.value);
-      console.log(passwordChk);
-    }
-    if (e.target.id === "NAME") {
-      setName(e.target.value);
-      console.log(name);
+      setPwdChk(e.target.value);
+      console.log(pwdChk);
     }
   };
 
   // 통상 회원가입 값 확인용
-  const signInRequest = () => {
-    console.log(
-      "id :",
-      id,
-      "pwd :",
-      password,
-      "pwdChk :",
-      passwordChk,
-      "name :",
-      name
-    );
-    axios
-      .post(server_addr + "/signIn", {
-        id: id,
-        password: password,
-        passwordChk: passwordChk,
-        name: name,
-      })
-      .then((res) => {
-        console.log("회원가입 리퀘스트");
-        console.log(res.data);
-        alert("회원가입에 성공하였습니다.");
-        props.setModalOpen(false);
-        props.setSignIn(false);
-        document.body.style.overflow = "unset";
-      })
-      .catch((err) => {
-        console.log("회원가입 리퀘스트 에러");
-        console.log(err);
-        alert(err);
-      });
+  const login = () => {
+    console.log("id :", id, "pwd :", pwd, "pwdChk :", pwdChk);
   };
 
   // Google Login 요청 성공했을 시
   const responseGoogle = (res) => {
     console.log("구글 response 데이터 : ", res);
-    console.log()
     setId(res.googleId);
     setName(res.profileObj.name);
     setProvider("google");
@@ -93,17 +58,16 @@ const SigninPage = (props) => {
   };
 
   const loginSuccess = () => {
-    alert("회원가입에 성공하였습니다.");
     console.log(props);
     props.setModalOpen(false);
     props.setSignIn(false);
     onLogin();
+    history.push("/");
   };
 
   // 요청 실패했을 시
   const responseFail = (err) => {
     console.log("회원가입 에러 : ", err);
-    alert("회원가입에 실패했습니다.");
   };
 
   // Hook 에러 방지겸 값 화인용 구문
@@ -142,17 +106,6 @@ const SigninPage = (props) => {
         />
       </div>
       <div>
-        <label htmlFor="NAME">이름</label>
-        <br />
-        <input
-          className="SignInPassWord"
-          id="NAME"
-          placeholder="이름"
-          tpye="text"
-          onChange={SigninHandler}
-        />
-      </div>
-      <div>
         <label htmlFor="PASSWORD">PASSWORD</label>
         <br />
         <input
@@ -175,7 +128,7 @@ const SigninPage = (props) => {
         />
       </div>
       <div className="SignInBtnContainer">
-        <button className="SignInBtn" onClick={signInRequest}>
+        <button className="SignInBtn" onClick={login}>
           회원가입
         </button>
         <br />
