@@ -114,7 +114,6 @@ const Home = () => {
     document.getElementById("guidline").scrollIntoView({ behavior: "smooth" });
   };
   const activeZero = () => {
-    viewChange();
     setActive0(true);
     setActive1(false);
     setActive2(false);
@@ -124,7 +123,6 @@ const Home = () => {
   };
 
   const activeFirst = () => {
-    viewChange();
     setActive0(false);
     setActive1(true);
     setActive2(false);
@@ -152,7 +150,6 @@ const Home = () => {
   };
 
   const activeFourth = () => {
-    viewChange();
     setActive0(false);
     setActive1(false);
     setActive2(false);
@@ -162,7 +159,6 @@ const Home = () => {
   };
 
   const activeFifth = () => {
-    viewChange();
     setActive0(false);
     setActive1(false);
     setActive2(false);
@@ -404,11 +400,17 @@ const Home = () => {
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
-                      onClick={activeFifth}
+                      onClick={() => {
+                        activeFifth();
+                        viewChange();
+                      }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
-                      onClick={activeFirst}
+                      onClick={() => {
+                        activeFirst();
+                        viewChange();
+                      }}
                     />
                   </div>
                 </div>
@@ -424,11 +426,17 @@ const Home = () => {
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
-                      onClick={activeZero}
+                      onClick={() => {
+                        activeZero();
+                        viewChange();
+                      }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
-                      onClick={activeSecond}
+                      onClick={() => {
+                        activeSecond();
+                        viewChange();
+                      }}
                     />
                   </div>
                 </div>
@@ -444,11 +452,17 @@ const Home = () => {
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
-                      onClick={activeFirst}
+                      onClick={() => {
+                        activeFirst();
+                        viewChange();
+                      }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
-                      onClick={activeThird}
+                      onClick={() => {
+                        activeThird();
+                        viewChange();
+                      }}
                     />
                   </div>
                 </div>
@@ -484,11 +498,17 @@ const Home = () => {
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
-                      onClick={activeThird}
+                      onClick={() => {
+                        activeThird();
+                        viewChange();
+                      }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
-                      onClick={activeFifth}
+                      onClick={() => {
+                        activeFifth();
+                        viewChange();
+                      }}
                     />
                   </div>
                 </div>
@@ -504,9 +524,18 @@ const Home = () => {
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
-                      onClick={activeFourth}
+                      onClick={() => {
+                        activeFourth();
+                        viewChange();
+                      }}
                     />{" "}
-                    <GiPlayButton className="nextButton" onClick={activeZero} />
+                    <GiPlayButton
+                      className="nextButton"
+                      onClick={() => {
+                        activeZero();
+                        viewChange();
+                      }}
+                    />
                   </div>
                 </div>
               ) : (
