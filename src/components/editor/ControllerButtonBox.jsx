@@ -3,8 +3,12 @@ import "./ControllerButtonBox.scss";
 import useResult from "../../hooks/useResult";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 
-const ControllerButtonBox = ({ url }) => {
-  const { isplaying, setIsplaying } = React.useContext(
+const ControllerButtonBox = ({ url, duration }) => {
+  const { replayRef,
+    pointer, isplaying, setIsplaying, setSeeking,
+    callSeekTo,
+    setPlayed,
+    changePointer, } = React.useContext(
     EditorTimePointerContext
   );
   const {
@@ -63,6 +67,24 @@ const ControllerButtonBox = ({ url }) => {
     }
   };
 
+  // 좌우 화살표 키 누를 때 이동 시간(초)
+  const ARROW_MOVING_TIME = 5;
+  // 좌, 우 화살표 재생 이동 함수
+  function arrowPlayBarMove(isLeft, padding = 10) {
+    setSeeking(true);
+    let playTime;
+    if (isLeft) {
+      playTime = pointer - padding;
+    } else {
+      playTime = pointer + padding;
+    }
+    let playTimeRatio = playTime / duration;
+    callSeekTo(playTimeRatio);
+    setPlayed(parseFloat(playTimeRatio));
+    changePointer(playTime);
+    setSeeking(false);
+  }
+
   // window Keydown event
   useEffect(() => {
     const handleKeyboardDown = (event) => {
@@ -74,6 +96,27 @@ const ControllerButtonBox = ({ url }) => {
             if (isTypingRef.current) return;
             setIsplaying(!isplaying);
             return;
+          case "ArrowLeft":
+            arrowPlayBarMove(true, ARROW_MOVING_TIME);
+            return;
+          case "ArrowRight":
+            arrowPlayBarMove(false, ARROW_MOVING_TIME);
+            return;
+          case "ShiftLeft":
+            replayRef.current.subKey.isShiftKey = true;
+            return;
+          case "ControlLeft":
+            replayRef.current.subKey.isCtrlKey = true;
+            return;
+          case "KeyS":
+            if (
+              replayRef.current.subKey.isShiftKey &&
+              replayRef.current.subKey.isCtrlKey
+            ) {
+              replayRef.current.saveMarker();
+            }
+              replayRef.current.wordKey.isS = true;
+              return;
           default:
             return;
         }
@@ -83,7 +126,7 @@ const ControllerButtonBox = ({ url }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyboardDown);
     };
-  }, [isplaying, isChatKeywords]);
+  }, [url, pointer, isplaying, isChatKeywords]);
 
   // window Keyup event
   useEffect(() => {
@@ -93,7 +136,19 @@ const ControllerButtonBox = ({ url }) => {
         switch (keyCode) {
           case "Space":
             break;
-
+          case "ShiftLeft":
+            replayRef.current.subKey.isShiftKey = false;
+            break;
+          case "ControlLeft":
+            replayRef.current.subKey.isCtrlKey = false;
+            break;
+          case "KeyS":
+            replayRef.current.wordKey.isS = false;
+            break;
+          case "ArrowLeft":
+            break;
+          case "ArrowRight":
+            break;
           default:
             return;
         }
@@ -103,7 +158,7 @@ const ControllerButtonBox = ({ url }) => {
     return () => {
       window.removeEventListener("keyup", handleKeyboardUp);
     };
-  }, [isplaying, isChatKeywords]);
+  }, [url, pointer, isplaying, isChatKeywords]);
 
   return (
     <div className="buttonContainer">

@@ -16,6 +16,7 @@ import {
   SolidFill,
   ColorHEX,
   customComplexTheme,
+  FontSettings,
 } from "@arction/lcjs";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
@@ -46,6 +47,9 @@ const TITLE4 = "Keyword Flow";
 
 // x축 확대축소 사용여부(boolean)
 const AXIS_X_WHEEL_ZOOM = true;
+
+// 차트 컬러 지정 
+const CHART_COLOR = '#1b1b24'
 
 // 차트 그래프 컬러 임의 조합 NUMBER
 const GRAPH_COLOR_NUMBER = 999;
@@ -224,8 +228,8 @@ const DataChart = (props) => {
       let name = title;
       // 차트 배경 색 임의 지정
       const myTheme = customComplexTheme(Themes.darkMagenta, {chart: {
-        backGroundFill: {color: ColorHEX('#272c34'), fillType: "solid"},
-        panelFill: {color: ColorHEX('#272c34'), fillType: "solid"}
+        backGroundFill: {color: ColorHEX(CHART_COLOR), fillType: "solid"},
+        panelFill: {color: ColorHEX(CHART_COLOR), fillType: "solid"}
       }})
       const chart = dashboard
         .createChartXY({
@@ -233,7 +237,13 @@ const DataChart = (props) => {
           rowIndex: i,
           theme: myTheme,
         })
-        .setPadding({ right: padding });
+        .setPadding({ right: padding })
+        .setTitleFont(new FontSettings({
+          size: 20,
+          family: 'Tomorrow, Helvetica, sans-serif',
+          weight: 'bold',
+          style: 'italic'
+      }))
 
       // 각 차트 상단 타이틀 비우기
       chart.setTitleFillStyle(emptyFill);
@@ -1033,6 +1043,9 @@ const DataChart = (props) => {
       );
     };
   }, [markers]);
+
+    /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
+
 
   /* 마우스 커서 옆에 재생 프리뷰 이미지 툴팁 위치*/
   const handleMouseMoveInChart = (e) => {
