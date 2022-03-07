@@ -3,12 +3,10 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import FFmpegContext from "../../contexts/FFmpegContext";
 import { format } from "./in_VideoPlayer/Duration";
-// import Modal from "../Header/Modal";
 import axios from "axios";
 
 import "./BookMarker.scss";
 import useResult from "../../hooks/useResult";
-// import Cardbox from "./Cardbox";
 import "./cardbox.scss";
 
 import BorderColorIcon from "@mui/icons-material/BorderColor";
@@ -26,7 +24,6 @@ function BookMarker({ url, duration, bookmarker }) {
     replayRef,
   } = React.useContext(EditorTimePointerContext);
   const { server_addr } = useResult();
-  // const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
@@ -34,17 +31,8 @@ function BookMarker({ url, duration, bookmarker }) {
 
   const fileMp3Html = useRef(null);
   const ffmpeg = useContext(FFmpegContext);
-  // const [modalOpen, setModalOpen] = useState(false);
-  // const [message, setMessage] = useState("Click Start to Export");
   const [downloadLink, setDownloadLink] = useState("");
   const bookscroll = document.querySelector("#bookmarkScroll");
-
-  // const [outName, setOutName] = useState("");
-
-  // const ffmpeg = createFFmpeg({
-  //   corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
-  //   log: true,
-  // })
 
   // localstorage 불러오기
   useEffect(() => {
@@ -118,20 +106,9 @@ function BookMarker({ url, duration, bookmarker }) {
     }
   };
 
-  // 모달창
-  // const openModal = () => {
-  //   document.body.style.overflow = "hidden";
-  //   setModalOpen(true);
-  // };
-  // const closeModal = () => {
-  //   document.body.style.overflow = "unset";
-  //   setModalOpen(false);
-  // };
-
   // 내보내기 작업 함수
   const doExport = async () => {
     replayRef.current.cutMarker.message = "Loading ffmpeg-core.js";
-    // setMessage("Loading ffmpeg-core.js");
     if (!ffmpeg.isLoaded()) {
       await ffmpeg.load();
     }
@@ -169,11 +146,9 @@ function BookMarker({ url, duration, bookmarker }) {
         replayRef.current.cutMarker.message = `Complete ${
           i + 1
         }개 파일을 받았습니다.`;
-        // setMessage(`Complete ${i + 1}개 파일을 받았습니다.`);
         console.log("outName", outName);
         const data = ffmpeg.FS("readFile", "outfile.mp4");
         URL.revokeObjectURL(downloadLink);
-        // setOutName(outName);
         const tmpDownloadlink = URL.createObjectURL(
           new Blob([data.buffer], { type: "video/mp4" })
         );
@@ -197,7 +172,6 @@ function BookMarker({ url, duration, bookmarker }) {
       ffmpeg.FS("unlink", "input.mp4");
       ffmpeg.FS("unlink", "outfile.mp4");
     } else {
-      // setMessage("Impossible Export. You need to check file. 😪");
     }
   };
 
@@ -305,21 +279,6 @@ function BookMarker({ url, duration, bookmarker }) {
     console.log("seekto 함수로 영상재생");
   }
 
-  //get test!!!
-
-  // function goToGetDB(e) {
-  //   console.log("DB로 get보낼것임");
-  //   axios
-  //     .get(server_addr+"/bookmarker")
-  //     .then((response) => {
-  //       console.log("Success", response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log("get메소드 에러");
-  //       console.log(error);
-  //       alert("요청에 실패하였습니다.");
-  //     });
-  // }
   function goToPostDB() {
     console.log("DB로 post보낼것임");
     console.log(`prev_axios_markers`, markers);
@@ -329,10 +288,8 @@ function BookMarker({ url, duration, bookmarker }) {
     );
     if (selectedMarkers.length > 0) {
       postMarkers = selectedMarkers;
-      // console.log('selectedMarkers', selectedMarkers);
     } else {
       postMarkers = markers;
-      // console.log('markers', markers);
     }
     const payload = { list: postMarkers };
     console.log("new_axios_markers", payload);
@@ -351,73 +308,12 @@ function BookMarker({ url, duration, bookmarker }) {
       });
   }
 
-  // function downloadGet() {
-  //   console.log("call getMethod()");
-  //   const method = "GET";
-  //   const url = server_addr + "/downloadpath";
-  //   axios
-  //     .request({
-  //       url,
-  //       method,
-  //       responseType: "blob",
-  //     })
-  //     .then(({ data }) => {
-  //       const downloadUrl = window.URL.createObjectURL(new Blob([data]));
-  //       const link = document.createElement("a");
-  //       link.href = downloadUrl;
-  //       link.setAttribute(
-  //         "download",
-  //         "영상파일과 같은 위치에서 압축을 풀어주세요.zip"
-  //       );
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       link.remove();
-  //     });
-  // }
-
   const handleKeyPress = (event, id) => {
     if (event.key === "Enter") {
       console.log("enter press here! ");
       addMemoEdit(id);
     }
   };
-
-  // function deleteCall() {
-  //   console.log("다운로드 완료, 삭제요청");
-  //   axios.get(server_addr + "/flask/download", {});
-  // }
-
-  // function goToDownload() {
-  //   console.log("서버로 post보낼것임");
-  //   let postMarkers;
-  //   const selectedMarkers = markers.filter(
-  //     (marker) => marker.completed === true
-  //   );
-  //   if (selectedMarkers.length > 0) {
-  //     postMarkers = selectedMarkers;
-  //     // console.log('selectedMarkers', selectedMarkers);
-  //   } else {
-  //     postMarkers = markers;
-  //     // console.log('markers', markers);
-  //   }
-  //   const payload = { list: postMarkers };
-  //   console.log("컷을 요청한 북마크", payload);
-  //   axios
-  //     .post(server_addr + "/flask/download", {
-  //       status: "download_start",
-  //       bookmarks: payload,
-  //     })
-  //     .then((response) => {
-  //       console.log("Success", response.data);
-  //       downloadGet();
-  //       deleteCall();
-  //     })
-  //     .catch((error) => {
-  //       console.log("get메소드 에러");
-  //       console.log(error);
-  //       alert("요청에 실패하였습니다.");
-  //     });
-  // }
 
   const mounted = useRef([false]);
   useEffect(() => {
@@ -427,18 +323,15 @@ function BookMarker({ url, duration, bookmarker }) {
       if (markers.length !== 0) {
         bookscroll.lastChild.scrollIntoView();
       }
-      // console.log(bookscroll.scrollWidth);
     }
   }, [markers]);
 
   return (
     <>
       <div className="BookMarkerContainer">
-
-        <h2>📁 컷 보관함</h2>
+        <h2> 컷 보관함 📁</h2>
         <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
         <div className="hello" id="bookmarkScroll">
-          {/* <div className="card-container"> */}
           {markers.map((marker) => (
             <div key={marker.id}>
               <div className="card">
@@ -516,35 +409,7 @@ function BookMarker({ url, duration, bookmarker }) {
               </div>
             </div>
           ))}
-          {/* </div> */}
         </div>
-        {/* <div className="parent">
-          <button className="btn__ChatSuper" onClick={handleClick}>
-            컷 만들기
-          </button>
-          <button className="btn__ChatKeyWord right" onClick={goToPostDB}>
-            저장하기
-          </button>
-
-          <button
-            className="btn__ChatSuper"
-            onClick={IS_CUTTING_FROM_BACK ? goToDownload : openModal}
-          >
-            내보내기
-          </button>
-          {modalOpen && (
-            <Modal
-              // ref={modalEl}
-              open={modalOpen}
-              close={closeModal}
-              Header="내보내기"
-            >
-              <p>{message}</p>
-              <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
-              <button onClick={doExport}>Start</button>
-            </Modal>
-          )}
-        </div> */}
       </div>
     </>
   );
