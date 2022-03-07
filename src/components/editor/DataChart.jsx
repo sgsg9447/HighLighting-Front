@@ -104,6 +104,7 @@ const DataChart = (props) => {
     duration: undefined,
     replay: replayBand,
     saveMarker: undefined,
+    cutMarker: {message: '', doExport: undefined},
     playingId: undefined,
     isPlayOnce: REPLAY_ONLE_ONCE,
     subKey: { isShiftKey: false, isCtrlKey: false },

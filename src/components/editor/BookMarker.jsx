@@ -3,16 +3,16 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import FFmpegContext from "../../contexts/FFmpegContext";
 import { format } from "./in_VideoPlayer/Duration";
-import Modal from "../Header/Modal";
-import axios from "axios";
+// import Modal from "../Header/Modal";
+// import axios from "axios";
 
 import "./BookMarker.scss";
 import useResult from "../../hooks/useResult";
 // import Cardbox from "./Cardbox";
 import "./cardbox.scss";
 
-const IS_CUTTING_FROM_BACK = false; // 내보내기 버튼은 백(true) 또는 프론트(false)에서 가능
-function BookMarker({ duration, bookmarker }) {
+// const IS_CUTTING_FROM_BACK = false; // 내보내기 버튼은 백(true) 또는 프론트(false)에서 가능
+function BookMarker({ url, duration, bookmarker }) {
   const {
     pointer,
     callSeekTo,
@@ -22,7 +22,7 @@ function BookMarker({ duration, bookmarker }) {
     setSeeking,
     replayRef,
   } = React.useContext(EditorTimePointerContext);
-  const { server_addr } = useResult();
+  // const { server_addr } = useResult();
   // const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
@@ -31,8 +31,8 @@ function BookMarker({ duration, bookmarker }) {
 
   const fileMp3Html = useRef(null);
   const ffmpeg = useContext(FFmpegContext);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [message, setMessage] = useState("Click Start to Export");
+  // const [modalOpen, setModalOpen] = useState(false);
+  // const [message, setMessage] = useState("Click Start to Export");
   const [downloadLink, setDownloadLink] = useState("");
   // const [outName, setOutName] = useState("");
 
@@ -41,7 +41,7 @@ function BookMarker({ duration, bookmarker }) {
   //   log: true,
   // })
 
-  // localstorage;
+  // localstorage 불러오기
   useEffect(() => {
     const temp = localStorage.getItem("markers");
     const loadedMarkers = JSON.parse(temp);
@@ -51,21 +51,26 @@ function BookMarker({ duration, bookmarker }) {
     }
   }, []);
 
+  // localstorage 저장하기
   useEffect(() => {
     const temp = JSON.stringify(markers);
     localStorage.setItem("markers", temp);
   }, [markers]);
 
+  // DB로부터 들어온 북마크
   useEffect(() => {
     if (!bookmarker) return;
     setMarkers(bookmarker);
   }, [bookmarker]);
 
+  // 함수 담아서 다른 컴포넌트로 보낼 준비
   useEffect(() => {
     if (!replayRef) return;
     replayRef.current.saveMarker = handleClick;
-  }, [markers]);
+    replayRef.current.cutMarker.doExport = doExport;
+  }, [url, markers]);
 
+  // 내보내기 위해 원본 파일명 읽기
   const getFile = (file) => {
     if (file.current && file.current.files && file.current.files.length !== 0) {
       console.log(
@@ -80,6 +85,7 @@ function BookMarker({ duration, bookmarker }) {
     }
   };
 
+  // 선택된 북마크들로부터 시간 리스트로 읽기
   const getMarkerTime = (markerList) => {
     const selectedMarkers = [...markers].filter(
       (marker) => marker.completed === true
@@ -99,6 +105,7 @@ function BookMarker({ duration, bookmarker }) {
     return cutTimeList;
   };
 
+  // 내보내기 위해 원본파일 이름에서 시퀸스 번호 붙이기
   const inputToOutName = (inputName, index) => {
     if (inputName) {
       const [name, ext] = inputName.split(".");
@@ -106,17 +113,20 @@ function BookMarker({ duration, bookmarker }) {
     }
   };
 
-  const openModal = () => {
-    document.body.style.overflow = "hidden";
-    setModalOpen(true);
-  };
-  const closeModal = () => {
-    document.body.style.overflow = "unset";
-    setModalOpen(false);
-  };
+  // 모달창
+  // const openModal = () => {
+  //   document.body.style.overflow = "hidden";
+  //   setModalOpen(true);
+  // };
+  // const closeModal = () => {
+  //   document.body.style.overflow = "unset";
+  //   setModalOpen(false);
+  // };
 
+  // 내보내기 작업 함수
   const doExport = async () => {
-    setMessage("Loading ffmpeg-core.js");
+    replayRef.current.cutMarker.message = "Loading ffmpeg-core.js";
+    // setMessage("Loading ffmpeg-core.js");
     if (!ffmpeg.isLoaded()) {
       await ffmpeg.load();
     }
@@ -127,9 +137,10 @@ function BookMarker({ duration, bookmarker }) {
         "input.mp4",
         new Uint8Array(await mp4.arrayBuffer())
       );
-      setMessage("Start Export");
+      replayRef.current.cutMarker.message = "Start Export";
+      // setMessage("Start Export");
       console.log("markers in mp4 in async", markers);
-      const cutTimeList = await getMarkerTime(markers);
+      const cutTimeList = getMarkerTime(markers);
       let i = 0;
       // 북마크 개수만큼 자르자!
       while (i < cutTimeList.length) {
@@ -150,7 +161,8 @@ function BookMarker({ duration, bookmarker }) {
           "outfile.mp4",
         ];
         await ffmpeg.run(...args);
-        setMessage(`Complete ${i + 1}개 파일을 받았습니다.`);
+        replayRef.current.cutMarker.message = `Complete ${i + 1}개 파일을 받았습니다.`;
+        // setMessage(`Complete ${i + 1}개 파일을 받았습니다.`);
         console.log("outName", outName);
         const data = ffmpeg.FS("readFile", "outfile.mp4");
         URL.revokeObjectURL(downloadLink);
@@ -178,10 +190,11 @@ function BookMarker({ duration, bookmarker }) {
       ffmpeg.FS("unlink", "input.mp4");
       ffmpeg.FS("unlink", "outfile.mp4");
     } else {
-      setMessage("Can not Export. need file check. 😪");
+      // setMessage("Impossible Export. You need to check file. 😪");
     }
   };
 
+  // 북마크 저장
   function handleClick(e) {
     if (e) {
       e.preventDefault(); //새로고침 되지않게 막음!
@@ -297,60 +310,60 @@ function BookMarker({ duration, bookmarker }) {
   //       alert("요청에 실패하였습니다.");
   //     });
   // }
-  function goToPostDB() {
-    console.log("DB로 post보낼것임");
-    console.log(`prev_axios_markers`, markers);
-    let postMarkers;
-    const selectedMarkers = markers.filter(
-      (marker) => marker.completed === true
-    );
-    if (selectedMarkers.length > 0) {
-      postMarkers = selectedMarkers;
-      // console.log('selectedMarkers', selectedMarkers);
-    } else {
-      postMarkers = markers;
-      // console.log('markers', markers);
-    }
-    const payload = { list: postMarkers };
-    console.log("new_axios_markers", payload);
-    axios
-      .post(server_addr + "/bookmarker", {
-        markers: payload,
-        url: localStorage.getItem("prevUrl"),
-      })
-      .then((response) => {
-        console.log("Success", response.data);
-      })
-      .catch((error) => {
-        console.log("get메소드 에러");
-        console.log(error);
-        alert("요청에 실패하였습니다.");
-      });
-  }
+  // function goToPostDB() {
+  //   console.log("DB로 post보낼것임");
+  //   console.log(`prev_axios_markers`, markers);
+  //   let postMarkers;
+  //   const selectedMarkers = markers.filter(
+  //     (marker) => marker.completed === true
+  //   );
+  //   if (selectedMarkers.length > 0) {
+  //     postMarkers = selectedMarkers;
+  //     // console.log('selectedMarkers', selectedMarkers);
+  //   } else {
+  //     postMarkers = markers;
+  //     // console.log('markers', markers);
+  //   }
+  //   const payload = { list: postMarkers };
+  //   console.log("new_axios_markers", payload);
+  //   axios
+  //     .post(server_addr + "/bookmarker", {
+  //       markers: payload,
+  //       url: localStorage.getItem("prevUrl"),
+  //     })
+  //     .then((response) => {
+  //       console.log("Success", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log("get메소드 에러");
+  //       console.log(error);
+  //       alert("요청에 실패하였습니다.");
+  //     });
+  // }
 
-  function downloadGet() {
-    console.log("call getMethod()");
-    const method = "GET";
-    const url = server_addr + "/downloadpath";
-    axios
-      .request({
-        url,
-        method,
-        responseType: "blob",
-      })
-      .then(({ data }) => {
-        const downloadUrl = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.setAttribute(
-          "download",
-          "영상파일과 같은 위치에서 압축을 풀어주세요.zip"
-        );
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      });
-  }
+  // function downloadGet() {
+  //   console.log("call getMethod()");
+  //   const method = "GET";
+  //   const url = server_addr + "/downloadpath";
+  //   axios
+  //     .request({
+  //       url,
+  //       method,
+  //       responseType: "blob",
+  //     })
+  //     .then(({ data }) => {
+  //       const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+  //       const link = document.createElement("a");
+  //       link.href = downloadUrl;
+  //       link.setAttribute(
+  //         "download",
+  //         "영상파일과 같은 위치에서 압축을 풀어주세요.zip"
+  //       );
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       link.remove();
+  //     });
+  // }
 
   const handleKeyPress = (event, id) => {
     if (event.key === "Enter") {
@@ -359,42 +372,42 @@ function BookMarker({ duration, bookmarker }) {
     }
   };
 
-  function deleteCall() {
-    console.log("다운로드 완료, 삭제요청");
-    axios.get(server_addr + "/flask/download", {});
-  }
+  // function deleteCall() {
+  //   console.log("다운로드 완료, 삭제요청");
+  //   axios.get(server_addr + "/flask/download", {});
+  // }
 
-  function goToDownload() {
-    console.log("서버로 post보낼것임");
-    let postMarkers;
-    const selectedMarkers = markers.filter(
-      (marker) => marker.completed === true
-    );
-    if (selectedMarkers.length > 0) {
-      postMarkers = selectedMarkers;
-      // console.log('selectedMarkers', selectedMarkers);
-    } else {
-      postMarkers = markers;
-      // console.log('markers', markers);
-    }
-    const payload = { list: postMarkers };
-    console.log("컷을 요청한 북마크", payload);
-    axios
-      .post(server_addr + "/flask/download", {
-        status: "download_start",
-        bookmarks: payload,
-      })
-      .then((response) => {
-        console.log("Success", response.data);
-        downloadGet();
-        deleteCall();
-      })
-      .catch((error) => {
-        console.log("get메소드 에러");
-        console.log(error);
-        alert("요청에 실패하였습니다.");
-      });
-  }
+  // function goToDownload() {
+  //   console.log("서버로 post보낼것임");
+  //   let postMarkers;
+  //   const selectedMarkers = markers.filter(
+  //     (marker) => marker.completed === true
+  //   );
+  //   if (selectedMarkers.length > 0) {
+  //     postMarkers = selectedMarkers;
+  //     // console.log('selectedMarkers', selectedMarkers);
+  //   } else {
+  //     postMarkers = markers;
+  //     // console.log('markers', markers);
+  //   }
+  //   const payload = { list: postMarkers };
+  //   console.log("컷을 요청한 북마크", payload);
+  //   axios
+  //     .post(server_addr + "/flask/download", {
+  //       status: "download_start",
+  //       bookmarks: payload,
+  //     })
+  //     .then((response) => {
+  //       console.log("Success", response.data);
+  //       downloadGet();
+  //       deleteCall();
+  //     })
+  //     .catch((error) => {
+  //       console.log("get메소드 에러");
+  //       console.log(error);
+  //       alert("요청에 실패하였습니다.");
+  //     });
+  // }
 
   // function thumbnailCal(e) {
   //   e.preventDefault();
@@ -485,9 +498,8 @@ function BookMarker({ duration, bookmarker }) {
               </div>
             ))}
           </div>
-          ))
         </div>
-        <div className="parent">
+        {/* <div className="parent">
           <button className="btn__ChatSuper" onClick={handleClick}>
             컷 만들기
           </button>
@@ -511,14 +523,9 @@ function BookMarker({ duration, bookmarker }) {
               <p>{message}</p>
               <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
               <button onClick={doExport}>Start</button>
-              {/* {downloadLink.length !== 0 && (
-              <button type="button" href={downloadLink} download={outName} onClick={window.location.href = downloadLink}>
-                download
-              </button>
-            )} */}
             </Modal>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );
