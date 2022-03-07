@@ -74,11 +74,11 @@ export default function Header() {
         {logged ? (
           <div className="SignTool">
             <li>
-              <FiUser />
+              <FiUser className="purple" />
               마이 페이지
             </li>
             <li onClick={onLogout}>
-              <FiLogOut /> 로그아웃
+              <FiLogOut className="purple" /> 로그아웃
             </li>
           </div>
         ) : (
@@ -91,7 +91,7 @@ export default function Header() {
                 console.log("SignIn 값 : ", signIn);
               }}
             >
-              <GoSignIn /> 회원가입
+              <GoSignIn className="purple" /> 회원가입
             </li>
             <li
               id="LogIn"
@@ -100,7 +100,7 @@ export default function Header() {
                 setLogIn(true);
               }}
             >
-              <FiLogIn /> 로그인
+              <FiLogIn className="purple" /> 로그인
             </li>
           </div>
         )}
