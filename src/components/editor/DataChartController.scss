@@ -20,6 +20,11 @@
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
+  animation: fadein 1s;
+  -webkit-animation: fadein 1s;
+  animation-delay: 0.1s;
+  animation-fill-mode: forwards;
+  opacity: 0;
 }
 
 .container__video {
@@ -28,11 +33,11 @@
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
-  // animation: fadein 1s;
-  // -webkit-animation: fadein 1s;
-  // animation-delay: 0.2s;
-  // animation-fill-mode: forwards;
-  // opacity: 0;
+  animation: fadein 1s;
+  -webkit-animation: fadein 1s;
+  animation-delay: 0.3s;
+  animation-fill-mode: forwards;
+  opacity: 0;
 }
 
 .container__audio {
@@ -41,23 +46,15 @@
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
-  // animation: fadein 1s;
-  // -webkit-animation: fadein 1s;
-  // animation-delay: 0.3s;
-  // animation-fill-mode: forwards;
-  // opacity: 0;
+  animation: fadein 1s;
+  -webkit-animation: fadein 1s;
+  animation-delay: 0.5s;
+  animation-fill-mode: forwards;
+  opacity: 0;
 }
 
 .hide {
   display: none;
-}
-
-.show {
-  animation: fadein 0.5s;
-  -webkit-animation: fadein 0.5s;
-  animation-delay: 0.2s;
-  animation-fill-mode: forwards;
-  opacity: 0;
 }
 
 @keyframes fadein {
