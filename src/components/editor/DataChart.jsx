@@ -1095,8 +1095,8 @@ const DataChart = (props) => {
 
   /* 마우스 커서 옆에 재생 프리뷰 이미지 툴팁 위치*/
   const handleMouseMoveInChart = (e) => {
-    const LEFT_MARGIN = 190;
-    const TOP_MARGIN = -105;
+    const LEFT_MARGIN = 200;
+    const TOP_MARGIN = -110;
     const positionLeft = e.clientX;
     const positionTop = e.clientY;
     // console.log('imgTipRef.current', imgTipRef.current, positionLeft, positionTop);
