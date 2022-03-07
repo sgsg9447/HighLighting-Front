@@ -116,6 +116,8 @@ body {
           animation: fadein 1s;
           -webkit-animation: fadein 1s;
           animation-delay: 0.5s;
+          animation-fill-mode: forwards;
+          opacity: 0;
 
           .point1 {
             color: white;
