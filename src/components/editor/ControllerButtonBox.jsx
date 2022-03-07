@@ -65,18 +65,6 @@ const ControllerButtonBox = ({ url, duration }) => {
     setKeywords(tmpKeywords);
   }, []);
 
-  // form 형식, Enter로도 제출가능, 인풋창 안으로 커서유지
-  const onSubmitForm = (e) => {
-    console.log("onSubmitForm");
-    e.preventDefault();
-    if (keywords === "") {
-      setKeywords("키워드를 입력해주세요.");
-    } else {
-      console.log("url", url, "keywords", keywords);
-      requestKeywordsData(url, keywords);
-    }
-  };
-
   const keywordSearchEvent = () => {
     if (keywords === "") {
       alert("검색 키워드를 입력해주세요!!");
@@ -183,80 +171,83 @@ const ControllerButtonBox = ({ url, duration }) => {
 
   return (
     <div className="buttonContainer">
-      <div>
-        <button
-          className="superchat"
-          onClick={handleIsChatSuper}
-          value={isChatSuper}
-        >
-          {isChatSuper ? (
-            <span className="ON">슈퍼챗</span>
-          ) : (
-            <span className="OFF">슈퍼챗 </span>
-          )}
-        </button>
-        <button className="keyWord">
-          <span
-            onClick={() => {
-              handleIsChatKeywords();
-              keywordSearchEvent();
-            }}
-          >
-            키워드
-          </span>
-        </button>
-        <input
-          className="InputBar"
-          placeholder="키워드 입력"
-          onChange={onChangeInput}
-          value={keywords}
-          onFocus={() => {
-            console.log("포커스이벤트");
-            isTypingRef.current = true;
-          }}
-          onBlur={() => {
-            isTypingRef.current = false;
-            console.log("블러 이벤트입니다.", isTypingRef.current);
-          }}
-        />
-        <button className="Search">
-          <span>검색</span>
-        </button>
-        <button
-          className="button3"
-          onClick={replayRef?.current ? replayRef.current.saveMarker : null}
-        >
-          <span>컷 만들기</span>
-        </button>
-        <button className="button4" onClick={openModal}>
-          <span>내보내기</span>
-        </button>
-        {modalOpen && (
-          <Modal
-            // ref={modalEl}
-            open={modalOpen}
-            close={closeModal}
-            Header="내보내기"
-          >
-            <p>
-              {replayRef?.current ? replayRef.current.cutMarker.message : null}
-            </p>
-            <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
-            <button
-              onClick={
-                replayRef?.current ? replayRef.current.cutMarker.doExport : null
-              }
-            >
-              Start
-            </button>
-          </Modal>
+      <button
+        className="superchat"
+        onClick={handleIsChatSuper}
+        value={isChatSuper}
+      >
+        {isChatSuper ? (
+          <span className="ON">슈퍼챗</span>
+        ) : (
+          <span className="OFF">슈퍼챗 </span>
         )}
-      </div>
+      </button>
+      {isChatKeywords ? (
+        <button className="keyWordStart">
+          <span onClick={handleIsChatKeywords}>키워드 검색</span>
+        </button>
+      ) : (
+        <button className="keyWordEnd">
+          <span onClick={handleIsChatKeywords}>검색종료</span>
+        </button>
+      )}
+
+      {/* 인풋창~검색 */}
+      {!isChatKeywords ? (
+        <div className="inputSearchContainer">
+          <input
+            className="InputBar"
+            placeholder="키워드 입력"
+            onChange={onChangeInput}
+            value={keywords}
+            onFocus={() => {
+              console.log("포커스이벤트");
+              isTypingRef.current = true;
+            }}
+            onBlur={() => {
+              isTypingRef.current = false;
+              console.log("블러 이벤트입니다.", isTypingRef.current);
+            }}
+          />
+          <button className="Search">
+            <span onClick={keywordSearchEvent}>검색</span>
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
+      {/* 인풋창~검색 */}
+      <button
+        className="cutMakeButton"
+        onClick={replayRef?.current ? replayRef.current.saveMarker : null}
+      >
+        <span>컷 만들기</span>
+      </button>
+      <button className="exportButton" onClick={openModal}>
+        <span>내보내기</span>
+      </button>
+      {modalOpen && (
+        <Modal
+          // ref={modalEl}
+          open={modalOpen}
+          close={closeModal}
+          Header="내보내기"
+        >
+          <p>
+            {replayRef?.current ? replayRef.current.cutMarker.message : null}
+          </p>
+          <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
+          <button
+            onClick={
+              replayRef?.current ? replayRef.current.cutMarker.doExport : null
+            }
+          >
+            Start
+          </button>
+        </Modal>
+      )}
 
       {/* 체크용 */}
-      <div>
-        <form onSubmit={onSubmitForm}></form>
-      </div>
     </div>
   );
 };
