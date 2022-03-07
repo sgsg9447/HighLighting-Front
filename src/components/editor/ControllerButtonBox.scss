@@ -4,7 +4,7 @@
   flex-direction: space-between;
 
   .superchat {
-    width: 9.5rem;
+    width: 10.5rem;
     height: 4rem;
     background-color: #935ef4;
     border: none;
@@ -107,7 +107,7 @@
     }
   }
   .keyWordEnd {
-    width: 12rem;
+    width: 10rem;
     height: 4rem;
     background-color: #691df7;
     border: none;
@@ -150,8 +150,8 @@
   .inputSearchContainer {
     display: flex;
     flex-direction: row;
-    animation: fadein 1s;
-    -webkit-animation: fadein 1s;
+    animation: fadeinX 1s;
+    -webkit-animation: fadeinX 1s;
     animation-delay: 0.1s;
     animation-fill-mode: forwards;
     opacity: 0;
@@ -306,5 +306,28 @@
       transform: scale(0.9);
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
     }
+  }
+}
+
+@keyframes fadeinX {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@-webkit-keyframes fadeinX {
+  /* Safari and Chrome */
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
