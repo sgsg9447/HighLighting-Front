@@ -4,16 +4,17 @@ import useResult from "../../hooks/useResult";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import Modal from "../Header/Modal";
 
-
-
 const ControllerButtonBox = ({ url, duration }) => {
-  const { replayRef,
-    pointer, isplaying, setIsplaying, setSeeking,
+  const {
+    replayRef,
+    pointer,
+    isplaying,
+    setIsplaying,
+    setSeeking,
     callSeekTo,
     setPlayed,
-    changePointer, } = React.useContext(
-    EditorTimePointerContext
-  );
+    changePointer,
+  } = React.useContext(EditorTimePointerContext);
   const {
     requestKeywordsData,
     isChatSuper,
@@ -30,16 +31,15 @@ const ControllerButtonBox = ({ url, duration }) => {
   const [modalOpen, setModalOpen] = useState(false);
   // const [outName, setOutName] = useState("");
 
-    // 모달창
-    const openModal = () => {
-      document.body.style.overflow = "hidden";
-      setModalOpen(true);
-    };
-    const closeModal = () => {
-      document.body.style.overflow = "unset";
-      setModalOpen(false);
-    };
-  
+  // 모달창
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    document.body.style.overflow = "unset";
+    setModalOpen(false);
+  };
 
   // 슈퍼챗 버튼 이벤트
   function handleIsChatSuper() {
@@ -92,9 +92,9 @@ const ControllerButtonBox = ({ url, duration }) => {
   function arrowPlayBarMove(direction, padding = 10) {
     setSeeking(true);
     let playTime;
-    if (direction === 'LEFT') {
+    if (direction === "LEFT") {
       playTime = pointer - padding;
-    } else if (direction === 'RIGHT') {
+    } else if (direction === "RIGHT") {
       playTime = pointer + padding;
     } else {
       return;
@@ -118,10 +118,10 @@ const ControllerButtonBox = ({ url, duration }) => {
             setIsplaying(!isplaying);
             return;
           case "ArrowLeft":
-            arrowPlayBarMove('LEFT', ARROW_MOVING_TIME);
+            arrowPlayBarMove("LEFT", ARROW_MOVING_TIME);
             return;
           case "ArrowRight":
-            arrowPlayBarMove('RIGHT', ARROW_MOVING_TIME);
+            arrowPlayBarMove("RIGHT", ARROW_MOVING_TIME);
             return;
           case "ShiftLeft":
             replayRef.current.subKey.isShiftKey = true;
@@ -136,8 +136,8 @@ const ControllerButtonBox = ({ url, duration }) => {
             ) {
               replayRef.current.saveMarker();
             }
-              replayRef.current.wordKey.isS = true;
-              return;
+            replayRef.current.wordKey.isS = true;
+            return;
           default:
             return;
         }
@@ -205,7 +205,6 @@ const ControllerButtonBox = ({ url, duration }) => {
             키워드
           </span>
         </button>
-        {/* <form onSubmit={onSubmitForm}> */}
         <input
           className="InputBar"
           placeholder="키워드 입력 부분"
@@ -220,25 +219,38 @@ const ControllerButtonBox = ({ url, duration }) => {
             console.log("블러 이벤트입니다.", isTypingRef.current);
           }}
         />
-        {/* </form> */}
-        <button className="button3" onClick={replayRef?.current ? replayRef.current.saveMarker : null}>
+        <button className="Search">
+          <span>검색</span>
+        </button>
+        <button
+          className="button3"
+          onClick={replayRef?.current ? replayRef.current.saveMarker : null}
+        >
           <span>컷 만들기</span>
         </button>
         <button className="button4" onClick={openModal}>
           <span>내보내기</span>
         </button>
         {modalOpen && (
-            <Modal
-              // ref={modalEl}
-              open={modalOpen}
-              close={closeModal}
-              Header="내보내기"
+          <Modal
+            // ref={modalEl}
+            open={modalOpen}
+            close={closeModal}
+            Header="내보내기"
+          >
+            <p>
+              {replayRef?.current ? replayRef.current.cutMarker.message : null}
+            </p>
+            <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
+            <button
+              onClick={
+                replayRef?.current ? replayRef.current.cutMarker.doExport : null
+              }
             >
-              <p>{replayRef?.current ? replayRef.current.cutMarker.message : null}</p>
-              <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
-              <button onClick={replayRef?.current ? replayRef.current.cutMarker.doExport : null}>Start</button>
-            </Modal>
-          )}
+              Start
+            </button>
+          </Modal>
+        )}
       </div>
 
       {/* 체크용 */}
