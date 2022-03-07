@@ -1,5 +1,4 @@
 import "./Header.scss";
-import { GiFilmProjector } from "react-icons/gi";
 import { FiLogIn, FiUser, FiLogOut } from "react-icons/fi";
 import { GoSignIn } from "react-icons/go";
 import { useHistory } from "react-router-dom";
@@ -80,7 +79,8 @@ export default function Header() {
     <div className="navbar">
       <ul className="menu">
         <li id="Home" onClick={onClickEvent}>
-          <GiFilmProjector /> HiGHLIGHTING
+          <img className="Logo" src={require("./auth/Image/icon.png")} />
+          HiGHLIGHTING
         </li>
         {logged ? (
           <div className="SignTool">
