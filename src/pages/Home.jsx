@@ -136,25 +136,24 @@ const Home = () => {
                 HIGHLIGHTING
               </h1>
               <p className="HC1-p1">
-                저희 웹 서비스{" "}
-                <span className="point1">하이라이팅(HIGHLIGHTING)</span>은 영상
-                url만을 통해 해당 영상을 분석하여 편집점을 찾는데 도움이 되는
-                데이터와 서비스들을 제공합니다.
+              장면 <span className="point3">하나하나 넘기며 확인</span>하고, <br/>
+              시청자 반응은 어땠는지 <span className="point3">채팅도 다시 체크</span>하고, <br/>
+              <span className="point2"> 불편하지 않았나요?</span>
+              </p>
+              <p className="HC1-p1">
+                <span className="point1">하이라이팅(HIGHLIGHTING)</span>을 써보세요! <br/>
+                방송의 <span className="point3">다시보기 링크</span>만 입력하면 이용할 수 있습니다
               </p>
               <p className="HC1-p2">
-                긴 시간이 걸리는 영상 원본의 편집접 찾기를 저희 웹서비스{" "}
-                <span className="point1">하이라이팅</span>이 제공하는 데이터와
-                서비스를 통해 빠른시간에 처리해보세요!{" "}
+              <span className="point2">
+                화면과 볼륨의 변화, 채팅 빈도, 키워드 출현, 후원 통계</span> 등<br/>
+                길고 긴 방송 속에서 특별한 부분들을 찾는 기능들을 제공하고<br/>
+                <span className="point2">필요한 장면만 골라</span> 가져갈 수 있어요
               </p>
               <p className="HC1-p3">
-                {" "}
-                홈페이지 하단부분에
-                <span className="point1"> 가이드라인</span>에 단계별 사용법을
-                기재해 놨습니다. 사용방법으로 빠르게 이동하길 원하신다면{" "}
-                <span className="point2" onClick={viewChange}>
-                  클릭
-                </span>
-                해주세요!
+                {" "}하단 {" "}
+                <span className="point1">가이드라인</span> 에서 사용법을 알아보세요 :{" "}
+                <span className="point2" onClick={viewChange}>클릭!</span>
               </p>
               <p className="HC1-p4">
                 Creating and Providing Services :{" "}
@@ -166,7 +165,7 @@ const Home = () => {
           <div className="upper_right_container">
             {/* 우상단 URL 입력창 */}
             <div className="Home_urlInput">
-              <h1>URL 입력창</h1>
+              <h1> <img className="HC1-logo" src={require("./image/icon.png")} /> </h1>
               <input
                 className="InputBar"
                 ref={urlInput}
@@ -174,9 +173,9 @@ const Home = () => {
                 onChange={onChangeUrl}
                 id="link"
               />
-              <h3>URL : {url}</h3>
+              <h3> </h3>
               <button className="resultButton" onClick={linkCheck}>
-                <span>결과 보기</span>
+                <span>분석 시작!</span>
               </button>
             </div>
             {/* 우상단 URL 입력창 */}

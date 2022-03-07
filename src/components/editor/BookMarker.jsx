@@ -4,12 +4,15 @@ import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import FFmpegContext from "../../contexts/FFmpegContext";
 import { format } from "./in_VideoPlayer/Duration";
 // import Modal from "../Header/Modal";
-// import axios from "axios";
+import axios from "axios";
 
 import "./BookMarker.scss";
 import useResult from "../../hooks/useResult";
 // import Cardbox from "./Cardbox";
 import "./cardbox.scss";
+
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 // const IS_CUTTING_FROM_BACK = false; // 내보내기 버튼은 백(true) 또는 프론트(false)에서 가능
 function BookMarker({ url, duration, bookmarker }) {
@@ -22,7 +25,7 @@ function BookMarker({ url, duration, bookmarker }) {
     setSeeking,
     replayRef,
   } = React.useContext(EditorTimePointerContext);
-  // const { server_addr } = useResult();
+  const { server_addr } = useResult();
   // const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
@@ -34,6 +37,8 @@ function BookMarker({ url, duration, bookmarker }) {
   // const [modalOpen, setModalOpen] = useState(false);
   // const [message, setMessage] = useState("Click Start to Export");
   const [downloadLink, setDownloadLink] = useState("");
+  const bookscroll = document.querySelector("#bookmarkScroll");
+
   // const [outName, setOutName] = useState("");
 
   // const ffmpeg = createFFmpeg({
@@ -209,10 +214,11 @@ function BookMarker({ url, duration, bookmarker }) {
         text: "",
         startPointer: replayRef.current.startTime,
         endPointer: replayRef.current.endTime,
-        completed: false,
+        completed: true,
         isPlaying: false,
       };
       setMarkers([...markers].concat(newMarker));
+      goToPostDB();
     } else {
       console.log(`isStart`, isStart);
       if (isStart) {
@@ -230,11 +236,12 @@ function BookMarker({ url, duration, bookmarker }) {
           text: "",
           startPointer: pointer,
           endPointer: null,
-          completed: false,
+          completed: true,
           isPlaying: false,
         };
         setIsStart(true);
         setMarkers([...markers].concat(newMarker));
+        goToPostDB();
       }
     }
 
@@ -270,6 +277,7 @@ function BookMarker({ url, duration, bookmarker }) {
     setMarkers(updateMarkers);
     setEditingText("");
     setAddMarker(null);
+    goToPostDB();
   }
 
   function playVideo(id) {
@@ -312,36 +320,36 @@ function BookMarker({ url, duration, bookmarker }) {
   //       alert("요청에 실패하였습니다.");
   //     });
   // }
-  // function goToPostDB() {
-  //   console.log("DB로 post보낼것임");
-  //   console.log(`prev_axios_markers`, markers);
-  //   let postMarkers;
-  //   const selectedMarkers = markers.filter(
-  //     (marker) => marker.completed === true
-  //   );
-  //   if (selectedMarkers.length > 0) {
-  //     postMarkers = selectedMarkers;
-  //     // console.log('selectedMarkers', selectedMarkers);
-  //   } else {
-  //     postMarkers = markers;
-  //     // console.log('markers', markers);
-  //   }
-  //   const payload = { list: postMarkers };
-  //   console.log("new_axios_markers", payload);
-  //   axios
-  //     .post(server_addr + "/bookmarker", {
-  //       markers: payload,
-  //       url: localStorage.getItem("prevUrl"),
-  //     })
-  //     .then((response) => {
-  //       console.log("Success", response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log("get메소드 에러");
-  //       console.log(error);
-  //       alert("요청에 실패하였습니다.");
-  //     });
-  // }
+  function goToPostDB() {
+    console.log("DB로 post보낼것임");
+    console.log(`prev_axios_markers`, markers);
+    let postMarkers;
+    const selectedMarkers = markers.filter(
+      (marker) => marker.completed === true
+    );
+    if (selectedMarkers.length > 0) {
+      postMarkers = selectedMarkers;
+      // console.log('selectedMarkers', selectedMarkers);
+    } else {
+      postMarkers = markers;
+      // console.log('markers', markers);
+    }
+    const payload = { list: postMarkers };
+    console.log("new_axios_markers", payload);
+    axios
+      .post(server_addr + "/bookmarker", {
+        markers: payload,
+        url: localStorage.getItem("prevUrl"),
+      })
+      .then((response) => {
+        console.log("Success", response.data);
+      })
+      .catch((error) => {
+        console.log("get메소드 에러");
+        console.log(error);
+        alert("요청에 실패하였습니다.");
+      });
+  }
 
   // function downloadGet() {
   //   console.log("call getMethod()");
@@ -411,97 +419,104 @@ function BookMarker({ url, duration, bookmarker }) {
   //     });
   // }
 
-  // function thumbnailCal(e) {
-  //   e.preventDefault();
-  //   console.log("The link was clicked.");
-  // }
+  const mounted = useRef([false]);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+    } else {
+      if (markers.length !== 0) {
+        bookscroll.lastChild.scrollIntoView();
+      }
+      // console.log(bookscroll.scrollWidth);
+    }
+  }, [markers]);
 
   return (
     <>
       <div className="BookMarkerContainer">
-        <h2>📁 컷 보관함</h2>
-        <h3>
-          드래그로 선택한 구간을 컷으로 저장할 수 있어요 (단축키 : Ctrl+Shift+S 입력)
-        </h3>
-        <div className="hello">
-          <div className="card-container">
-            {markers.map((marker) => (
-              <div key={marker.id}>
-                <div className="card">
-                  <div
-                    className="card-header"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      playVideo(marker.id);
-                    }}
-                  >
-                    <div
-                      style={{
-                        background: "url(./bts.jpeg)",
-                        width: "177px",
-                        height: "100px",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: `  ${
-                          -177 *
-                            Math.floor(
-                              Math.floor(marker.startPointer % 60) / 10
-                            ) -
-                          1
-                        }px  ${-100 * Math.floor(marker.startPointer / 60)}px`,
-                      }}
-                    />
-                  </div>
-                  <div className="card-body">
-                    {/* <div className="user">
-                      <img
-                        src="https://yt3.ggpht.com/a/AGF-l7-0J1G0Ue0mcZMw-99kMeVuBmRxiPjyvIYONg=s900-c-k-c0xffffffff-no-rj-mo"
-                        alt="user"
-                      />
-                      <div className="user-info">
-                        <h5>July Dec</h5>
-                      </div>
-                    </div> */}
-                    {/* <h4>Why is the Tesla Cybertruck designed the way it is?</h4> */}
-                    {/* <p></p> */}
-                    {addMarker === marker.id ? (
-                      <input
-                        type="text"
-                        onKeyPress={(e) => handleKeyPress(e, marker.id)}
-                        onChange={(e) => setEditingText(e.target.value)}
-                        value={editingText}
-                      />
-                    ) : (
-                      <div>{marker.text}</div>
-                    )}
-                    <div className="botoom">
-                      <input
-                        type="checkbox"
-                        onChange={() => toggleComplete(marker.id)}
-                        checked={marker.completed}
-                      />
-                      <h3>
-                        {format(marker.startPointer)}~
-                        {format(marker.endPointer)}
-                      </h3>
 
-                      {addMarker === marker.id ? (
-                        <button onClick={() => addMemoEdit(marker.id)}>
-                          저장
-                        </button>
-                      ) : (
-                        <button onClick={() => setAddMarker(marker.id)}>
-                          메모
-                        </button>
-                      )}
-                      <button onClick={() => deleteMarker(marker.id)}>
-                        삭제
+        <h2>📁 컷 보관함</h2>
+        <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
+        <div className="hello" id="bookmarkScroll">
+          {/* <div className="card-container"> */}
+          {markers.map((marker) => (
+            <div key={marker.id}>
+              <div className="card">
+                <div
+                  className="card-header"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    playVideo(marker.id);
+                  }}
+                >
+                  <div
+                    className="thumbnail"
+                    style={{
+                      background: `url(${server_addr}/${
+                        url?.split("=")[1]
+                      }.jpg)`,
+                      width: "176px",
+                      height: "100px",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: `  ${
+                        -177 *
+                          Math.floor(
+                            Math.floor(marker.startPointer % 60) / 10
+                          ) -
+                        1
+                      }px  ${-100 * Math.floor(marker.startPointer / 60)}px`,
+                    }}
+                  />
+                </div>
+                <div className="card-body">
+                  <div className="bookmarkTime">
+                    {format(marker.startPointer)}~{format(marker.endPointer)}
+                  </div>
+                  {addMarker === marker.id ? (
+                    <input
+                      className="tt"
+                      type="text"
+                      onKeyPress={(e) => handleKeyPress(e, marker.id)}
+                      onChange={(e) => setEditingText(e.target.value)}
+                      value={editingText}
+                    />
+                  ) : marker.text ? (
+                    <div className="ttt">{marker.text}</div>
+                  ) : (
+                    <div className="tt"></div>
+                  )}
+
+                  <input
+                    className="inputCheckbox"
+                    type="checkbox"
+                    onChange={() => toggleComplete(marker.id)}
+                    checked={marker.completed}
+                  />
+
+                  <div className="memoAndDelete">
+                    {addMarker === marker.id ? (
+                      <button
+                        className="saveButton"
+                        onClick={() => addMemoEdit(marker.id)}
+                      >
+                        저장
                       </button>
-                    </div>
+                    ) : (
+                      <BorderColorIcon onClick={() => setAddMarker(marker.id)}>
+                        메모
+                      </BorderColorIcon>
+                    )}
+                    <DeleteForeverOutlinedIcon
+                      onClick={() => deleteMarker(marker.id)}
+                    >
+                      삭제
+                    </DeleteForeverOutlinedIcon>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+          {/* </div> */}
         </div>
         {/* <div className="parent">
           <button className="btn__ChatSuper" onClick={handleClick}>

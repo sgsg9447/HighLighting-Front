@@ -28,7 +28,7 @@ const CHANNELS = 3;
 // const DATA_PER_CHANNEL = 5 * 1000 * 1000
 
 // 리플레이 재생 시 1회만 재생
-let REPLAY_ONLE_ONCE = true;
+let REPLAY_ONLE_ONCE = false;
 
 // 각 차트별로 x개수와 간격이 다르지만, 같은 시간을 가리키도록 하자.
 // STEP_X: X좌표 간격(1밀리초)
@@ -862,7 +862,7 @@ const DataChart = (props) => {
     playingId = undefined,
     markerList = undefined
   ) {
-    console.log("replayBand", startTime, endTime, playingId, markerList);
+    // console.log("replayBand", startTime, endTime, playingId, markerList);
     if (pointer === endTime + 1) {
       // id, markers 안 받았으면 start로 돌아가기
       if (!playingId || !markerList) {
@@ -1015,7 +1015,7 @@ const DataChart = (props) => {
     }
   }, [pointer]);
 
-  /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
+  /* 북마크가 체크되면 해당 시간 범위 그래프에 색 칠하기 */
   useEffect(() => {
     // chartListRef 값이 없으면 리턴
     if (!chartListRef.current || !receivedDataSetList) return;
@@ -1026,20 +1026,24 @@ const DataChart = (props) => {
       const slicedList = receivedDataSetList.map((list, i) => {
         let start, end;
         if (i === 0) {
-          start = Math.floor( startTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
-          end = Math.floor( endTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+          start = Math.round( startTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+          end = Math.ceil( endTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
         }
         else if (i === 1) {
-          start = Math.floor( startTime / (STEP_X_VIDEO / 1000))
-          end = Math.floor( endTime / (STEP_X_VIDEO / 1000))
+          start = Math.round( startTime / (STEP_X_VIDEO / 1000))
+          end = Math.ceil( endTime / (STEP_X_VIDEO / 1000))
         }
         else if (i === 2) {
-          start = Math.floor( startTime / (STEP_X_AUDIO / 1000))
-          end = Math.floor( endTime / (STEP_X_AUDIO / 1000))
+          start = Math.round( startTime / (STEP_X_AUDIO / 1000))
+          end = Math.ceil( endTime / (STEP_X_AUDIO / 1000))
+        }
+        else if (i === 3) {
+          start = Math.round( startTime / (STEP_X_CHAT_SUPER / 1000))
+          end = Math.ceil( endTime / (STEP_X_CHAT_SUPER / 1000))
         }
         else if (i === 4) {
-          start = Math.floor( startTime / (STEP_X_CHAT_KEYWORDS / 1000))
-          end = Math.floor( endTime / (STEP_X_CHAT_KEYWORDS / 1000))
+          start = Math.round( startTime / (STEP_X_CHAT_KEYWORDS / 1000))
+          end = Math.ceil( endTime / (STEP_X_CHAT_KEYWORDS / 1000))
         }
         return list.slice(start, end);
       })
@@ -1054,7 +1058,7 @@ const DataChart = (props) => {
             .add(slicedList[4].map((high, i) => ({
             position: high.x,
             high: high.y,
-            low: high.y
+            low: 0
             })))
           }
           else {
@@ -1062,7 +1066,7 @@ const DataChart = (props) => {
             .add(slicedList[0].map((high, i) => ({
               position: high.x,
               high: high.y,
-              low: high.y
+              low: 0
             })))
           }
         }
