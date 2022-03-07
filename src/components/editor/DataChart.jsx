@@ -489,6 +489,7 @@ const DataChart = (props) => {
               }
             });
             // 밴드리스트 저장, 드래그 스위치 ON, 마우스 프리뷰 OFF
+            replayRef.current.xBandList = xBandList;
             dragBandList.current = xBandList;
             dragStartRef.current.isDrag = true;
             setTip(null);
@@ -648,6 +649,8 @@ const DataChart = (props) => {
           replayRef.current.isReplay = false;
           // 북마크 재생 있다면 제거
           markerInfoRef.current.interruption = true;
+          // 드래그 밴드 흔적 있다면 제거
+          dragBandList.current.forEach((band) => band.dispose());
         });
       });
 
@@ -1017,7 +1020,7 @@ const DataChart = (props) => {
     // chartListRef 값이 없으면 리턴
     if (!chartListRef.current || !receivedDataSetList) return;
 
-    // 밴드 생성해서 리스트 담기
+    // 해당지점 차트 컬러로 칠하기: 키워드 검색된 차트일 때도 구별
     function addBookMarkBand(startTime, endTime) {
       const chartList = chartListRef.current;
       const slicedList = receivedDataSetList.map((list, i) => {
@@ -1041,27 +1044,34 @@ const DataChart = (props) => {
         return list.slice(start, end);
       })
 
-      const newMarkedList = chartList.map((chart, i) => {
-        if (i === 0) {
-          return chart.getDefaultAxisX().addBand().dispose();
-        }
-        else {
-          return chart.addAreaRangeSeries();
-        }
-      });
+      const newMarkedList = chartList.map((chart, i) => 
+        chart.addAreaRangeSeries()
+      );
       newMarkedList.forEach((band, i) => {
         if (i === 0) {
-          band
-          .restore()
-          .setValueStart(startTime * 1000)
-          .setValueEnd(endTime * 1000);
+          if (isChatKeywords === 0) {
+            band
+            .add(slicedList[4].map((high, i) => ({
+            position: high.x,
+            high: high.y,
+            low: high.y
+            })))
+          }
+          else {
+            band
+            .add(slicedList[0].map((high, i) => ({
+              position: high.x,
+              high: high.y,
+              low: high.y
+            })))
+          }
         }
         else {
           band
           .add(slicedList[i].map((high, i) => ({
           position: high.x,
           high: high.y,
-          low: high.y + 1
+          low: high.y
           // low: data[1][i].y + 90
           })))
         }
@@ -1081,7 +1091,7 @@ const DataChart = (props) => {
         markerBandList.forEach((band) => band.dispose())
       );
     };
-  }, [markers]);
+  }, [isChatKeywords, markers]);
 
   /* 마우스 커서 옆에 재생 프리뷰 이미지 툴팁 위치*/
   const handleMouseMoveInChart = (e) => {
