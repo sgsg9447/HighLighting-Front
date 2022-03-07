@@ -3,8 +3,24 @@ import ReactPlayer from "react-player";
 import Duration from "./Duration";
 import EditorTimePointerContext from "../../../contexts/EditorTimePointerContext";
 import "./Player.scss";
-function Player({url}) {
-  const { changePointer, isplaying, setIsplaying, seeking, setSeeking, played, setPlayed, setPlayerRef } = React.useContext(EditorTimePointerContext);
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import VolumeDownIcon from "@mui/icons-material/VolumeDown";
+
+import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
+function Player({ url }) {
+  const {
+    changePointer,
+    isplaying,
+    setIsplaying,
+    seeking,
+    setSeeking,
+    played,
+    setPlayed,
+    setPlayerRef,
+  } = React.useContext(EditorTimePointerContext);
   const [controls] = useState(false);
   const [volume, setVolume] = useState(0.8);
   // const [played, setPlayed] = useState(0);
@@ -64,7 +80,7 @@ function Player({url}) {
   const handleEnded = () => {
     setIsplaying(loop);
   };
-  
+
   return (
     <div>
       <div className="player-wrapper">
@@ -90,50 +106,48 @@ function Player({url}) {
         />
       </div>
 
-      <div className='hide'>
-        <table>
-          <tbody>
-            <tr>
-              <th>Controls</th>
-              <td>
-                <button onClick={handlePlayPause}>
-                  {isplaying ? "Pause" : "Play"}
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <th>Seek</th>
-              <td>
-                <input
-                  type="range"
-                  min={0}
-                  max={0.999999}
-                  step="any"
-                  value={played}
-                  onMouseDown={handleSeekMouseDown}
-                  onChange={handleSeekChange}
-                  onMouseUp={handleSeekMouseUp}
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Volume</th>
-              <td>
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step="any"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="controller">
+        <div className="progress-bar">
+          <input
+            type="range"
+            min={0}
+            max={0.999999}
+            step="any"
+            value={played}
+            onMouseDown={handleSeekMouseDown}
+            onChange={handleSeekChange}
+            onMouseUp={handleSeekMouseUp}
+          />
+        </div>
+
+        <div className="volume-bar">
+          {volume > 0.5 ? <VolumeUpIcon /> : <VolumeDownIcon />}
+
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step="any"
+            value={volume}
+            onChange={handleVolumeChange}
+          />
+        </div>
+
+        <div className="controll-button">
+          <ArrowBackIosNewRoundedIcon  />
+          <div onClick={handlePlayPause}>
+            {isplaying ? (
+              <PauseRoundedIcon />
+            ) : (
+              <PlayArrowRoundedIcon  />
+            )}
+          </div>
+          <ArrowForwardIosRoundedIcon  />
+        </div>
+        
       </div>
 
-      <div className='hide'>
+      <div className="hide">
         <table>
           <tbody>
             <tr>
