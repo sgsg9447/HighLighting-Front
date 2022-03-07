@@ -86,6 +86,7 @@ const DataChart = (props) => {
     isKeywordsDownload,
     receivedDataSetList,
     setReceivedDataSetList,
+    server_addr,
   } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
@@ -104,6 +105,7 @@ const DataChart = (props) => {
     duration: undefined,
     replay: replayBand,
     saveMarker: undefined,
+    cutMarker: {message: '', doExport: undefined},
     playingId: undefined,
     isPlayOnce: REPLAY_ONLE_ONCE,
     subKey: { isShiftKey: false, isCtrlKey: false },
@@ -487,6 +489,7 @@ const DataChart = (props) => {
               }
             });
             // 밴드리스트 저장, 드래그 스위치 ON, 마우스 프리뷰 OFF
+            replayRef.current.xBandList = xBandList;
             dragBandList.current = xBandList;
             dragStartRef.current.isDrag = true;
             setTip(null);
@@ -646,6 +649,8 @@ const DataChart = (props) => {
           replayRef.current.isReplay = false;
           // 북마크 재생 있다면 제거
           markerInfoRef.current.interruption = true;
+          // 드래그 밴드 흔적 있다면 제거
+          dragBandList.current.forEach((band) => band.dispose());
         });
       });
 
@@ -1013,21 +1018,65 @@ const DataChart = (props) => {
   /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
   useEffect(() => {
     // chartListRef 값이 없으면 리턴
-    if (!chartListRef.current) return;
+    if (!chartListRef.current || !receivedDataSetList) return;
 
-    // 밴드 생성해서 리스트 담기
+    // 해당지점 차트 컬러로 칠하기: 키워드 검색된 차트일 때도 구별
     function addBookMarkBand(startTime, endTime) {
       const chartList = chartListRef.current;
-      const newBandList = chartList.map((chart) =>
-        chart.getDefaultAxisX().addBand().dispose()
+      const slicedList = receivedDataSetList.map((list, i) => {
+        let start, end;
+        if (i === 0) {
+          start = Math.floor( startTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+          end = Math.floor( endTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+        }
+        else if (i === 1) {
+          start = Math.floor( startTime / (STEP_X_VIDEO / 1000))
+          end = Math.floor( endTime / (STEP_X_VIDEO / 1000))
+        }
+        else if (i === 2) {
+          start = Math.floor( startTime / (STEP_X_AUDIO / 1000))
+          end = Math.floor( endTime / (STEP_X_AUDIO / 1000))
+        }
+        else if (i === 4) {
+          start = Math.floor( startTime / (STEP_X_CHAT_KEYWORDS / 1000))
+          end = Math.floor( endTime / (STEP_X_CHAT_KEYWORDS / 1000))
+        }
+        return list.slice(start, end);
+      })
+
+      const newMarkedList = chartList.map((chart, i) => 
+        chart.addAreaRangeSeries()
       );
-      newBandList.forEach((band, i) => {
-        band
-          .restore()
-          .setValueStart(startTime * 1000)
-          .setValueEnd(endTime * 1000);
+      newMarkedList.forEach((band, i) => {
+        if (i === 0) {
+          if (isChatKeywords === 0) {
+            band
+            .add(slicedList[4].map((high, i) => ({
+            position: high.x,
+            high: high.y,
+            low: high.y
+            })))
+          }
+          else {
+            band
+            .add(slicedList[0].map((high, i) => ({
+              position: high.x,
+              high: high.y,
+              low: high.y
+            })))
+          }
+        }
+        else {
+          band
+          .add(slicedList[i].map((high, i) => ({
+          position: high.x,
+          high: high.y,
+          low: high.y
+          // low: data[1][i].y + 90
+          })))
+        }
       });
-      return newBandList;
+      return newMarkedList;
     }
 
     const selectedMarkerList = findSelectedMarkers(markers);
@@ -1042,15 +1091,12 @@ const DataChart = (props) => {
         markerBandList.forEach((band) => band.dispose())
       );
     };
-  }, [markers]);
-
-    /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
-
+  }, [isChatKeywords, markers]);
 
   /* 마우스 커서 옆에 재생 프리뷰 이미지 툴팁 위치*/
   const handleMouseMoveInChart = (e) => {
     const LEFT_MARGIN = 200;
-    const TOP_MARGIN = 30;
+    const TOP_MARGIN = -110;
     const positionLeft = e.clientX;
     const positionTop = e.clientY;
     // console.log('imgTipRef.current', imgTipRef.current, positionLeft, positionTop);
@@ -1142,22 +1188,13 @@ const DataChart = (props) => {
         style={{ zIndex: 19 }}
         onMouseMove={handleMouseMoveInChart}
       ></div>
-      <div
-        id="result"
-        ref={imgTipRef}
-        style={{
-          display: tip ? "block" : "none",
-          position: "absolute",
-          background: "url(./bts.jpg)",
-          width: "177px",
-          height: "100px",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: `${
-            -177 * Math.floor(Math.floor(tip % 60) / 10) - 1
-          }px  ${-100 * Math.floor(tip / 60)}px`,
-          zIndex: "20",
-        }}
-      ></div>
+      {url ? <div id="result" ref={imgTipRef} style={{
+        display: (tip ? 'block' : 'none'), position: "absolute", background: `url(${server_addr}/${url?.split("=")[1]}.jpg)`,
+        width: "176px", height: "100px", backgroundRepeat: "no-repeat",
+        backgroundPosition: 
+          `${-177 * Math.floor(Math.floor(tip % 60) / 10) - 1}px  ${-100 * Math.floor(tip / 60)}px`,
+        zIndex: '20'
+      }}></div> : null}
     </>
   );
 };
