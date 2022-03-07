@@ -1,9 +1,10 @@
 .buttonContainer {
+  width: 100%;
   display: flex;
   flex-direction: space-between;
 
   .superchat {
-    width: 9rem;
+    width: 9.5rem;
     height: 4rem;
     background-color: #935ef4;
     border: none;
@@ -64,7 +65,7 @@
     }
   }
 
-  .keyWord {
+  .keyWordStart {
     width: 12rem;
     height: 4rem;
     background-color: #691df7;
@@ -73,7 +74,7 @@
     font-size: 27px;
     margin-right: 1rem;
     border-radius: 0.5rem;
-    transition: all 0.2s;
+    transition: all 1s;
     text-align: center;
     cursor: pointer;
 
@@ -105,39 +106,173 @@
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
     }
   }
-
-  .InputBar {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-size: 1.7rem;
-    margin-right: 1rem;
-    border: 3px solid #935ef4;
-    background-color: #272c34;
-    border-radius: 0.5rem;
-    width: 11.5rem;
+  .keyWordEnd {
+    width: 12rem;
     height: 4rem;
+    background-color: #691df7;
+    border: none;
     color: white;
-  }
+    font-size: 27px;
+    margin-right: 1rem;
+    border-radius: 0.5rem;
+    transition: all 1s;
+    text-align: center;
+    cursor: pointer;
 
-  &:focus {
-    outline: 3px solid #935ef4;
-    background-color: #272c34;
-    color: white;
-  }
+    span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.2s;
 
-  &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px white inset;
-    -webkit-text-fill-color: #fff !important;
+      &:after {
+        content: "\00Ab";
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.2s;
+      }
+    }
+    &:hover span {
+      padding-right: 20px;
+    }
+
+    &:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
+    &:active {
+      transform: scale(0.9);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
+    }
+  }
+  .inputSearchContainer {
+    display: flex;
+    flex-direction: row;
+    animation: fadein 1s;
+    -webkit-animation: fadein 1s;
+    animation-delay: 0.1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
+
+    .InputBar {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      font-size: 1.7rem;
+      margin-right: 1rem;
+      border: 3px solid #935ef4;
+      background-color: #272c34;
+      border-radius: 0.5rem;
+      width: 11rem;
+      height: 3.5rem;
+      color: white;
+    }
+
+    &:focus {
+      outline: 3px solid #935ef4;
+      background-color: #272c34;
+      color: white;
+    }
+
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px white inset;
+      -webkit-text-fill-color: #fff !important;
+    }
+
+    .Search {
+      width: 6rem;
+      height: 4rem;
+      background-color: #691df7;
+      border: none;
+      color: white;
+      font-size: 27px;
+      margin-right: 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.1s;
+      text-align: center;
+      cursor: pointer;
+
+      span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.2s;
+
+        &:after {
+          content: "\🔍";
+          position: absolute;
+          opacity: 0;
+          top: 0;
+          right: -20px;
+          transition: 0.2s;
+        }
+      }
+      &:hover span {
+        padding-right: 30px;
+      }
+
+      &:hover span:after {
+        opacity: 1;
+        right: 0;
+      }
+      &:active {
+        transform: scale(0.9);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
+      }
+    }
   }
 
   //
-  .button3 {
+  .cutMakeButton {
     width: 10rem;
     height: 4rem;
     background-color: #935ef4;
     border: none;
     color: white;
-    font-size: 27px;
+    font-size: 26px;
+    margin-right: 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    text-align: center;
+    cursor: pointer;
+
+    span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.2s;
+
+      &:after {
+        content: "✂";
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.2s;
+      }
+    }
+    &:hover span {
+      padding-right: 30px;
+    }
+
+    &:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
+    &:active {
+      transform: scale(0.9);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
+    }
+  }
+
+  .exportButton {
+    width: 9.5rem;
+    height: 4rem;
+    background-color: #691df7;
+    border: none;
+    color: white;
+    font-size: 26px;
     margin-right: 1rem;
     border-radius: 0.5rem;
     transition: all 0.2s;
@@ -161,49 +296,6 @@
     }
     &:hover span {
       padding-right: 30px;
-    }
-
-    &:hover span:after {
-      opacity: 1;
-      right: 0;
-    }
-    &:active {
-      transform: scale(0.9);
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
-    }
-  }
-
-  //
-  .button4 {
-    width: 10rem;
-    height: 4rem;
-    background-color: #691df7;
-    border: none;
-    color: white;
-    font-size: 27px;
-    margin-right: 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    text-align: center;
-    cursor: pointer;
-
-    span {
-      cursor: pointer;
-      display: inline-block;
-      position: relative;
-      transition: 0.2s;
-
-      &:after {
-        content: "\21F2";
-        position: absolute;
-        opacity: 0;
-        top: 0;
-        right: -20px;
-        transition: 0.2s;
-      }
-    }
-    &:hover span {
-      padding-right: 20px;
     }
 
     &:hover span:after {
