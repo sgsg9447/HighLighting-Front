@@ -434,7 +434,8 @@ function BookMarker({ url, duration, bookmarker }) {
   return (
     <>
       <div className="BookMarkerContainer">
-        <h2>컷 보관함</h2>
+
+        <h2>📁 컷 보관함</h2>
         <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
         <div className="hello" id="bookmarkScroll">
           {/* <div className="card-container"> */}

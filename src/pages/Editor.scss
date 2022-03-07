@@ -2,16 +2,22 @@ html,
 body {
   margin: 0;
   padding: 0;
+  border: 3px solid black;
+  background-color: black;
 
   .upperlayer {
     display: flex;
     flex-direction: row;
-    background-color: #272c34;
+    background-color: black;
+    border-radius: 0.3rem;
+    border-bottom: 3px solid black;
 
     .VideoPlayerCover {
-      border: 2px solid black;
       width: 40%;
       max-width: 40%;
+      border-right: 3px solid black;
+      border-radius: 0.3rem;
+      background-color: #1b1b24;
     }
 
     .upperLeft_upper_container {
@@ -23,48 +29,81 @@ body {
         height: 380px;
         display: flex;
         flex-direction: row;
+        background-color: balck;
         .ChatViewerCover {
-          border: 2px solid black;
           width: 25%;
+          border-right: 3px solid black;
+          border-bottom: 3px solid black;
+          border-radius: 0.3rem;
+          background-color: #1b1b24;
         }
 
         .BookMarkerToolCover {
-          border: 2px solid black;
+          border-bottom: 3px solid black;
+          border-radius: 0.3rem;
           width: 75%;
+          background-color: #1b1b24;
         }
       }
 
       .lowerLayer {
         display: flex;
-        flex-direction: row;
-        padding: 0.5rem;
+        flex-direction: column;
+        padding-top: 0.8rem;
+        padding-left: 1rem;
+        padding-right: 0.5rem;
+        padding-bottom: 0.8rem;
+        border-radius: 0.3rem;
+        background-color: #1b1b24;
       }
     }
   }
 
   .lowerlayer {
-    border: 2px solid black;
     padding: 16;
     display: flex;
     flex-direction: row;
     height: 42%;
     max-height: 42%;
-    background-color: #272c34;
+    background-color: black;
+    border-radius: 0.3rem;
 
     .DataChartControllerCover {
+      border-right: 3px solid black;
       padding: 1rem;
-      border: 2px solid black;
       width: 20%;
       max-width: 20%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      border-radius: 0.5rem;
+      background-color: #1b1b24;
     }
     .DataChartCover {
-      border: 2px solid black;
       width: 80%;
       max-width: 80%;
-      z-index: 19;
+      z-index: 11;
+      border-radius: 0.5rem;
+      background-color: #1b1b24;
     }
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadein {
+  /* Safari and Chrome */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

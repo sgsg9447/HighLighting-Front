@@ -5,6 +5,7 @@ import useRoute from "../hooks/useRoute";
 import Header from "../components/Header/Header";
 import { GiPlayButton } from "react-icons/gi";
 import "./Home.scss";
+
 const Home = () => {
   const inputValue = document.getElementById("link");
   const urlInput = useRef();
@@ -16,19 +17,6 @@ const Home = () => {
   const [active1, setActive1] = useState(false);
   const [active2, setActive2] = useState(false);
   const [active3, setActive3] = useState(false);
-  const [active4, setActive4] = useState(false);
-  const [active5, setActive5] = useState(false);
-
-  // useEffect(() => {
-  //   const value = document.querySelector(".Home_list");
-  //   console.log(value);
-
-  //   const handleClickEvent = (e) => {
-  //     const value2 = e.target.id;
-  //     console.log(value2);
-  //   };
-  //   value.addEventListener("click", handleClickEvent);
-  // });
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
@@ -100,12 +88,6 @@ const Home = () => {
       case "third":
         activeThird();
         break;
-      case "fourth":
-        activeFourth();
-        break;
-      case "fifth":
-        activeFifth();
-        break;
       default:
     }
   };
@@ -118,8 +100,6 @@ const Home = () => {
     setActive1(false);
     setActive2(false);
     setActive3(false);
-    setActive4(false);
-    setActive5(false);
   };
 
   const activeFirst = () => {
@@ -127,8 +107,6 @@ const Home = () => {
     setActive1(true);
     setActive2(false);
     setActive3(false);
-    setActive4(false);
-    setActive5(false);
   };
 
   const activeSecond = () => {
@@ -136,8 +114,6 @@ const Home = () => {
     setActive1(false);
     setActive2(true);
     setActive3(false);
-    setActive4(false);
-    setActive5(false);
   };
 
   const activeThird = () => {
@@ -145,26 +121,6 @@ const Home = () => {
     setActive1(false);
     setActive2(false);
     setActive3(true);
-    setActive4(false);
-    setActive5(false);
-  };
-
-  const activeFourth = () => {
-    setActive0(false);
-    setActive1(false);
-    setActive2(false);
-    setActive3(false);
-    setActive4(true);
-    setActive5(false);
-  };
-
-  const activeFifth = () => {
-    setActive0(false);
-    setActive1(false);
-    setActive2(false);
-    setActive3(false);
-    setActive4(false);
-    setActive5(true);
   };
 
   return (
@@ -317,67 +273,22 @@ const Home = () => {
                     원하는 부분을 기록 ~ 종료함으로써 북마크 형식으로 남길 수
                     있습니다.
                   </p>
-                </div>
-              </li>
-
-              <li className="Home_list-item">
-                <div className="Home_list-content-wrap">
-                  <p
-                    className={
-                      "Home_list-content" + " " + (active4 ? "is-active" : "")
-                    }
-                    id="fourth"
-                    onMouseEnter={onClickGuide}
-                  >
-                    4단계 - 차트 데이터
-                  </p>
-                  <p
-                    className={
-                      "Home_list-sub" + " " + (active4 ? "sub-active" : "")
-                    }
-                  >
-                    차트 데이터의 세로축은 해당 데이터의 크기, 가로축은 영상의
-                    시간 흐름을 의미합니다.
-                  </p>
-                </div>
-              </li>
-
-              <li className="Home_list-item">
-                <div className="Home_list-item-image"></div>
-                <div className="Home_list-content-wrap">
-                  <p
-                    className={
-                      "Home_list-content" + " " + (active5 ? "is-active" : "")
-                    }
-                    id="fifth"
-                    onMouseEnter={onClickGuide}
-                  >
-                    5단계 - 로그인 기능
-                  </p>
-                  <p
-                    className={
-                      "Home_list-sub" + " " + (active5 ? "sub-active" : "")
-                    }
-                  >
-                    아직은 공란. 현재 쿼리스트링 구현 예정중
-                  </p>
-                  <p>
+                  <a className="UPscroll">
                     <br />
                     <br />
-                    <a className="UPscroll">
-                      <span
-                        className="point2"
-                        onClick={() => {
-                          document
-                            .getElementById("Home")
-                            .scrollIntoView({ behavior: "smooth" });
-                        }}
-                      >
-                        상단
-                      </span>
-                      으로 돌아가기
-                    </a>
-                  </p>
+                    <br />
+                    <span
+                      className="point2"
+                      onClick={() => {
+                        document
+                          .getElementById("Home")
+                          .scrollIntoView({ behavior: "smooth" });
+                      }}
+                    >
+                      상단
+                    </span>
+                    으로 돌아가기
+                  </a>
                 </div>
               </li>
             </ul>
@@ -400,7 +311,7 @@ const Home = () => {
                     <GiPlayButton
                       className="previousButton"
                       onClick={() => {
-                        activeFifth();
+                        activeThird();
                         viewChange();
                       }}
                     />{" "}
@@ -479,62 +390,7 @@ const Home = () => {
                       className="previousButton"
                       onClick={activeSecond}
                     />{" "}
-                    <GiPlayButton
-                      className="nextButton"
-                      onClick={activeFourth}
-                    />
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-              {active4 ? (
-                <div className="GuideLine_content">
-                  <h2>차트 데이터</h2>
-                  <div className="guide_content_box">
-                    <p className="guide_content_p1">내용 박스</p>
-                  </div>
-                  <div className="guide_button_box">
-                    <GiPlayButton
-                      className="previousButton"
-                      onClick={() => {
-                        activeThird();
-                        viewChange();
-                      }}
-                    />{" "}
-                    <GiPlayButton
-                      className="nextButton"
-                      onClick={() => {
-                        activeFifth();
-                        viewChange();
-                      }}
-                    />
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-              {active5 ? (
-                <div className="GuideLine_content">
-                  <h2>로그인 기능</h2>
-                  <div className="guide_content_box">
-                    <p className="guide_content_p1">내용 박스</p>
-                  </div>
-                  <div className="guide_button_box">
-                    <GiPlayButton
-                      className="previousButton"
-                      onClick={() => {
-                        activeFourth();
-                        viewChange();
-                      }}
-                    />{" "}
-                    <GiPlayButton
-                      className="nextButton"
-                      onClick={() => {
-                        activeZero();
-                        viewChange();
-                      }}
-                    />
+                    <GiPlayButton className="nextButton" onClick={activeZero} />
                   </div>
                 </div>
               ) : (
