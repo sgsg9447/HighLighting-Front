@@ -487,38 +487,38 @@ function BookMarker({ duration, bookmarker }) {
           </div>
           ))
         </div>
-      </div>
-      <div className="parent">
-        <button className="btn__ChatSuper" onClick={handleClick}>
-          컷 만들기
-        </button>
-        <button className="btn__ChatKeyWord right" onClick={goToPostDB}>
-          저장하기
-        </button>
+        <div className="parent">
+          <button className="btn__ChatSuper" onClick={handleClick}>
+            컷 만들기
+          </button>
+          <button className="btn__ChatKeyWord right" onClick={goToPostDB}>
+            저장하기
+          </button>
 
-        <button
-          className="btn__ChatSuper"
-          onClick={IS_CUTTING_FROM_BACK ? goToDownload : openModal}
-        >
-          내보내기
-        </button>
-        {modalOpen && (
-          <Modal
-            // ref={modalEl}
-            open={modalOpen}
-            close={closeModal}
-            Header="내보내기"
+          <button
+            className="btn__ChatSuper"
+            onClick={IS_CUTTING_FROM_BACK ? goToDownload : openModal}
           >
-            <p>{message}</p>
-            <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
-            <button onClick={doExport}>Start</button>
-            {/* {downloadLink.length !== 0 && (
+            내보내기
+          </button>
+          {modalOpen && (
+            <Modal
+              // ref={modalEl}
+              open={modalOpen}
+              close={closeModal}
+              Header="내보내기"
+            >
+              <p>{message}</p>
+              <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
+              <button onClick={doExport}>Start</button>
+              {/* {downloadLink.length !== 0 && (
               <button type="button" href={downloadLink} download={outName} onClick={window.location.href = downloadLink}>
                 download
               </button>
             )} */}
-          </Modal>
-        )}
+            </Modal>
+          )}
+        </div>
       </div>
     </>
   );

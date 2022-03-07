@@ -11,6 +11,7 @@ import "./Editor.scss";
 
 import useResult from "../hooks/useResult";
 import { useState, useEffect } from "react";
+import ControllerButtonBox from "../components/editor/ControllerButtonBox";
 
 function Editor() {
   const {
@@ -160,13 +161,26 @@ function Editor() {
           <div className="VideoPlayerCover">
             <VideoPlayer url={url ? url : propUrl} />
           </div>
-
-          <div className="ChatViewerCover">
-            <ChatViewer url={url ? url : propUrl} duration={propDuration} />
-          </div>
-
-          <div className="BookMarkerToolCover">
-            <BookMarker duration={propDuration} bookmarker={propBookmarker} />
+          <div className="upperLeft_upper_container">
+            <div className="upperLayer">
+              <div className="ChatViewerCover">
+                <ChatViewer url={url ? url : propUrl} duration={propDuration} />
+              </div>
+              <div className="BookMarkerToolCover">
+                <BookMarker
+                  duration={propDuration}
+                  bookmarker={propBookmarker}
+                />
+              </div>
+            </div>
+            <div className="lowerLayer">
+              <div className="controller_button_box">
+                <ControllerButtonBox
+                  url={url ? url : propUrl}
+                  duration={propDuration}
+                />
+              </div>
+            </div>
           </div>
         </div>
 

@@ -5,28 +5,28 @@
   .ChatViewer {
     color: white;
     width: 100%;
-    height: 34.5vh;
+    height: 39.5vh;
     overflow-y: scroll;
     -ms-overflow-style: none;
     display: inline-block;
     word-break: break-all;
     text-align: left;
   }
-  .ChatViewer::-webkit-scrollbar { 
+  .ChatViewer::-webkit-scrollbar {
     display: none;
     width: 0;
   }
 
   .btn__ChatSuper {
-    font-size:20px;
-    padding:10px 10px;
+    font-size: 5px;
+    padding: 10px 10px;
     color: white;
     border: 0;
     background-color: #8d6ffa;
   }
   .btn__ChatKeyWord {
-    font-size:20px;
-    padding:10px 10px;
+    font-size: 5px;
+    padding: 10px 10px;
     color: white;
     border: 0;
     background-color: #653bfc;
@@ -34,15 +34,4 @@
   .plane_text {
     font-size: 90%;
   }
-
 }
-// style={{
-//   width: "100%",
-//   height: 600,
-//   overflow: "scroll",
-//   display: "inline-block",
-//   wordBreak: "break-all",
-//   textAlign: "left",
-//   color: "white",
-// }}
-
