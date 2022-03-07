@@ -4,7 +4,7 @@ import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import FFmpegContext from "../../contexts/FFmpegContext";
 import { format } from "./in_VideoPlayer/Duration";
 // import Modal from "../Header/Modal";
-// import axios from "axios";
+import axios from "axios";
 
 import "./BookMarker.scss";
 import useResult from "../../hooks/useResult";
@@ -317,36 +317,36 @@ function BookMarker({ url, duration, bookmarker }) {
   //       alert("요청에 실패하였습니다.");
   //     });
   // }
-  // function goToPostDB() {
-  //   console.log("DB로 post보낼것임");
-  //   console.log(`prev_axios_markers`, markers);
-  //   let postMarkers;
-  //   const selectedMarkers = markers.filter(
-  //     (marker) => marker.completed === true
-  //   );
-  //   if (selectedMarkers.length > 0) {
-  //     postMarkers = selectedMarkers;
-  //     // console.log('selectedMarkers', selectedMarkers);
-  //   } else {
-  //     postMarkers = markers;
-  //     // console.log('markers', markers);
-  //   }
-  //   const payload = { list: postMarkers };
-  //   console.log("new_axios_markers", payload);
-  //   axios
-  //     .post(server_addr + "/bookmarker", {
-  //       markers: payload,
-  //       url: localStorage.getItem("prevUrl"),
-  //     })
-  //     .then((response) => {
-  //       console.log("Success", response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log("get메소드 에러");
-  //       console.log(error);
-  //       alert("요청에 실패하였습니다.");
-  //     });
-  // }
+  function goToPostDB() {
+    console.log("DB로 post보낼것임");
+    console.log(`prev_axios_markers`, markers);
+    let postMarkers;
+    const selectedMarkers = markers.filter(
+      (marker) => marker.completed === true
+    );
+    if (selectedMarkers.length > 0) {
+      postMarkers = selectedMarkers;
+      // console.log('selectedMarkers', selectedMarkers);
+    } else {
+      postMarkers = markers;
+      // console.log('markers', markers);
+    }
+    const payload = { list: postMarkers };
+    console.log("new_axios_markers", payload);
+    axios
+      .post(server_addr + "/bookmarker", {
+        markers: payload,
+        url: localStorage.getItem("prevUrl"),
+      })
+      .then((response) => {
+        console.log("Success", response.data);
+      })
+      .catch((error) => {
+        console.log("get메소드 에러");
+        console.log(error);
+        alert("요청에 실패하였습니다.");
+      });
+  }
 
   // function downloadGet() {
   //   console.log("call getMethod()");
@@ -423,6 +423,7 @@ function BookMarker({ url, duration, bookmarker }) {
     } else {
       if (markers.length !== 0) {
         bookscroll.lastChild.scrollIntoView();
+        goToPostDB();
       }
       // console.log(bookscroll.scrollWidth);
     }

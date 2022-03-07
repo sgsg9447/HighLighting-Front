@@ -10,11 +10,11 @@
     background-color: none;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: #8d6ffa;
+    background-color: #555;
     border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: rgb(130, 129, 129);
   }
   ::-webkit-scrollbar-button:start:decrement {
     width: 16px;
@@ -36,6 +36,7 @@
     display: flex;
     overflow-x: scroll;
     overflow-y: hidden;
+    padding-bottom: 17px;
     // justify-content: space-evenly;
   }
 }
@@ -68,11 +69,11 @@
 }
 
 .saveButton {
-  color: black; /* Text color */
+  color: white; /* Text color */
 
   background-color: transparent; /* Remove background color */
 
-  border: 2px solid black; /* Border thickness, line style, and color */
+  border: 2px solid white; /* Border thickness, line style, and color */
 
   border-radius: 5px; /* Adds curve to border corners */
 
@@ -82,15 +83,17 @@
 .bookmarkTime {
   font-size: 23px;
   text-align: center;
+  margin-top: 5px;
 }
 
 .tt {
-  height: 50px;
+  height: 35px;
 }
 
 .ttt {
   text-align: center;
-  height: 50px;
+  height: 35px;
+  overflow: auto;
 }
 
 .parent {
