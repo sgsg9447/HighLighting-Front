@@ -207,7 +207,7 @@ const ControllerButtonBox = ({ url, duration }) => {
         </button>
         <input
           className="InputBar"
-          placeholder="키워드 입력 부분"
+          placeholder="키워드 입력"
           onChange={onChangeInput}
           value={keywords}
           onFocus={() => {
