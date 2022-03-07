@@ -214,10 +214,11 @@ function BookMarker({ url, duration, bookmarker }) {
         text: "",
         startPointer: replayRef.current.startTime,
         endPointer: replayRef.current.endTime,
-        completed: false,
+        completed: true,
         isPlaying: false,
       };
       setMarkers([...markers].concat(newMarker));
+      goToPostDB();
     } else {
       console.log(`isStart`, isStart);
       if (isStart) {
@@ -235,11 +236,12 @@ function BookMarker({ url, duration, bookmarker }) {
           text: "",
           startPointer: pointer,
           endPointer: null,
-          completed: false,
+          completed: true,
           isPlaying: false,
         };
         setIsStart(true);
         setMarkers([...markers].concat(newMarker));
+        goToPostDB();
       }
     }
 
@@ -275,6 +277,7 @@ function BookMarker({ url, duration, bookmarker }) {
     setMarkers(updateMarkers);
     setEditingText("");
     setAddMarker(null);
+    goToPostDB();
   }
 
   function playVideo(id) {
@@ -423,7 +426,6 @@ function BookMarker({ url, duration, bookmarker }) {
     } else {
       if (markers.length !== 0) {
         bookscroll.lastChild.scrollIntoView();
-        goToPostDB();
       }
       // console.log(bookscroll.scrollWidth);
     }

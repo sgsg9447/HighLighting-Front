@@ -1015,7 +1015,7 @@ const DataChart = (props) => {
     }
   }, [pointer]);
 
-  /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
+  /* 북마크가 체크되면 해당 시간 범위 그래프에 색 칠하기 */
   useEffect(() => {
     // chartListRef 값이 없으면 리턴
     if (!chartListRef.current || !receivedDataSetList) return;
@@ -1037,6 +1037,10 @@ const DataChart = (props) => {
           start = Math.floor( startTime / (STEP_X_AUDIO / 1000))
           end = Math.floor( endTime / (STEP_X_AUDIO / 1000))
         }
+        else if (i === 3) {
+          start = Math.floor( startTime / (STEP_X_CHAT_SUPER / 1000))
+          end = Math.floor( endTime / (STEP_X_CHAT_SUPER / 1000))
+        }
         else if (i === 4) {
           start = Math.floor( startTime / (STEP_X_CHAT_KEYWORDS / 1000))
           end = Math.floor( endTime / (STEP_X_CHAT_KEYWORDS / 1000))
@@ -1054,7 +1058,7 @@ const DataChart = (props) => {
             .add(slicedList[4].map((high, i) => ({
             position: high.x,
             high: high.y,
-            low: high.y
+            low: 0
             })))
           }
           else {
@@ -1062,7 +1066,7 @@ const DataChart = (props) => {
             .add(slicedList[0].map((high, i) => ({
               position: high.x,
               high: high.y,
-              low: high.y
+              low: 0
             })))
           }
         }
