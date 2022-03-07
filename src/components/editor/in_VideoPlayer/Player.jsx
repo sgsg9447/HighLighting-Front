@@ -12,6 +12,8 @@ import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 function Player({ url }) {
   const {
+    callSeekTo,
+    pointer,
     changePointer,
     isplaying,
     setIsplaying,
@@ -81,6 +83,32 @@ function Player({ url }) {
     setIsplaying(loop);
   };
 
+  // 좌, 우 화살표 재생 이동 함수
+  function arrowPlayBarMove(direction, padding = 10) {
+    setSeeking(true);
+    let playTime;
+    if (direction === "LEFT") {
+      playTime = pointer - padding;
+    } else if (direction === "RIGHT") {
+      playTime = pointer + padding;
+    } else {
+      return;
+    }
+    let playTimeRatio = playTime / duration;
+    callSeekTo(playTimeRatio);
+    setPlayed(parseFloat(playTimeRatio));
+    changePointer(playTime);
+    setSeeking(false);
+  }
+
+  function handlerLeft() {
+    arrowPlayBarMove("LEFT");
+  }
+
+  function handlerRight() {
+    arrowPlayBarMove("RIGHT");
+  }
+
   return (
     <div>
       <div className="player-wrapper">
@@ -134,17 +162,12 @@ function Player({ url }) {
         </div>
 
         <div className="controll-button">
-          <ArrowBackIosNewRoundedIcon  />
+          <ArrowBackIosNewRoundedIcon onClick={handlerLeft} />
           <div onClick={handlePlayPause}>
-            {isplaying ? (
-              <PauseRoundedIcon />
-            ) : (
-              <PlayArrowRoundedIcon  />
-            )}
+            {isplaying ? <PauseRoundedIcon /> : <PlayArrowRoundedIcon />}
           </div>
-          <ArrowForwardIosRoundedIcon  />
+          <ArrowForwardIosRoundedIcon onClick={handlerRight} />
         </div>
-        
       </div>
 
       <div className="hide">
