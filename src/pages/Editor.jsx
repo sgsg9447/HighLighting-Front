@@ -175,7 +175,10 @@ function Editor() {
             </div>
             <div className="lowerLayer">
               <div className="controller_button_box">
-                <ControllerButtonBox />
+                <ControllerButtonBox
+                  url={url ? url : propUrl}
+                  duration={propDuration}
+                />
               </div>
             </div>
           </div>
