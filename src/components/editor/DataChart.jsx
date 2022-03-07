@@ -15,6 +15,7 @@ import {
   SolidLine,
   SolidFill,
   ColorHEX,
+  customComplexTheme,
 } from "@arction/lcjs";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
@@ -188,6 +189,12 @@ const DataChart = (props) => {
       },
     });
 
+        // .setStrokeStyle(new SolidLine({
+        //   thickness: 1,
+        //   fillStyle: new SolidFill({ color: ColorHEX('#653bfc') })
+        // }))
+    // const myTheme = customComplexTheme(Themes.light, {chart: {fill: {color: ColorHex('#FF7')}}})
+    // const myTheme = customTheme(Themes.dark, { dashboardBackGroundFillStyle: new SolidFill({color: ColorHEX('#f121')}) } )
     // 대쉬보드 생성
     const dashboard = lcjs
       .Dashboard({
@@ -195,7 +202,7 @@ const DataChart = (props) => {
         numberOfColumns: 1,
         numberOfRows: CHANNELS,
         disableAnimations: true,
-        theme: Themes.darkMagenta,
+        // theme: myTheme,
       })
       .setHeight(500, 1000);
 
@@ -215,10 +222,16 @@ const DataChart = (props) => {
       yThickness = 80
     ) {
       let name = title;
+      // 차트 배경 색 임의 지정
+      const myTheme = customComplexTheme(Themes.darkMagenta, {chart: {
+        backGroundFill: {color: ColorHEX('#272c34'), fillType: "solid"},
+        panelFill: {color: ColorHEX('#272c34'), fillType: "solid"}
+      }})
       const chart = dashboard
         .createChartXY({
           columnIndex: 0,
           rowIndex: i,
+          theme: myTheme,
         })
         .setPadding({ right: padding });
 
@@ -322,7 +335,11 @@ const DataChart = (props) => {
         })
         // 차트 y축 타이틀
         .setName(`${name}`)
-        .setCursorInterpolationEnabled(false);
+        .setCursorInterpolationEnabled(false)
+        // .setStrokeStyle(new SolidLine({
+        //   thickness: 1,
+        //   fillStyle: new SolidFill({ color: ColorHEX('#653bfc') })
+        // }))
       return series;
     });
 
