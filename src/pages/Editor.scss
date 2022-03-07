@@ -48,11 +48,11 @@ body {
 
       .lowerLayer {
         display: flex;
-        flex-direction: row;
-        padding-top: 0.5rem;
+        flex-direction: column;
+        padding-top: 0.8rem;
         padding-left: 1rem;
         padding-right: 0.5rem;
-        padding-bottom: 0.6rem;
+        padding-bottom: 0.8rem;
         border-radius: 0.3rem;
         background-color: #1b1b24;
       }
@@ -86,5 +86,24 @@ body {
       border-radius: 0.5rem;
       background-color: #1b1b24;
     }
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadein {
+  /* Safari and Chrome */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
