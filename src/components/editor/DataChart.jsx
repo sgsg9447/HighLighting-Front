@@ -862,7 +862,7 @@ const DataChart = (props) => {
     playingId = undefined,
     markerList = undefined
   ) {
-    console.log("replayBand", startTime, endTime, playingId, markerList);
+    // console.log("replayBand", startTime, endTime, playingId, markerList);
     if (pointer === endTime + 1) {
       // id, markers 안 받았으면 start로 돌아가기
       if (!playingId || !markerList) {
