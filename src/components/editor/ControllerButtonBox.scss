@@ -3,7 +3,7 @@
   flex-direction: space-between;
 
   .superchat {
-    width: 8rem;
+    width: 9rem;
     height: 4rem;
     background-color: #935ef4;
     border: none;
@@ -15,7 +15,7 @@
     text-align: center;
     cursor: pointer;
 
-    span {
+    .ON {
       cursor: pointer;
       display: inline-block;
       position: relative;
@@ -30,41 +30,15 @@
         transition: 0.2s;
       }
     }
-    &:hover span {
-      padding-right: 40px;
-    }
 
-    &:hover span:after {
-      opacity: 1;
-      right: 0;
-    }
-    &:active {
-      transform: scale(0.9);
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
-    }
-  }
-
-  .button1 {
-    width: 10rem;
-    height: 4rem;
-    background-color: #935ef4;
-    border: none;
-    color: white;
-    font-size: 27px;
-    margin-right: 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    text-align: center;
-    cursor: pointer;
-
-    span {
+    .OFF {
       cursor: pointer;
       display: inline-block;
       position: relative;
       transition: 0.2s;
 
       &:after {
-        content: "\00bb";
+        content: "OFF";
         position: absolute;
         opacity: 0;
         top: 0;
@@ -72,8 +46,12 @@
         transition: 0.2s;
       }
     }
-    &:hover span {
-      padding-right: 20px;
+    &:hover .ON {
+      padding-right: 50px;
+    }
+
+    &:hover .OFF {
+      padding-right: 60px;
     }
 
     &:hover span:after {
@@ -86,7 +64,7 @@
     }
   }
 
-  .button2 {
+  .keyWord {
     width: 12rem;
     height: 4rem;
     background-color: #691df7;
@@ -136,20 +114,20 @@
     border: 3px solid #935ef4;
     background-color: #1b1b24;
     border-radius: 0.5rem;
-    width: 12.5rem;
+    width: 11.5rem;
     height: 4rem;
     color: white;
+  }
 
-    &:focus {
-      outline: 3px solid #935ef4;
-      background-color: #1b1b24;
-      color: white;
-    }
+  &:focus {
+    outline: 3px solid #935ef4;
+    background-color: #1b1b24;
+    color: white;
+  }
 
-    &:-webkit-autofill {
-      -webkit-box-shadow: 0 0 0 1000px white inset;
-      -webkit-text-fill-color: #fff !important;
-    }
+  &:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -webkit-text-fill-color: #fff !important;
   }
 
   //
