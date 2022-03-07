@@ -20,7 +20,7 @@ const SigninPage = (props) => {
   const history = useHistory();
 
   // const { server_addr } = useResult();
-  const server_addr = "http://192.249.28.16:5000";
+  const server_addr = "http://192.249.28.32:5000";
 
   // 통상 회원가입 핸들러.
   const SigninHandler = (e) => {
