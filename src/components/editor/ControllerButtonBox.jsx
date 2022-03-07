@@ -2,6 +2,9 @@ import React, { useCallback, useState, useRef, useEffect } from "react";
 import "./ControllerButtonBox.scss";
 import useResult from "../../hooks/useResult";
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
+import Modal from "../Header/Modal";
+
+
 
 const ControllerButtonBox = ({ url, duration }) => {
   const { replayRef,
@@ -21,6 +24,22 @@ const ControllerButtonBox = ({ url, duration }) => {
 
   const [keywords, setKeywords] = useState("");
   const isTypingRef = useRef(false);
+
+  // 내보내기 관련
+  const fileMp3Html = useRef(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  // const [outName, setOutName] = useState("");
+
+    // 모달창
+    const openModal = () => {
+      document.body.style.overflow = "hidden";
+      setModalOpen(true);
+    };
+    const closeModal = () => {
+      document.body.style.overflow = "unset";
+      setModalOpen(false);
+    };
+  
 
   // 슈퍼챗 버튼 이벤트
   function handleIsChatSuper() {
@@ -70,13 +89,15 @@ const ControllerButtonBox = ({ url, duration }) => {
   // 좌우 화살표 키 누를 때 이동 시간(초)
   const ARROW_MOVING_TIME = 5;
   // 좌, 우 화살표 재생 이동 함수
-  function arrowPlayBarMove(isLeft, padding = 10) {
+  function arrowPlayBarMove(direction, padding = 10) {
     setSeeking(true);
     let playTime;
-    if (isLeft) {
+    if (direction === 'LEFT') {
       playTime = pointer - padding;
-    } else {
+    } else if (direction === 'RIGHT') {
       playTime = pointer + padding;
+    } else {
+      return;
     }
     let playTimeRatio = playTime / duration;
     callSeekTo(playTimeRatio);
@@ -97,10 +118,10 @@ const ControllerButtonBox = ({ url, duration }) => {
             setIsplaying(!isplaying);
             return;
           case "ArrowLeft":
-            arrowPlayBarMove(true, ARROW_MOVING_TIME);
+            arrowPlayBarMove('LEFT', ARROW_MOVING_TIME);
             return;
           case "ArrowRight":
-            arrowPlayBarMove(false, ARROW_MOVING_TIME);
+            arrowPlayBarMove('RIGHT', ARROW_MOVING_TIME);
             return;
           case "ShiftLeft":
             replayRef.current.subKey.isShiftKey = true;
@@ -200,12 +221,24 @@ const ControllerButtonBox = ({ url, duration }) => {
           }}
         />
         {/* </form> */}
-        <button className="button3">
+        <button className="button3" onClick={replayRef?.current ? replayRef.current.saveMarker : null}>
           <span>컷 만들기</span>
         </button>
-        <button className="button4">
+        <button className="button4" onClick={openModal}>
           <span>내보내기</span>
         </button>
+        {modalOpen && (
+            <Modal
+              // ref={modalEl}
+              open={modalOpen}
+              close={closeModal}
+              Header="내보내기"
+            >
+              <p>{replayRef?.current ? replayRef.current.cutMarker.message : null}</p>
+              <input ref={fileMp3Html} id="mp4" type="file" accept=".mp4" />
+              <button onClick={replayRef?.current ? replayRef.current.cutMarker.doExport : null}>Start</button>
+            </Modal>
+          )}
       </div>
 
       {/* 체크용 */}
