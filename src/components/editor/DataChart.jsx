@@ -86,6 +86,7 @@ const DataChart = (props) => {
     isKeywordsDownload,
     receivedDataSetList,
     setReceivedDataSetList,
+    server_addr,
   } = useResult();
 
   const axisListRef = useRef({ x: undefined, y: undefined, time: undefined });
@@ -1014,21 +1015,58 @@ const DataChart = (props) => {
   /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
   useEffect(() => {
     // chartListRef 값이 없으면 리턴
-    if (!chartListRef.current) return;
+    if (!chartListRef.current || !receivedDataSetList) return;
 
     // 밴드 생성해서 리스트 담기
     function addBookMarkBand(startTime, endTime) {
       const chartList = chartListRef.current;
-      const newBandList = chartList.map((chart) =>
-        chart.getDefaultAxisX().addBand().dispose()
-      );
-      newBandList.forEach((band, i) => {
-        band
+      const slicedList = receivedDataSetList.map((list, i) => {
+        let start, end;
+        if (i === 0) {
+          start = Math.floor( startTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+          end = Math.floor( endTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+        }
+        else if (i === 1) {
+          start = Math.floor( startTime / (STEP_X_VIDEO / 1000))
+          end = Math.floor( endTime / (STEP_X_VIDEO / 1000))
+        }
+        else if (i === 2) {
+          start = Math.floor( startTime / (STEP_X_AUDIO / 1000))
+          end = Math.floor( endTime / (STEP_X_AUDIO / 1000))
+        }
+        else if (i === 4) {
+          start = Math.floor( startTime / (STEP_X_CHAT_KEYWORDS / 1000))
+          end = Math.floor( endTime / (STEP_X_CHAT_KEYWORDS / 1000))
+        }
+        return list.slice(start, end);
+      })
+
+      const newMarkedList = chartList.map((chart, i) => {
+        if (i === 0) {
+          return chart.getDefaultAxisX().addBand().dispose();
+        }
+        else {
+          return chart.addAreaRangeSeries();
+        }
+      });
+      newMarkedList.forEach((band, i) => {
+        if (i === 0) {
+          band
           .restore()
           .setValueStart(startTime * 1000)
           .setValueEnd(endTime * 1000);
+        }
+        else {
+          band
+          .add(slicedList[i].map((high, i) => ({
+          position: high.x,
+          high: high.y,
+          low: high.y + 1
+          // low: data[1][i].y + 90
+          })))
+        }
       });
-      return newBandList;
+      return newMarkedList;
     }
 
     const selectedMarkerList = findSelectedMarkers(markers);
@@ -1044,9 +1082,6 @@ const DataChart = (props) => {
       );
     };
   }, [markers]);
-
-    /* 북마크가 체크되면 해당 범위 밴드로 보여주기 */
-
 
   /* 마우스 커서 옆에 재생 프리뷰 이미지 툴팁 위치*/
   const handleMouseMoveInChart = (e) => {
@@ -1143,22 +1178,13 @@ const DataChart = (props) => {
         style={{ zIndex: 19 }}
         onMouseMove={handleMouseMoveInChart}
       ></div>
-      <div
-        id="result"
-        ref={imgTipRef}
-        style={{
-          display: tip ? "block" : "none",
-          position: "absolute",
-          background: "url(./bts.jpg)",
-          width: "177px",
-          height: "100px",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: `${
-            -177 * Math.floor(Math.floor(tip % 60) / 10) - 1
-          }px  ${-100 * Math.floor(tip / 60)}px`,
-          zIndex: "20",
-        }}
-      ></div>
+      {url ? <div id="result" ref={imgTipRef} style={{
+        display: (tip ? 'block' : 'none'), position: "absolute", background: `url(${server_addr}/${url?.split("=")[1]}.jpg)`,
+        width: "176px", height: "100px", backgroundRepeat: "no-repeat",
+        backgroundPosition: 
+          `${-177 * Math.floor(Math.floor(tip % 60) / 10) - 1}px  ${-100 * Math.floor(tip / 60)}px`,
+        zIndex: '20'
+      }}></div> : null}
     </>
   );
 };
