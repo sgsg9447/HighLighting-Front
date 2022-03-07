@@ -28,7 +28,7 @@ const CHANNELS = 3;
 // const DATA_PER_CHANNEL = 5 * 1000 * 1000
 
 // 리플레이 재생 시 1회만 재생
-let REPLAY_ONLE_ONCE = true;
+let REPLAY_ONLE_ONCE = false;
 
 // 각 차트별로 x개수와 간격이 다르지만, 같은 시간을 가리키도록 하자.
 // STEP_X: X좌표 간격(1밀리초)
@@ -1026,24 +1026,24 @@ const DataChart = (props) => {
       const slicedList = receivedDataSetList.map((list, i) => {
         let start, end;
         if (i === 0) {
-          start = Math.floor( startTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
-          end = Math.floor( endTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+          start = Math.round( startTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
+          end = Math.ceil( endTime / (STEP_X_CHAT_DISTRIBUTION / 1000))
         }
         else if (i === 1) {
-          start = Math.floor( startTime / (STEP_X_VIDEO / 1000))
-          end = Math.floor( endTime / (STEP_X_VIDEO / 1000))
+          start = Math.round( startTime / (STEP_X_VIDEO / 1000))
+          end = Math.ceil( endTime / (STEP_X_VIDEO / 1000))
         }
         else if (i === 2) {
-          start = Math.floor( startTime / (STEP_X_AUDIO / 1000))
-          end = Math.floor( endTime / (STEP_X_AUDIO / 1000))
+          start = Math.round( startTime / (STEP_X_AUDIO / 1000))
+          end = Math.ceil( endTime / (STEP_X_AUDIO / 1000))
         }
         else if (i === 3) {
-          start = Math.floor( startTime / (STEP_X_CHAT_SUPER / 1000))
-          end = Math.floor( endTime / (STEP_X_CHAT_SUPER / 1000))
+          start = Math.round( startTime / (STEP_X_CHAT_SUPER / 1000))
+          end = Math.ceil( endTime / (STEP_X_CHAT_SUPER / 1000))
         }
         else if (i === 4) {
-          start = Math.floor( startTime / (STEP_X_CHAT_KEYWORDS / 1000))
-          end = Math.floor( endTime / (STEP_X_CHAT_KEYWORDS / 1000))
+          start = Math.round( startTime / (STEP_X_CHAT_KEYWORDS / 1000))
+          end = Math.ceil( endTime / (STEP_X_CHAT_KEYWORDS / 1000))
         }
         return list.slice(start, end);
       })
