@@ -1,29 +1,18 @@
-import React, { useEffect, useState } from "react";
-
 import useResult from "../../hooks/useResult";
 import "./DataChartController.scss";
 
-function DataChartController({ url, duration }) {
+function DataChartController() {
   const { isChatKeywords } = useResult();
-  const [show, setShow] = useState();
-
-  useEffect(() => {
-    if (isChatKeywords === 0) {
-      setShow(1);
-    } else {
-      setShow(0);
-    }
-  }, [isChatKeywords]);
 
   return (
     <>
       {isChatKeywords ? (
-        <div className={"container__chat" + " " + (!show ? "show" : "")}>
+        <div className={"container__chat"}>
           <h2 className="header">📈 채팅 빈도</h2>
           <h3 className="content">높을수록 시청자 반응이 좋은 장면이에요</h3>
         </div>
       ) : (
-        <div className={"container__chat" + " " + (show ? "show" : "")}>
+        <div className={"container__chat show"}>
           <h2 className="header">🏴 키워드 감지</h2>
           <h3 className="content">
             검색한 키워드가 얼마나 등장했는지 보여줘요

@@ -10,7 +10,9 @@
   padding: 0.5rem;
   text-align: center;
   font-size: 16px;
+  padding-bottom: 1.1rem;
 }
+
 .container__chat {
   width: 100%;
   background-color: #935ef4;
@@ -18,11 +20,6 @@
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
-  animation: fadein 1s;
-  -webkit-animation: fadein 1s;
-  animation-delay: 0.1s;
-  animation-fill-mode: forwards;
-  opacity: 0;
 }
 
 .container__video {
@@ -31,11 +28,11 @@
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
-  animation: fadein 1s;
-  -webkit-animation: fadein 1s;
-  animation-delay: 0.2s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+  // animation: fadein 1s;
+  // -webkit-animation: fadein 1s;
+  // animation-delay: 0.2s;
+  // animation-fill-mode: forwards;
+  // opacity: 0;
 }
 
 .container__audio {
@@ -44,11 +41,11 @@
   height: 166 px;
   max-height: 200 px;
   color: rgb(255, 255, 255);
-  animation: fadein 1s;
-  -webkit-animation: fadein 1s;
-  animation-delay: 0.3s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+  // animation: fadein 1s;
+  // -webkit-animation: fadein 1s;
+  // animation-delay: 0.3s;
+  // animation-fill-mode: forwards;
+  // opacity: 0;
 }
 
 .hide {
@@ -56,9 +53,9 @@
 }
 
 .show {
-  animation: fadein 1s;
-  -webkit-animation: fadein 1s;
-  animation-delay: 0.1s;
+  animation: fadein 0.5s;
+  -webkit-animation: fadein 0.5s;
+  animation-delay: 0.2s;
   animation-fill-mode: forwards;
   opacity: 0;
 }
@@ -77,7 +74,7 @@
 @-webkit-keyframes fadein {
   /* Safari and Chrome */
   from {
-    transform: translateY(100px);
+    transform: translateY(50px);
     opacity: 0;
   }
   to {
