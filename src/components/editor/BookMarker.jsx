@@ -161,7 +161,9 @@ function BookMarker({ url, duration, bookmarker }) {
           "outfile.mp4",
         ];
         await ffmpeg.run(...args);
-        replayRef.current.cutMarker.message = `Complete ${i + 1}개 파일을 받았습니다.`;
+        replayRef.current.cutMarker.message = `Complete ${
+          i + 1
+        }개 파일을 받았습니다.`;
         // setMessage(`Complete ${i + 1}개 파일을 받았습니다.`);
         console.log("outName", outName);
         const data = ffmpeg.FS("readFile", "outfile.mp4");
@@ -417,8 +419,10 @@ function BookMarker({ url, duration, bookmarker }) {
   return (
     <>
       <div className="BookMarkerContainer">
-        <h2>컷 보관함</h2>
-        <h3>드래그로 선택한 구간을 컷으로 저장할 수 있어요 (Ctrl+Shift+S)</h3>
+        <h2>📁 컷 보관함</h2>
+        <h3>
+          드래그로 선택한 구간을 컷으로 저장할 수 있어요 (단축키 : Ctrl+Shift+S 입력)
+        </h3>
         <div className="hello">
           <div className="card-container">
             {markers.map((marker) => (
