@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import EditorTimePointerContext from "../../contexts/EditorTimePointerContext";
 import useResult from "../../hooks/useResult";
@@ -10,79 +10,13 @@ function ChatViewer({ url, duration }) {
     replayRef,
     pointer,
     isplaying,
-    setIsplaying,
     setSeeking,
     callSeekTo,
     setPlayed,
     changePointer,
   } = React.useContext(EditorTimePointerContext);
-  const {
-    requestKeywordsData,
-    isChatSuper,
-    setIsChatSuper,
-    isChatKeywords,
-    setIsChatKeywords,
-  } = useResult();
-  const [keywords, setKeywords] = useState("");
-  // const [isTyping, setIsTyping] = useState(false);
-  // const [isKeywordInputOpen, setIsKeywordInputOpen] = useState(false);
+  const { isChatKeywords } = useResult();
   const isTypingRef = useRef(false);
-  const inputRef = useRef();
-  // console.log(url);
-
-  function handleIsChatSuper() {
-    if (isChatSuper === -1) setIsChatSuper(false);
-    else {
-      setIsChatSuper((prev) => !prev);
-    }
-  }
-
-  function handleIsChatKeywords() {
-    // isChatKeywords ? 닫힌상태 : 열린상태
-    if (isChatKeywords === -1) {
-      setIsChatKeywords((prev) => prev + 1);
-      isTypingRef.current = true;
-    } else {
-      if (!isChatKeywords) {
-        isTypingRef.current = false;
-      }
-      setIsChatKeywords((prev) => (prev ? 0 : prev + 1));
-    }
-  }
-
-  // 기존 제출 버튼(필요없을 수도 있음)
-  function postUrlKeyword(e) {
-    console.log("url", url, "keywords", keywords);
-    // getMethodKeywords(e);
-    requestKeywordsData(url, keywords);
-    localStorage.setItem("localSearchKeywords", keywords);
-    inputRef.current.focus();
-  }
-
-  const onChangeInput = useCallback((e) => {
-    console.log("onChangeInput");
-    isTypingRef.current = true;
-    const tmpKeywords = e.target.value;
-    setKeywords(tmpKeywords);
-  }, []);
-
-  // form 형식, Enter로도 제출가능, 인풋창 안으로 커서유지
-  const onSubmitForm = (e) => {
-    console.log("onSubmitForm");
-    e.preventDefault();
-    if (keywords === "") {
-      setKeywords("키워드를 입력해주세요.");
-    } else {
-      console.log("url", url, "keywords", keywords);
-      // getMethodKeywords(e);
-      requestKeywordsData(url, keywords);
-      localStorage.setItem("localSearchKeywords", keywords);
-      const cursor = inputRef.current.focus();
-      console.log(cursor);
-      inputRef.current.focus();
-      isTypingRef.current = false;
-    }
-  };
 
   // 좌우 화살표 키 누를 때 이동 시간(초)
   const ARROW_MOVING_TIME = 5;
@@ -106,16 +40,8 @@ function ChatViewer({ url, duration }) {
   useEffect(() => {
     const handleKeyboardDown = (event) => {
       if (isChatKeywords || !isTypingRef.current) {
-        // console.log('isTypingRef.current', isTypingRef.current)
-        // console.log('keyEvent', event)
-        // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
-        // console.log('event.ctrlKey', event.ctrlKey)
         const keyCode = event.code;
         switch (keyCode) {
-          case "Space":
-            if (isTypingRef.current) return;
-            setIsplaying(!isplaying);
-            return;
           case "ArrowLeft":
             arrowPlayBarMove(true, ARROW_MOVING_TIME);
             return;
@@ -124,11 +50,9 @@ function ChatViewer({ url, duration }) {
             return;
           case "ShiftLeft":
             replayRef.current.subKey.isShiftKey = true;
-            // console.log('shift keydown')
             return;
           case "ControlLeft":
             replayRef.current.subKey.isCtrlKey = true;
-            // console.log('ctrl keydown')
             return;
           case "KeyS":
             if (
@@ -138,7 +62,6 @@ function ChatViewer({ url, duration }) {
               replayRef.current.saveMarker();
             }
             replayRef.current.wordKey.isS = true;
-            // console.log('K keydown')
             return;
           default:
             return;
@@ -155,25 +78,16 @@ function ChatViewer({ url, duration }) {
   useEffect(() => {
     const handleKeyboardUp = (event) => {
       if (isChatKeywords || !isTypingRef.current) {
-        // console.log('isTypingRef.current', isTypingRef.current)
-        // console.log('keyEvent', event)
-        // event.code = 'Space', 'ArrowLeft', 'ArrowRight'
-
         const keyCode = event.code;
         switch (keyCode) {
           case "ShiftLeft":
             replayRef.current.subKey.isShiftKey = false;
-            // console.log('shift keyup')
             break;
           case "ControlLeft":
             replayRef.current.subKey.isCtrlKey = false;
-            // console.log('ctrl keyup')
             break;
           case "KeyS":
             replayRef.current.wordKey.isS = false;
-            // console.log('S keyup')
-            break;
-          case "Space":
             break;
           case "ArrowLeft":
             break;
@@ -192,8 +106,7 @@ function ChatViewer({ url, duration }) {
 
   // 키워드 검색커서 벗어나기 위해 배경 클릭하면, 키보드 재생/중지 가능하도록 이벤트
   useEffect(() => {
-    const handleClickOutside = ({ target }) => {
-      // console.log('click', target.className)
+    const handleClickOutside = () => {
       isTypingRef.current = false;
       return window.removeEventListener("click", handleClickOutside);
     };
@@ -253,40 +166,6 @@ function ChatViewer({ url, duration }) {
             ) : null
           )}
         </div>
-      </div>
-
-      <div>
-        <button
-          className="btn__ChatSuper"
-          onClick={handleIsChatSuper}
-          value={isChatSuper}
-        >
-          {isChatSuper ? "슈퍼챗" : "슈퍼챗 OFF"}
-        </button>
-        <button className="btn__ChatKeyWord" onClick={handleIsChatKeywords}>
-          {isChatKeywords ? "키워드" : "키워드 검색"}
-        </button>
-        {isChatKeywords ? null : (
-          <form onSubmit={onSubmitForm}>
-            <input
-              className="keywordInputBar"
-              ref={inputRef}
-              placeholder="여러개 입력 가능! , 로 구분"
-              value={keywords}
-              onChange={onChangeInput}
-              onFocus={(e) => {
-                isTypingRef.current = true;
-              }}
-            />
-            <button type="submit" onClick={postUrlKeyword}>
-              검색
-            </button>
-            <h3 className="hide">
-              [검색 키워드]:{" "}
-              {keywords ? keywords : localStorage.getItem("localSearchKeyword")}
-            </h3>
-          </form>
-        )}
       </div>
     </div>
   );
