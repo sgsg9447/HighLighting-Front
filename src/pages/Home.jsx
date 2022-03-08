@@ -25,11 +25,11 @@ const Home = () => {
   });
 
   function linkCheck() {
-    if (url === null) {
+    if (url === undefined) {
       alert("빈 값입니다. 입력창에 유튜브 주소를 입력해 주세요.");
       focusUrl();
       return;
-    } else if (url !== null) {
+    } else if (url !== undefined) {
       const gapCheck = url.split(" ");
       const correctLink = url.substr(0, 32);
       const backAddressCheck = url.split("=");
@@ -42,7 +42,7 @@ const Home = () => {
       }
       if (correctLink !== "https://www.youtube.com/watch?v=") {
         alert(
-          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요1."
+          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
         );
         console.log(correctLink);
         focusUrl();
@@ -51,7 +51,7 @@ const Home = () => {
       if (backAddressCheck[1].length !== 11) {
         console.log(backAddressCheck, backAddressCheck[1].length);
         alert(
-          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요2."
+          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
         );
         focusUrl();
         return;
