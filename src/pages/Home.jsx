@@ -175,7 +175,9 @@ const Home = () => {
                 onChange={onChangeUrl}
                 id="link"
                 onKeyPress={(e) => {
-                  console.log(e);
+                  if (e.key === "Enter") {
+                    linkCheck();
+                  }
                 }}
               />
               <h3> </h3>

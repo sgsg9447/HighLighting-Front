@@ -208,6 +208,11 @@ const ControllerButtonBox = ({ url, duration }) => {
               isTypingRef.current = false;
               console.log("블러 이벤트입니다.", isTypingRef.current);
             }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                keywordSearchEvent();
+              }
+            }}
           />
           <button className="Search">
             <span onClick={keywordSearchEvent}>검색</span>
