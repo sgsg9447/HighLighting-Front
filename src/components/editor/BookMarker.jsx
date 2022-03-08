@@ -419,7 +419,7 @@ function BookMarker({ url, duration, bookmarker }) {
   //     });
   // }
 
-  const mounted = useRef([false]);
+  const mounted = useRef(false);
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true;
