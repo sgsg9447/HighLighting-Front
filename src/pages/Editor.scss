@@ -110,8 +110,8 @@ body {
       z-index: 11;
       border-radius: 0.5rem;
       background-color: #1b1b24;
-      animation: bottom 0.8s;
-      -webkit-animation: bottom 0.8s;
+      animation: bottomTwo 0.8s;
+      -webkit-animation: bottomTwo 0.8s;
       animation-delay: 0.75s;
       animation-fill-mode: forwards;
       opacity: 0;
@@ -120,6 +120,17 @@ body {
 }
 
 @keyframes bottom {
+  0% {
+    transform: translateY(150px);
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bottomTwo {
   0% {
     opacity: 0;
   }
