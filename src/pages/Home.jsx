@@ -1,10 +1,38 @@
 import React, { useState, useRef, useCallback } from "react";
-
+import classnames from "classnames";
 import useResult from "../hooks/useResult";
 import useRoute from "../hooks/useRoute";
 import Header from "../components/Header/Header";
 import { GiPlayButton } from "react-icons/gi";
 import "./Home.scss";
+
+const GuideLineStep = {
+  Zero: "Zero",
+  First: "First",
+  Second: "Second",
+  Third: "Third",
+};
+
+const GuideLineInfoList = {
+  [GuideLineStep.Zero]: {
+    title: "0단계 - 홈페이지",
+    description:
+      "다시보기 영상 링크만으로 영상을 분석하여 편집에 도움이 되는 데이터들을 제공합니다.",
+  },
+  [GuideLineStep.First]: {
+    title: "1단계 - 편집점 분석",
+    description: "url을 입력하면 데이터 분석에 어느정도 시간이 소요됩니다.",
+  },
+  [GuideLineStep.Second]: {
+    title: "2단계 - 결과 페이지",
+    description: "결과 페이지에서는 다양한 기능을 제공합니다.",
+  },
+  [GuideLineStep.Third]: {
+    title: "3단계 - 북마크 기능",
+    description:
+      "원하는 부분을 기록 ~ 종료함으로써 북마크 형식으로 남길 수 있습니다.",
+  },
+};
 
 const Home = () => {
   const inputValue = document.getElementById("link");
@@ -13,10 +41,7 @@ const Home = () => {
   const { logged, onLogout } = useResult();
   const { url, setUrl } = useResult();
   const { requestResult } = useRoute();
-  const [active0, setActive0] = useState(true);
-  const [active1, setActive1] = useState(false);
-  const [active2, setActive2] = useState(false);
-  const [active3, setActive3] = useState(false);
+  const [step, setStep] = useState(GuideLineStep.Zero);
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
@@ -24,7 +49,7 @@ const Home = () => {
     setUrl(value);
   });
 
-  function linkCheck() {
+  const linkCheck = () => {
     if (url === undefined) {
       alert("빈 값입니다. 입력창에 유튜브 주소를 입력해 주세요.");
       focusUrl();
@@ -58,7 +83,7 @@ const Home = () => {
       }
       sendUrl();
     }
-  }
+  };
 
   function sendUrl(e) {
     if (url) {
@@ -72,54 +97,14 @@ const Home = () => {
     urlInput.current.focus();
   }
 
-  const onClickGuide = (e) => {
-    const id = e.target.id;
-    switch (id) {
-      case "zero":
-        activeZero();
-        break;
-      case "first":
-        activeFirst();
-        break;
-      case "second":
-        activeSecond();
-        break;
-      case "third":
-        activeThird();
-        break;
-      default:
-    }
+  const onClickGuide = (type) => {
+    return () => {
+      setStep(type);
+    };
   };
 
   const viewChange = () => {
     document.getElementById("guidline").scrollIntoView({ behavior: "smooth" });
-  };
-  const activeZero = () => {
-    setActive0(true);
-    setActive1(false);
-    setActive2(false);
-    setActive3(false);
-  };
-
-  const activeFirst = () => {
-    setActive0(false);
-    setActive1(true);
-    setActive2(false);
-    setActive3(false);
-  };
-
-  const activeSecond = () => {
-    setActive0(false);
-    setActive1(false);
-    setActive2(true);
-    setActive3(false);
-  };
-
-  const activeThird = () => {
-    setActive0(false);
-    setActive1(false);
-    setActive2(false);
-    setActive3(true);
   };
 
   return (
@@ -209,115 +194,60 @@ const Home = () => {
               <h2 id="guidline"> 단계별 가이드라인 </h2>
             </div>
             <ul className="Home_list">
-              <li className="Home_list-item">
-                <div>
-                  <p
-                    className={
-                      "Home_list-content" + " " + (active0 ? "is-active" : "")
-                    }
-                    id="zero"
-                    onMouseEnter={onClickGuide}
-                  >
-                    0단계 - 홈페이지
-                  </p>
-                  <p
-                    className={
-                      "Home_list-sub" + " " + (active0 ? "sub-active" : "")
-                    }
-                  >
-                    다시보기 영상 링크만으로 영상을 분석하여 편집에 도움이 되는
-                    데이터들을 제공합니다.
-                  </p>
-                </div>
-              </li>
-
-              <li className="Home_list-item">
-                <div className="Home_list-content-wrap">
-                  <p
-                    className={
-                      "Home_list-content" + " " + (active1 ? "is-active" : "")
-                    }
-                    id="first"
-                    onMouseEnter={onClickGuide}
-                  >
-                    1단계 - 편집점 분석
-                  </p>
-                  <p
-                    className={
-                      "Home_list-sub" + " " + (active1 ? "sub-active" : "")
-                    }
-                  >
-                    url을 입력하면 데이터 분석에 어느정도 시간이 소요됩니다.
-                  </p>
-                </div>
-              </li>
-
-              <li className="Home_list-item">
-                <div className="Home_list-item-image"></div>
-                <div className="Home_list-content-wrap">
-                  <p
-                    className={
-                      "Home_list-content" + " " + (active2 ? "is-active" : "")
-                    }
-                    id="second"
-                    onMouseEnter={onClickGuide}
-                  >
-                    2단계 - 결과 페이지
-                  </p>
-                  <p
-                    className={
-                      "Home_list-sub" + " " + (active2 ? "sub-active" : "")
-                    }
-                  >
-                    결과 페이지에서는 다양한 기능을 제공합니다.
-                  </p>
-                </div>
-              </li>
-
-              <li className="Home_list-item">
-                <div className="Home_list-content-wrap">
-                  <p
-                    className={
-                      "Home_list-content" + " " + (active3 ? "is-active" : "")
-                    }
-                    id="third"
-                    onMouseEnter={onClickGuide}
-                  >
-                    3단계 - 북마크 기능
-                  </p>
-                  <p
-                    className={
-                      "Home_list-sub" + " " + (active3 ? "sub-active" : "")
-                    }
-                  >
-                    원하는 부분을 기록 ~ 종료함으로써 북마크 형식으로 남길 수
-                    있습니다.
-                  </p>
-                  <a className="UPscroll">
-                    <br />
-                    <br />
-                    <br />
-                    <span
-                      className="point2"
-                      onClick={() => {
-                        document
-                          .getElementById("Home")
-                          .scrollIntoView({ behavior: "smooth" });
-                      }}
+              {[
+                GuideLineStep.Zero,
+                GuideLineStep.First,
+                GuideLineStep.Second,
+                GuideLineStep.Third,
+              ].map((gStep) => (
+                <li className="Home_list-item">
+                  <div>
+                    <p
+                      className={classnames(
+                        "Home_list-content",
+                        step === gStep && "is-active"
+                      )}
+                      id="zero"
+                      onMouseEnter={onClickGuide(gStep)}
                     >
-                      상단
-                    </span>
-                    으로 돌아가기
-                  </a>
-                </div>
-              </li>
+                      {GuideLineInfoList[gStep].title}
+                    </p>
+                    <p
+                      className={classnames(
+                        "Home_list-sub",
+                        step === gStep && "sub-active"
+                      )}
+                    >
+                      {GuideLineInfoList[gStep].description}
+                    </p>
+                    {gStep === GuideLineStep.Third && (
+                      <a className="UPscroll">
+                        <br />
+                        <br />
+                        <br />
+                        <span
+                          className="point2"
+                          onClick={() => {
+                            document
+                              .getElementById("Home")
+                              .scrollIntoView({ behavior: "smooth" });
+                          }}
+                        >
+                          상단
+                        </span>
+                        으로 돌아가기
+                      </a>
+                    )}
+                  </div>
+                </li>
+              ))}
             </ul>
             {/* 좌하단 가이드라인 */}
           </div>
           <div className="lower_right_container">
             {/* 우하단 내용 컨테이너 */}
             <div className="Home_GuidelineContainer" id="guideContainer">
-              {active0 ? (
+              {GuideLineStep.Zero && (
                 <div className="GuideLine_content">
                   <h2>HIGHLIGHTING 사용방법</h2>
                   <div className="guide_content_box">
@@ -331,23 +261,21 @@ const Home = () => {
                     <GiPlayButton
                       className="previousButton"
                       onClick={() => {
-                        activeThird();
+                        setStep(GuideLineStep.Third);
                         viewChange();
                       }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
                       onClick={() => {
-                        activeFirst();
+                        setStep(GuideLineStep.First);
                         viewChange();
                       }}
                     />
                   </div>
                 </div>
-              ) : (
-                ""
               )}
-              {active1 ? (
+              {GuideLineStep.First ? (
                 <div className="GuideLine_content">
                   <h2>편집점 분석</h2>
                   <div className="guide_content_box">
@@ -357,14 +285,14 @@ const Home = () => {
                     <GiPlayButton
                       className="previousButton"
                       onClick={() => {
-                        activeZero();
+                        setStep(GuideLineStep.Zero);
                         viewChange();
                       }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
                       onClick={() => {
-                        activeSecond();
+                        setStep(GuideLineStep.Second);
                         viewChange();
                       }}
                     />
@@ -373,7 +301,7 @@ const Home = () => {
               ) : (
                 ""
               )}
-              {active2 ? (
+              {GuideLineStep.Second ? (
                 <div className="GuideLine_content">
                   <h2>결과 페이지</h2>
                   <div className="guide_content_box">
@@ -383,14 +311,14 @@ const Home = () => {
                     <GiPlayButton
                       className="previousButton"
                       onClick={() => {
-                        activeFirst();
+                        setStep(GuideLineStep.First);
                         viewChange();
                       }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
                       onClick={() => {
-                        activeThird();
+                        setStep(GuideLineStep.Third);
                         viewChange();
                       }}
                     />
@@ -399,7 +327,7 @@ const Home = () => {
               ) : (
                 ""
               )}
-              {active3 ? (
+              {GuideLineStep.Third ? (
                 <div className="GuideLine_content">
                   <h2>북마크 기능</h2>
                   <div className="guide_content_box">
@@ -408,9 +336,18 @@ const Home = () => {
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
-                      onClick={activeSecond}
+                      onClick={() => {
+                        setStep(GuideLineStep.Second);
+                        viewChange();
+                      }}
                     />{" "}
-                    <GiPlayButton className="nextButton" onClick={activeZero} />
+                    <GiPlayButton
+                      className="nextButton"
+                      onClick={() => {
+                        setStep(GuideLineStep.Zero);
+                        viewChange();
+                      }}
+                    />
                   </div>
                 </div>
               ) : (
