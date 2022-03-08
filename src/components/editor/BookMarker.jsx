@@ -24,6 +24,7 @@ function BookMarker({ url, duration, bookmarker }) {
     replayRef,
   } = React.useContext(EditorTimePointerContext);
   const { server_addr } = useResult();
+  // const [marker, setMarker] = useState("");
   const [addMarker, setAddMarker] = useState(null); //
   const [editingText, setEditingText] = useState("");
   const [isStart, setIsStart] = useState(false);
@@ -315,7 +316,7 @@ function BookMarker({ url, duration, bookmarker }) {
     }
   };
 
-  const mounted = useRef([false]);
+  const mounted = useRef(false);
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true;

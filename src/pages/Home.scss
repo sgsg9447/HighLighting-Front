@@ -175,6 +175,18 @@ body {
             opacity: 0;
           }
 
+          .inputLogo {
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+              transform: scale(1.2);
+              &:active {
+                transform: translateY(20px);
+              }
+            }
+          }
+
           .InputBar {
             flex-shrink: 1;
             transition-property: color, background-color, border-color,

@@ -20,18 +20,19 @@ const Home = () => {
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
+    console.log(value);
     setUrl(value);
   });
 
   function linkCheck() {
-    if (inputValue === null) {
+    if (url === null) {
       alert("빈 값입니다. 입력창에 유튜브 주소를 입력해 주세요.");
       focusUrl();
       return;
-    } else if (inputValue !== null) {
-      const gapCheck = inputValue.value.split(" ");
-      const correctLink = inputValue.value.substr(0, 32);
-      const backAddressCheck = inputValue.value.split("=");
+    } else if (url !== null) {
+      const gapCheck = url.split(" ");
+      const correctLink = url.substr(0, 32);
+      const backAddressCheck = url.split("=");
       if (gapCheck.length === 2) {
         alert(
           "유튜브 링크에 공백 문자가 포함되어 있습니다. 공백 문자를 제거한 주소를 입력해 주세요."
@@ -60,9 +61,7 @@ const Home = () => {
   }
 
   function sendUrl(e) {
-    console.log("call sendUrl()");
-    if (inputValue && inputValue.value) {
-      console.log("인풋창 입력값 : ", inputValue.value);
+    if (url) {
       requestResult(url);
     }
   }
@@ -136,24 +135,35 @@ const Home = () => {
                 HIGHLIGHTING
               </h1>
               <p className="HC1-p1">
-              장면 <span className="point3">하나하나 넘기며 확인</span>하고, <br/>
-              시청자 반응은 어땠는지 <span className="point3">채팅도 다시 체크</span>하고, <br/>
-              <span className="point2"> 불편하지 않았나요?</span>
+                장면 <span className="point3">하나하나 넘기며 확인</span>하고,{" "}
+                <br />
+                시청자 반응은 어땠는지{" "}
+                <span className="point3">채팅도 다시 체크</span>하고, <br />
+                <span className="point2"> 불편하지 않았나요?</span>
               </p>
               <p className="HC1-p1">
-                <span className="point1">하이라이팅(HIGHLIGHTING)</span>을 써보세요! <br/>
-                방송의 <span className="point3">다시보기 링크</span>만 입력하면 이용할 수 있습니다
+                <span className="point1">하이라이팅(HIGHLIGHTING)</span>을
+                써보세요! <br />
+                방송의 <span className="point3">다시보기 링크</span>만 입력하면
+                이용할 수 있습니다
               </p>
               <p className="HC1-p2">
-              <span className="point2">
-                화면과 볼륨의 변화, 채팅 빈도, 키워드 출현, 후원 통계</span> 등<br/>
-                길고 긴 방송 속에서 특별한 부분들을 찾는 기능들을 제공하고<br/>
-                <span className="point2">필요한 장면만 골라</span> 가져갈 수 있어요
+                <span className="point2">
+                  화면과 볼륨의 변화, 채팅 빈도, 키워드 출현, 후원 통계
+                </span>{" "}
+                등<br />
+                길고 긴 방송 속에서 특별한 부분들을 찾는 기능들을 제공하고
+                <br />
+                <span className="point2">필요한 장면만 골라</span> 가져갈 수
+                있어요
               </p>
               <p className="HC1-p3">
-                {" "}하단 {" "}
-                <span className="point1">가이드라인</span> 에서 사용법을 알아보세요 :{" "}
-                <span className="point2" onClick={viewChange}>클릭!</span>
+                {" "}
+                하단 <span className="point1">가이드라인</span> 에서 사용법을
+                알아보세요 :{" "}
+                <span className="point2" onClick={viewChange}>
+                  클릭!
+                </span>
               </p>
               <p className="HC1-p4">
                 Creating and Providing Services :{" "}
@@ -165,13 +175,23 @@ const Home = () => {
           <div className="upper_right_container">
             {/* 우상단 URL 입력창 */}
             <div className="Home_urlInput">
-              <h1> <img className="HC1-logo" src={require("./image/icon.png")} /> </h1>
+              <h1>
+                {" "}
+                <img
+                  className="inputLogo"
+                  src={require("./image/icon.png")}
+                  onClick={linkCheck}
+                />
+              </h1>
               <input
                 className="InputBar"
                 ref={urlInput}
                 placeholder="다시보기 영상 URL을 입력해주세요"
                 onChange={onChangeUrl}
                 id="link"
+                onKeyPress={(e) => {
+                  console.log(e);
+                }}
               />
               <h3> </h3>
               <button className="resultButton" onClick={linkCheck}>
