@@ -18,6 +18,11 @@ body {
       border-right: 3px solid black;
       border-radius: 0.3rem;
       background-color: #1b1b24;
+      animation: bottom 0.8s;
+      -webkit-animation: bottom 0.8s;
+      animation-delay: 0.1s;
+      animation-fill-mode: forwards;
+      opacity: 0;
     }
 
     .upperLeft_upper_container {
@@ -36,6 +41,11 @@ body {
           border-bottom: 3px solid black;
           border-radius: 0.3rem;
           background-color: #1b1b24;
+          animation: bottom 0.8s;
+          -webkit-animation: bottom 0.8s;
+          animation-delay: 0.2s;
+          animation-fill-mode: forwards;
+          opacity: 0;
         }
 
         .BookMarkerToolCover {
@@ -43,6 +53,11 @@ body {
           border-radius: 0.3rem;
           width: 75%;
           background-color: #1b1b24;
+          animation: bottom 0.8s;
+          -webkit-animation: bottom 0.8s;
+          animation-delay: 0.3s;
+          animation-fill-mode: forwards;
+          opacity: 0;
         }
       }
 
@@ -55,6 +70,11 @@ body {
         padding-bottom: 0.8rem;
         border-radius: 0.3rem;
         background-color: #1b1b24;
+        animation: bottom 0.8s;
+        -webkit-animation: bottom 0.8s;
+        animation-delay: 0.4s;
+        animation-fill-mode: forwards;
+        opacity: 0;
       }
     }
   }
@@ -78,6 +98,11 @@ body {
       justify-content: space-between;
       border-radius: 0.5rem;
       background-color: #1b1b24;
+      animation: bottom 0.8s;
+      -webkit-animation: bottom 0.8s;
+      animation-delay: 0.5s;
+      animation-fill-mode: forwards;
+      opacity: 0;
     }
     .DataChartCover {
       width: 80%;
@@ -85,6 +110,23 @@ body {
       z-index: 11;
       border-radius: 0.5rem;
       background-color: #1b1b24;
+      animation: bottom 0.8s;
+      -webkit-animation: bottom 0.8s;
+      animation-delay: 0.75s;
+      animation-fill-mode: forwards;
+      opacity: 0;
     }
+  }
+}
+
+@keyframes bottom {
+  0% {
+    transform: translateY(150px);
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
   }
 }

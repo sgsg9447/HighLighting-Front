@@ -9,7 +9,7 @@ function DataChartController() {
   useEffect(() => {
     console.log(isChatKeywords);
     setTest("");
-    setTimeout(() => setTest("container__chat"), 0);
+    setTimeout(() => setTest("container__chat"), 0.01);
   }, [isChatKeywords]);
 
   return (
