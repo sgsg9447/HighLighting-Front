@@ -185,8 +185,8 @@ const Home = () => {
               />
               <h3>
                 ⚠ 채팅 내역이 존재하는{" "}
-                <span className="point">다시보기 스트리밍 영상(클릭)</span> 이
-                아니면 분석이 불가능합니다.
+                <span className="point">다시보기 스트리밍 영상</span> 이 아니면
+                분석이 불가능합니다.
               </h3>
 
               <button className="resultButton" onClick={linkCheck}>
@@ -220,7 +220,7 @@ const Home = () => {
                       "Home_list-sub" + " " + (active0 ? "sub-active" : "")
                     }
                   >
-                    다시보기 영상 링크만으로 영상을 분석하여 편집에 도움이 되는
+                    다시보기 영상 링크만으로 영상을 분석 후 편집에 도움이 되는
                     데이터들을 제공합니다.
                   </p>
                 </div>
@@ -235,14 +235,16 @@ const Home = () => {
                     id="first"
                     onMouseEnter={onClickGuide}
                   >
-                    1단계 - 편집점 분석
+                    1단계 - 키워드 검색 기능
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active1 ? "sub-active" : "")
                     }
                   >
-                    url을 입력하면 데이터 분석에 어느정도 시간이 소요됩니다.
+                    결과 페이지는 여러 기능을 포함하고 있습니다.(채울 내용 :
+                    차트등의 결과페이지 이미지로 안내) 우선 키워드 검색 기능에
+                    대해 알아봅시다.
                   </p>
                 </div>
               </li>
@@ -257,14 +259,14 @@ const Home = () => {
                     id="second"
                     onMouseEnter={onClickGuide}
                   >
-                    2단계 - 결과 페이지
+                    2단계 - 북마크 기능 사용법
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active2 ? "sub-active" : "")
                     }
                   >
-                    결과 페이지에서는 다양한 기능을 제공합니다.
+                    내가 원하는 부분을 컷으로 보관할 수 있습니다.
                   </p>
                 </div>
               </li>
@@ -278,15 +280,14 @@ const Home = () => {
                     id="third"
                     onMouseEnter={onClickGuide}
                   >
-                    3단계 - 북마크 기능
+                    3단계 - 익스텐션 기능
                   </p>
                   <p
                     className={
                       "Home_list-sub" + " " + (active3 ? "sub-active" : "")
                     }
                   >
-                    원하는 부분을 기록 ~ 종료함으로써 북마크 형식으로 남길 수
-                    있습니다.
+                    저희 웹서비스는 익스텐션 기능또한 제공하고 있습니다.
                   </p>
                   <a className="UPscroll">
                     <br />
@@ -344,7 +345,7 @@ const Home = () => {
               )}
               {active1 ? (
                 <div className="GuideLine_content">
-                  <h2>편집점 분석</h2>
+                  <h2>키워드 검색 기능</h2>
                   <div className="guide_content_box">
                     <p className="guide_content_p1">내용 박스</p>
                   </div>
@@ -370,9 +371,9 @@ const Home = () => {
               )}
               {active2 ? (
                 <div className="GuideLine_content">
-                  <h2>결과 페이지</h2>
+                  <h2>북마크 기능</h2>
                   <div className="guide_content_box">
-                    <p className="guide_content_p1">내용 박스</p>
+                    <p className="guide_content_p1"> 대충 북마크 내용 박스</p>
                   </div>
                   <div className="guide_button_box">
                     <GiPlayButton
@@ -396,9 +397,9 @@ const Home = () => {
               )}
               {active3 ? (
                 <div className="GuideLine_content">
-                  <h2>북마크 기능</h2>
+                  <h2>HIGHLIGHTING - 크롬 익스텐션</h2>
                   <div className="guide_content_box">
-                    <p className="guide_content_p1">내용 박스</p>
+                    <p className="guide_content_p1">대충 익스텐션 내용</p>
                   </div>
                   <div className="guide_button_box">
                     <GiPlayButton
