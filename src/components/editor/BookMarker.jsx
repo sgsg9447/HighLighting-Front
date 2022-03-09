@@ -35,6 +35,8 @@ function BookMarker({ url, duration, bookmarker }) {
   const [downloadLink, setDownloadLink] = useState("");
   const bookscroll = document.querySelector("#bookmarkScroll");
 
+  const mounted = useRef(false);
+
   // localstorage 불러오기
   useEffect(() => {
     const temp = localStorage.getItem("markers");
@@ -249,6 +251,7 @@ function BookMarker({ url, duration, bookmarker }) {
       }
       return marker;
     });
+    mounted.current = false;
     setMarkers(updateMarkers);
     setEditingText("");
     setAddMarker(null);
@@ -316,7 +319,6 @@ function BookMarker({ url, duration, bookmarker }) {
     }
   };
 
-  const mounted = useRef(false);
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true;
