@@ -1,38 +1,10 @@
 import React, { useState, useRef, useCallback } from "react";
-import classnames from "classnames";
+
 import useResult from "../hooks/useResult";
 import useRoute from "../hooks/useRoute";
 import Header from "../components/Header/Header";
 import { GiPlayButton } from "react-icons/gi";
 import "./Home.scss";
-
-const GuideLineStep = {
-  Zero: "Zero",
-  First: "First",
-  Second: "Second",
-  Third: "Third",
-};
-
-const GuideLineInfoList = {
-  [GuideLineStep.Zero]: {
-    title: "0단계 - 홈페이지",
-    description:
-      "다시보기 영상 링크만으로 영상을 분석하여 편집에 도움이 되는 데이터들을 제공합니다.",
-  },
-  [GuideLineStep.First]: {
-    title: "1단계 - 편집점 분석",
-    description: "url을 입력하면 데이터 분석에 어느정도 시간이 소요됩니다.",
-  },
-  [GuideLineStep.Second]: {
-    title: "2단계 - 결과 페이지",
-    description: "결과 페이지에서는 다양한 기능을 제공합니다.",
-  },
-  [GuideLineStep.Third]: {
-    title: "3단계 - 북마크 기능",
-    description:
-      "원하는 부분을 기록 ~ 종료함으로써 북마크 형식으로 남길 수 있습니다.",
-  },
-};
 
 const Home = () => {
   const inputValue = document.getElementById("link");
@@ -41,7 +13,10 @@ const Home = () => {
   const { logged, onLogout } = useResult();
   const { url, setUrl } = useResult();
   const { requestResult } = useRoute();
-  const [step, setStep] = useState(GuideLineStep.Zero);
+  const [active0, setActive0] = useState(true);
+  const [active1, setActive1] = useState(false);
+  const [active2, setActive2] = useState(false);
+  const [active3, setActive3] = useState(false);
 
   const onChangeUrl = useCallback((e) => {
     const value = e.target.value;
@@ -49,45 +24,32 @@ const Home = () => {
     setUrl(value);
   });
 
-  const linkCheck = () => {
+  function linkCheck() {
     if (url === undefined) {
-      alert("빈 값입니다. 입력창에 유튜브 주소를 입력해 주세요.");
+      alert(
+        "주소가 입력되지 않았습니다. 입력창에 유튜브 주소를 입력해 주세요!"
+      );
       focusUrl();
       return;
     } else if (url !== undefined) {
-      const gapCheck = url.split(" ");
-      const correctLink = url.substr(0, 32);
-      const backAddressCheck = url.split("=");
-      if (gapCheck.length === 2) {
-        alert(
-          "유튜브 링크에 공백 문자가 포함되어 있습니다. 공백 문자를 제거한 주소를 입력해 주세요."
-        );
-        focusUrl();
-        return;
-      }
-      if (correctLink !== "https://www.youtube.com/watch?v=") {
-        alert(
-          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
-        );
-        console.log(correctLink);
-        focusUrl();
-        return;
-      }
-      if (backAddressCheck[1].length !== 11) {
-        console.log(backAddressCheck, backAddressCheck[1].length);
-        alert(
-          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
-        );
-        focusUrl();
-        return;
-      }
-      sendUrl();
-    }
-  };
+      const isYT = url.substr(0, 32) === "https://www.youtube.com/watch?v=";
+      const isTW = url.substr(0, 32) === "https://www.twitch.tv/viedos/";
 
-  function sendUrl(e) {
-    if (url) {
-      requestResult(url);
+      if (isYT) {
+        setUrl(url.substr(0, 43));
+        requestResult(url.substr(0, 43));
+        return;
+      }
+      if (isTW) {
+        setUrl(url.substr(0, 39));
+        requestResult(url.substr(0, 39));
+        return;
+      }
+      alert(
+        "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
+      );
+      focusUrl();
+      return;
     }
   }
 
@@ -97,14 +59,54 @@ const Home = () => {
     urlInput.current.focus();
   }
 
-  const onClickGuide = (type) => {
-    return () => {
-      setStep(type);
-    };
+  const onClickGuide = (e) => {
+    const id = e.target.id;
+    switch (id) {
+      case "zero":
+        activeZero();
+        break;
+      case "first":
+        activeFirst();
+        break;
+      case "second":
+        activeSecond();
+        break;
+      case "third":
+        activeThird();
+        break;
+      default:
+    }
   };
 
   const viewChange = () => {
     document.getElementById("guidline").scrollIntoView({ behavior: "smooth" });
+  };
+  const activeZero = () => {
+    setActive0(true);
+    setActive1(false);
+    setActive2(false);
+    setActive3(false);
+  };
+
+  const activeFirst = () => {
+    setActive0(false);
+    setActive1(true);
+    setActive2(false);
+    setActive3(false);
+  };
+
+  const activeSecond = () => {
+    setActive0(false);
+    setActive1(false);
+    setActive2(true);
+    setActive3(false);
+  };
+
+  const activeThird = () => {
+    setActive0(false);
+    setActive1(false);
+    setActive2(false);
+    setActive3(true);
   };
 
   return (
@@ -145,7 +147,7 @@ const Home = () => {
               <p className="HC1-p3">
                 {" "}
                 하단 <span className="point1">가이드라인</span> 에서 사용법을
-                알아보세요 :{" "}
+                알아보세요 :
                 <span className="point2" onClick={viewChange}>
                   클릭!
                 </span>
@@ -168,6 +170,7 @@ const Home = () => {
                   onClick={linkCheck}
                 />
               </h1>
+
               <input
                 className="InputBar"
                 ref={urlInput}
@@ -180,7 +183,12 @@ const Home = () => {
                   }
                 }}
               />
-              <h3> </h3>
+              <h3>
+                ⚠ 채팅 내역이 존재하는{" "}
+                <span className="point">다시보기 스트리밍 영상</span> 이 아니면
+                분석이 불가능합니다.
+              </h3>
+
               <button className="resultButton" onClick={linkCheck}>
                 <span>분석 시작!</span>
               </button>
@@ -196,64 +204,120 @@ const Home = () => {
               <h2 id="guidline"> 단계별 가이드라인 </h2>
             </div>
             <ul className="Home_list">
-              {[
-                GuideLineStep.Zero,
-                GuideLineStep.First,
-                GuideLineStep.Second,
-                GuideLineStep.Third,
-              ].map((gStep) => (
-                <li className="Home_list-item">
-                  <div>
-                    <p
-                      className={classnames(
-                        "Home_list-content",
-                        step === gStep && "is-active"
-                      )}
-                      id="zero"
-                      onMouseEnter={onClickGuide(gStep)}
+              <li className="Home_list-item">
+                <div>
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active0 ? "is-active" : "")
+                    }
+                    id="zero"
+                    onMouseEnter={onClickGuide}
+                  >
+                    0단계 - 홈페이지
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active0 ? "sub-active" : "")
+                    }
+                  >
+                    다시보기 영상 링크만으로 영상을 분석 후 편집에 도움이 되는
+                    데이터들을 제공합니다.
+                  </p>
+                </div>
+              </li>
+
+              <li className="Home_list-item">
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active1 ? "is-active" : "")
+                    }
+                    id="first"
+                    onMouseEnter={onClickGuide}
+                  >
+                    1단계 - 키워드 검색 기능
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active1 ? "sub-active" : "")
+                    }
+                  >
+                    결과 페이지는 여러 기능을 포함하고 있습니다.(채울 내용 :
+                    차트등의 결과페이지 이미지로 안내) 우선 키워드 검색 기능에
+                    대해 알아봅시다.
+                  </p>
+                </div>
+              </li>
+
+              <li className="Home_list-item">
+                <div className="Home_list-item-image"></div>
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active2 ? "is-active" : "")
+                    }
+                    id="second"
+                    onMouseEnter={onClickGuide}
+                  >
+                    2단계 - 북마크 기능 사용법
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active2 ? "sub-active" : "")
+                    }
+                  >
+                    내가 원하는 부분을 컷으로 보관할 수 있습니다.
+                  </p>
+                </div>
+              </li>
+
+              <li className="Home_list-item">
+                <div className="Home_list-content-wrap">
+                  <p
+                    className={
+                      "Home_list-content" + " " + (active3 ? "is-active" : "")
+                    }
+                    id="third"
+                    onMouseEnter={onClickGuide}
+                  >
+                    3단계 - 익스텐션 기능
+                  </p>
+                  <p
+                    className={
+                      "Home_list-sub" + " " + (active3 ? "sub-active" : "")
+                    }
+                  >
+                    저희 웹서비스는 익스텐션 기능또한 제공하고 있습니다.
+                  </p>
+                  <a className="UPscroll">
+                    <br />
+                    <br />
+                    <br />
+                    <span
+                      className="point2"
+                      onClick={() => {
+                        document
+                          .getElementById("Home")
+                          .scrollIntoView({ behavior: "smooth" });
+                      }}
                     >
-                      {GuideLineInfoList[gStep].title}
-                    </p>
-                    <p
-                      className={classnames(
-                        "Home_list-sub",
-                        step === gStep && "sub-active"
-                      )}
-                    >
-                      {GuideLineInfoList[gStep].description}
-                    </p>
-                    {gStep === GuideLineStep.Third && (
-                      <a className="UPscroll">
-                        <br />
-                        <br />
-                        <br />
-                        <span
-                          className="point2"
-                          onClick={() => {
-                            document
-                              .getElementById("Home")
-                              .scrollIntoView({ behavior: "smooth" });
-                          }}
-                        >
-                          상단
-                        </span>
-                        으로 돌아가기
-                      </a>
-                    )}
-                  </div>
-                </li>
-              ))}
+                      상단
+                    </span>
+                    으로 돌아가기
+                  </a>
+                </div>
+              </li>
             </ul>
             {/* 좌하단 가이드라인 */}
           </div>
           <div className="lower_right_container">
             {/* 우하단 내용 컨테이너 */}
             <div className="Home_GuidelineContainer" id="guideContainer">
-              {GuideLineStep.Zero && (
+              {active0 ? (
                 <div className="GuideLine_content">
                   <h2>HIGHLIGHTING 사용방법</h2>
                   <div className="guide_content_box">
-                    <img src={require("./image/Step0.png")} />
+                    <img className="step0" src={require("./image/Step0.png")} />
                     <p className="guide_content_p1">
                       1.메인페이지 URL창에 유튜브 다시보기 URL을 입력한다.
                     </p>
@@ -263,38 +327,14 @@ const Home = () => {
                     <GiPlayButton
                       className="previousButton"
                       onClick={() => {
-                        setStep(GuideLineStep.Third);
+                        activeThird();
                         viewChange();
                       }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
                       onClick={() => {
-                        setStep(GuideLineStep.First);
-                        viewChange();
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-              {GuideLineStep.First ? (
-                <div className="GuideLine_content">
-                  <h2>편집점 분석</h2>
-                  <div className="guide_content_box">
-                    <p className="guide_content_p1">내용 박스</p>
-                  </div>
-                  <div className="guide_button_box">
-                    <GiPlayButton
-                      className="previousButton"
-                      onClick={() => {
-                        setStep(GuideLineStep.Zero);
-                        viewChange();
-                      }}
-                    />{" "}
-                    <GiPlayButton
-                      className="nextButton"
-                      onClick={() => {
-                        setStep(GuideLineStep.Second);
+                        activeFirst();
                         viewChange();
                       }}
                     />
@@ -303,9 +343,9 @@ const Home = () => {
               ) : (
                 ""
               )}
-              {GuideLineStep.Second ? (
+              {active1 ? (
                 <div className="GuideLine_content">
-                  <h2>결과 페이지</h2>
+                  <h2>키워드 검색 기능</h2>
                   <div className="guide_content_box">
                     <p className="guide_content_p1">내용 박스</p>
                   </div>
@@ -313,14 +353,14 @@ const Home = () => {
                     <GiPlayButton
                       className="previousButton"
                       onClick={() => {
-                        setStep(GuideLineStep.First);
+                        activeZero();
                         viewChange();
                       }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
                       onClick={() => {
-                        setStep(GuideLineStep.Third);
+                        activeSecond();
                         viewChange();
                       }}
                     />
@@ -329,27 +369,44 @@ const Home = () => {
               ) : (
                 ""
               )}
-              {GuideLineStep.Third ? (
+              {active2 ? (
                 <div className="GuideLine_content">
                   <h2>북마크 기능</h2>
                   <div className="guide_content_box">
-                    <p className="guide_content_p1">내용 박스</p>
+                    <p className="guide_content_p1"> 대충 북마크 내용 박스</p>
                   </div>
                   <div className="guide_button_box">
                     <GiPlayButton
                       className="previousButton"
                       onClick={() => {
-                        setStep(GuideLineStep.Second);
+                        activeFirst();
                         viewChange();
                       }}
                     />{" "}
                     <GiPlayButton
                       className="nextButton"
                       onClick={() => {
-                        setStep(GuideLineStep.Zero);
+                        activeThird();
                         viewChange();
                       }}
                     />
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {active3 ? (
+                <div className="GuideLine_content">
+                  <h2>HIGHLIGHTING - 크롬 익스텐션</h2>
+                  <div className="guide_content_box">
+                    <p className="guide_content_p1">대충 익스텐션 내용</p>
+                  </div>
+                  <div className="guide_button_box">
+                    <GiPlayButton
+                      className="previousButton"
+                      onClick={activeSecond}
+                    />{" "}
+                    <GiPlayButton className="nextButton" onClick={activeZero} />
                   </div>
                 </div>
               ) : (

@@ -1,11 +1,13 @@
 .Loading {
   background-color: #1b1b24;
-  width: 100%;
+  width: 99%;
   position: absolute;
-  top: 0px;
-  bottom: 0px;
+  top: 5px;
+  bottom: 5px;
+  margin: auto;
 
   .LoadingContainer {
+    width: 100%;
     background-color: #1b1b24;
   }
 
