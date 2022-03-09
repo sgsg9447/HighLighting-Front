@@ -26,43 +26,30 @@ const Home = () => {
 
   function linkCheck() {
     if (url === undefined) {
-      alert("빈 값입니다. 입력창에 유튜브 주소를 입력해 주세요.");
+      alert(
+        "주소가 입력되지 않았습니다. 입력창에 유튜브 주소를 입력해 주세요!"
+      );
       focusUrl();
       return;
     } else if (url !== undefined) {
-      const gapCheck = url.split(" ");
-      const correctLink = url.substr(0, 32);
-      const backAddressCheck = url.split("=");
-      if (gapCheck.length === 2) {
-        alert(
-          "유튜브 링크에 공백 문자가 포함되어 있습니다. 공백 문자를 제거한 주소를 입력해 주세요."
-        );
-        focusUrl();
-        return;
-      }
-      if (correctLink !== "https://www.youtube.com/watch?v=") {
-        alert(
-          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
-        );
-        console.log(correctLink);
-        focusUrl();
-        return;
-      }
-      if (backAddressCheck[1].length !== 11) {
-        console.log(backAddressCheck, backAddressCheck[1].length);
-        alert(
-          "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
-        );
-        focusUrl();
-        return;
-      }
-      sendUrl();
-    }
-  }
+      const isYT = url.substr(0, 32) === "https://www.youtube.com/watch?v=";
+      const isTW = url.substr(0, 32) === "https://www.twitch.tv/viedos/";
 
-  function sendUrl(e) {
-    if (url) {
-      requestResult(url);
+      if (isYT) {
+        setUrl(url.substr(0, 43));
+        requestResult(url.substr(0, 43));
+        return;
+      }
+      if (isTW) {
+        setUrl(url.substr(0, 39));
+        requestResult(url.substr(0, 39));
+        return;
+      }
+      alert(
+        "올바른 유튜브 주소가 아닙니다. 올바른 유튜브 링크 주소를 입력해 주세요."
+      );
+      focusUrl();
+      return;
     }
   }
 
@@ -160,7 +147,7 @@ const Home = () => {
               <p className="HC1-p3">
                 {" "}
                 하단 <span className="point1">가이드라인</span> 에서 사용법을
-                알아보세요 :{" "}
+                알아보세요 :
                 <span className="point2" onClick={viewChange}>
                   클릭!
                 </span>
@@ -183,6 +170,7 @@ const Home = () => {
                   onClick={linkCheck}
                 />
               </h1>
+
               <input
                 className="InputBar"
                 ref={urlInput}
@@ -195,7 +183,12 @@ const Home = () => {
                   }
                 }}
               />
-              <h3> </h3>
+              <h3>
+                ⚠ 채팅 내역이 존재하는{" "}
+                <span className="point">다시보기 스트리밍 영상(클릭)</span> 이
+                아니면 분석이 불가능합니다.
+              </h3>
+
               <button className="resultButton" onClick={linkCheck}>
                 <span>분석 시작!</span>
               </button>
@@ -323,7 +316,7 @@ const Home = () => {
                 <div className="GuideLine_content">
                   <h2>HIGHLIGHTING 사용방법</h2>
                   <div className="guide_content_box">
-                    <img src={require("./image/Step0.png")} />
+                    <img className="step0" src={require("./image/Step0.png")} />
                     <p className="guide_content_p1">
                       1.메인페이지 URL창에 유튜브 다시보기 URL을 입력한다.
                     </p>
