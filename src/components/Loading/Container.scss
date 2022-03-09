@@ -2,9 +2,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 
   .ContainerWrapper {
-    width: 400px;
+    width: 90%;
+    justify-content: center;
+    text-align: center;
     margin-top: 72px;
   }
 }
