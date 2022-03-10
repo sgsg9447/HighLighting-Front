@@ -154,7 +154,7 @@ const Home = () => {
                 이 아니면 분석이 불가능합니다.
               </h3>
 
-              <button className="resultButton">
+              <button className="resultButton" onClick={linkCheck}>
                 <span>분석 시작!</span>
               </button>
               <p className="HC1-p4">
