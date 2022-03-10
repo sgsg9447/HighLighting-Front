@@ -32,19 +32,23 @@
       text-align: center;
       position: relative;
       padding: 16px 64px 16px 16px;
-      background-color: rgb(73, 70, 70);
+      background-color: #282c34;
       font-weight: 700;
 
       button {
         position: absolute;
-        top: 5px;
+        top: 1px;
         right: 10px;
-        width: 30px;
-        font-size: 21px;
+        font-size: 2rem;
         font-weight: 700;
         text-align: center;
-        color: white;
+        color: #935ef4;
         background-color: transparent;
+        transition: all 0.2s;
+
+        &:active {
+          transform: scale(0.9);
+        }
       }
     }
 
@@ -90,12 +94,19 @@
 
     footer button {
       margin-right: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
       float: right;
       padding: 6px 12px;
-      color: #282c34;
-      background-color: white;
+      color: white;
+      background-color: #935ef4;
       border-radius: 5px;
       font-size: 13px;
+      transition: all 0.2s;
+
+      &:active {
+        transform: scale(0.9);
+      }
     }
   }
 }
