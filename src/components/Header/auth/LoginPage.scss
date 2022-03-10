@@ -12,15 +12,21 @@
   }
 
   .loginID {
-    margin-top: 30px;
+    margin-top: 15px;
     margin-bottom: 15px;
     border-radius: 2px;
     width: 100%;
     height: 40px;
-    border: 1px solid #e5e5e5;
-    padding: 9px 12px;
+    padding: 9px 12p;
     outline: none;
     box-sizing: border-box;
+    border-radius: 0.5rem;
+    text-indent: 0.8rem;
+    transition: all 0.2s;
+
+    &:focus {
+      border: 3px solid #935ef4;
+    }
   }
 
   .loginPassWord {
@@ -32,6 +38,12 @@
     padding: 9px 12px;
     outline: none;
     box-sizing: border-box;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+
+    &:focus {
+      border: 3px solid #935ef4;
+    }
   }
   .loginMid {
     display: flex;
@@ -56,10 +68,28 @@
     margin-bottom: 18px;
     border-radius: 3px;
     border-style: none;
+    transition: all 0.3s;
+
+    &:active {
+      transform: scale(0.9);
+    }
   }
   .googleButton {
     width: 370px;
     height: 45px;
     justify-content: center;
+    transition: all 0.3s;
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  .KakaoLogin {
+    transition: all 0.3s;
+
+    &:active {
+      transform: scale(0.9);
+    }
   }
 }
