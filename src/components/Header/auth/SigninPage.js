@@ -192,7 +192,7 @@ const SigninPage = (props) => {
         <br />
         <div id="kakaotalk">
           <KakaoLogin
-            class="kakads"
+            className="KakaoLogin"
             style={KakaoButton}
             jsKey={KakaoJsKey}
             buttonText="Kakao"
