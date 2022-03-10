@@ -29,6 +29,7 @@ export default function Header() {
         setModalOpen(false);
         setLogIn(false);
         setSignIn(false);
+        SetGuide(false);
       }
     };
 
@@ -47,6 +48,7 @@ export default function Header() {
     setModalOpen(false);
     setLogIn(false);
     setSignIn(false);
+    SetGuide(false);
   };
 
   const onClickEvent = (e) => {
