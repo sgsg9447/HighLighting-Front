@@ -30,10 +30,6 @@
 <img width="1433" alt="1" src="https://user-images.githubusercontent.com/87474789/188503442-33c916da-72b5-4af6-b093-a7909acb5874.png">
 <img width="1433" alt="2" src="https://user-images.githubusercontent.com/87474789/188503578-8a91399c-364f-4508-ac69-a1b4fd709166.png">
 
-- 연속된 긴 스트림 영상 속에서 무의미한 부분을 제외한 유의미한 부분 Point set 압축 필요
-- 실시간 스트리밍 방송은 최소 1시간 최대 7~8시간 방송 단, 하이라이트 구간은 단 몇 분으로 편집
-- 서비스 타겟 : 스트리머 방송 편집자
-
 ## 6. 포스터
 ![하이라이팅 포스터](https://user-images.githubusercontent.com/87474789/188504121-fd07d437-b02d-4b79-95bc-da6e2f1a90d0.png)
 
